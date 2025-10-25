@@ -1,35 +1,21 @@
 <Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <RootNamespace>C_C_Final</RootNamespace>
     <Nullable>false</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="WindowsBase" />
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="System.Xaml" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="App.xaml" />
-    <Compile Include="App.xaml.cs" />
-    <Page Include="View\**\*.xaml" />
-    <Compile Include="View\**\*.xaml.cs" />
-    <Compile Include="Presentation\**\*.cs" />
-    <Compile Include="CustomControls\**\*.cs" />
-    <Compile Include="Domain\**\*.cs" />
-    <Compile Include="Application\**\*.cs" />
-    <Compile Include="Infrastructure\**\*.cs" />
-    <None Include="App.config" />
     <Resource Include="Resources\Images\**\*" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="App.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>
