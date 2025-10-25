@@ -3,8 +3,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using C_C.Application.Repositories;
 using C_C.Resources.utils;
-using C_C.Services;
 using C_C.ViewModel.Commands;
 using Microsoft.Extensions.Logging;
 
@@ -12,7 +12,7 @@ namespace C_C.ViewModel;
 
 public sealed class LoginViewModel : BaseViewModel
 {
-    private readonly ICuentaService _cuentaService;
+    private readonly ICuentaRepository _cuentaRepository;
     private readonly IPasswordHasher _passwordHasher;
     private readonly ILogger<LoginViewModel> _logger;
     private string _email = string.Empty;
@@ -20,12 +20,12 @@ public sealed class LoginViewModel : BaseViewModel
     private bool _isBusy;
     private string? _error;
 
-    public LoginViewModel(ICuentaService cuentaService, IPasswordHasher passwordHasher, ILogger<LoginViewModel> logger)
+    public LoginViewModel(ICuentaRepository cuentaRepository, IPasswordHasher passwordHasher, ILogger<LoginViewModel> logger)
     {
-        _cuentaService = cuentaService;
+        _cuentaRepository = cuentaRepository;
         _passwordHasher = passwordHasher;
         _logger = logger;
-        LoginCommand = new RelayCommand(async _ => await LoginAsync(), _ => !IsBusy);
+        LoginCommand = new RelayCommand(async (_, ct) => await LoginAsync(ct).ConfigureAwait(false), _ => !IsBusy);
     }
 
     public string Email
@@ -60,7 +60,7 @@ public sealed class LoginViewModel : BaseViewModel
 
     public ICommand LoginCommand { get; }
 
-    private async Task LoginAsync()
+    private async Task LoginAsync(CancellationToken ct)
     {
         if (IsBusy)
         {
@@ -71,8 +71,8 @@ public sealed class LoginViewModel : BaseViewModel
         {
             IsBusy = true;
             Error = null;
-            var cuenta = await _cuentaService.ObtenerPorEmailAsync(Email, CancellationToken.None).ConfigureAwait(false);
-            if (cuenta is null || !_passwordHasher.Verify(Password, cuenta.PasswordHash))
+            var cuenta = await _cuentaRepository.GetByEmailAsync(Email, ct).ConfigureAwait(false);
+            if (cuenta is null || !_passwordHasher.Verify(Password, cuenta.Hash_Contrasena))
             {
                 Error = "Credenciales inválidas";
                 return;
@@ -80,6 +80,10 @@ public sealed class LoginViewModel : BaseViewModel
 
             _logger.LogInformation("Usuario {Email} autenticado", Email);
             MessageBox.Show("Inicio de sesión exitoso", "C_C", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+        catch (OperationCanceledException)
+        {
+            Error = "Inicio de sesión cancelado";
         }
         catch (Exception ex)
         {

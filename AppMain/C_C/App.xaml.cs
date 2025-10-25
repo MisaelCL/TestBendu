@@ -1,11 +1,12 @@
 using System;
 using System.Windows;
-using C_C.Repositories;
+using C_C.Application.Repositories;
+using C_C.Application.Services;
+using C_C.Infrastructure.Common;
+using C_C.Infrastructure.Repositories;
 using C_C.Resources.utils;
-using C_C.Services;
 using C_C.View;
 using C_C.ViewModel;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -21,41 +22,30 @@ public partial class App : Application
     {
         base.OnStartup(e);
         _host = Host.CreateDefaultBuilder()
-            .ConfigureAppConfiguration((context, config) =>
-            {
-                config.SetBasePath(AppContext.BaseDirectory);
-                config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
-                config.AddEnvironmentVariables();
-            })
             .ConfigureLogging(logging =>
             {
                 logging.ClearProviders();
-                logging.AddConsole();
                 logging.AddDebug();
             })
-            .ConfigureServices((context, services) =>
+            .ConfigureServices(services =>
             {
-                var connectionString = context.Configuration.GetConnectionString("C_CBD") ?? throw new InvalidOperationException("No se encontró la cadena de conexión C_CBD.");
-                services.AddSingleton<IConnectionFactory>(_ => new SqlConnectionFactory(connectionString));
+                services.AddSingleton<SqlConnectionFactory>();
                 services.AddSingleton<IPasswordHasher, BcryptPasswordHasher>();
 
-                services.AddScoped<IChatRepository, ChatRepository>();
-                services.AddScoped<IMensajeRepository, MensajeRepository>();
-                services.AddScoped<IMatchRepository, MatchRepository>();
-                services.AddScoped<IPerfilRepository, PerfilRepository>();
                 services.AddScoped<ICuentaRepository, CuentaRepository>();
+                services.AddScoped<IPerfilRepository, PerfilRepository>();
+                services.AddScoped<IMatchRepository, MatchRepository>();
 
-                services.AddScoped<IChatService, ChatService>();
-                services.AddScoped<IMensajeService, MensajeService>();
+                services.AddScoped<IRegisterAlumnoService, RegisterAlumnoService>();
                 services.AddScoped<IMatchService, MatchService>();
-                services.AddScoped<IPerfilService, PerfilService>();
-                services.AddScoped<ICuentaService, CuentaService>();
 
                 services.AddTransient<LoginViewModel>();
                 services.AddTransient<RegistroViewModel>();
                 services.AddTransient<HomeViewModel>();
                 services.AddTransient<ChatViewModel>();
                 services.AddTransient<PerfilViewModel>();
+                services.AddTransient<PreferenciasViewModel>();
+                services.AddTransient<InboxViewModel>();
                 services.AddTransient<ConfiguracionViewModel>();
 
                 services.AddTransient<LoginView>();
