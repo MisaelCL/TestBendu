@@ -21,7 +21,7 @@ namespace C_C_Final.Presentation.ViewModels
         private readonly IPerfilRepository _perfilRepository;
         private readonly MatchService _matchService;
         private readonly ObservableCollection<MensajeItemViewModel> _mensajes = new ObservableCollection<MensajeItemViewModel>();
-        private ImageSource? _contactoAvatarUrl;
+        private ImageSource _contactoAvatarUrl;
         private string _contactoNombre = string.Empty;
         private string _nuevoMensaje = string.Empty;
         private bool _isChatMenuOpen;

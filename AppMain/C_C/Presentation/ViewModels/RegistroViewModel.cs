@@ -22,15 +22,15 @@ namespace C_C_Final.Presentation.ViewModels
         });
 
         private readonly ObservableCollection<string> _generos = new ObservableCollection<string>(new[] { "Masculino", "Femenino" });
-        private string? _carreraSeleccionada;
+        private string _carreraSeleccionada;
         private string _matricula = string.Empty;
         private string _nombreCompleto = string.Empty;
-        private string? _generoSeleccionado;
+        private string _generoSeleccionado;
         private DateTime? _fechaNacimiento = DateTime.Today;
         private string _correo = string.Empty;
         private string _password = string.Empty;
         private string _confirmPassword = string.Empty;
-        private string? _errorMessage;
+        private string _errorMessage;
         private bool _isBusy;
 
         public RegistroViewModel(RegisterAlumnoService registerAlumnoService)
@@ -41,7 +41,7 @@ namespace C_C_Final.Presentation.ViewModels
 
         public ObservableCollection<string> Carreras => _carreras;
 
-        public string? CarreraSeleccionada
+        public string CarreraSeleccionada
         {
             get => _carreraSeleccionada;
             set => SetProperty(ref _carreraSeleccionada, value);
@@ -61,15 +61,15 @@ namespace C_C_Final.Presentation.ViewModels
 
         public ObservableCollection<string> Generos => _generos;
 
-        public string? GeneroSeleccionado
+        public string GeneroSeleccionado
         {
             get => _generoSeleccionado;
             set => SetProperty(ref _generoSeleccionado, value);
         }
 
-        public DateTime? FechaNacimiento
+        public DateTime FechaNacimiento
         {
-            get => _fechaNacimiento;
+            get => (DateTime)_fechaNacimiento;
             set => SetProperty(ref _fechaNacimiento, value);
         }
 
@@ -91,7 +91,7 @@ namespace C_C_Final.Presentation.ViewModels
             set => SetProperty(ref _confirmPassword, value);
         }
 
-        public string? ErrorMessage
+        public string ErrorMessage
         {
             get => _errorMessage;
             private set => SetProperty(ref _errorMessage, value);

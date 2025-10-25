@@ -30,12 +30,16 @@ namespace C_C_Final.Infrastructure.Data
 
         public async Task CommitAsync(CancellationToken ct)
         {
-            await _transaction.CommitAsync(ct).ConfigureAwait(false);
+            // CommitAsync no está disponible en SqlTransaction en .NET Framework.
+            // Usar el método síncrono Commit en su lugar.
+            await Task.Run(() => _transaction.Commit(), ct).ConfigureAwait(false);
         }
 
         public async Task RollbackAsync(CancellationToken ct)
         {
-            await _transaction.RollbackAsync(ct).ConfigureAwait(false);
+            // RollbackAsync no está disponible en SqlTransaction en .NET Framework.
+            // Usar el método síncrono Rollback en su lugar.
+            await Task.Run(() => _transaction.Rollback(), ct).ConfigureAwait(false);
         }
 
         public void Dispose()

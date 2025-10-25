@@ -20,13 +20,13 @@ namespace C_C_Final.Presentation.ViewModels
         private int _idPerfil;
         private string _nikName = string.Empty;
         private string _descripcion = string.Empty;
-        private byte[]? _fotoPerfilBytes;
-        private ImageSource? _fotoPerfilUrl;
+        private byte[] _fotoPerfilBytes;
+        private ImageSource _fotoPerfilUrl;
         private DateTime _fechaCreacion;
         private int _edadMin = 18;
         private int _edadMax = 35;
-        private string? _otroPreferencia;
-        private string? _generoSeleccionado;
+        private string _otroPreferencia;
+        private string _generoSeleccionado;
         private bool _isBusy;
 
         public PreferenciasViewModel(IPerfilRepository perfilRepository)
@@ -39,8 +39,6 @@ namespace C_C_Final.Presentation.ViewModels
                 "Solo hombres",
                 "Todos"
             });
-
-            GoBackCommand = new RelayCommand(_ => CloseWindow());
             EditarFotoCommand = new RelayCommand(async _ => await EditarFotoAsync());
             EditarNombreCommand = new RelayCommand(_ => { });
             GuardarPerfilCommand = new RelayCommand(async _ => await GuardarAsync(), _ => !IsBusy);
@@ -63,7 +61,7 @@ namespace C_C_Final.Presentation.ViewModels
             set => SetProperty(ref _descripcion, value);
         }
 
-        public ImageSource? FotoPerfilUrl
+        public ImageSource FotoPerfilUrl
         {
             get => _fotoPerfilUrl;
             private set => SetProperty(ref _fotoPerfilUrl, value);
@@ -99,13 +97,13 @@ namespace C_C_Final.Presentation.ViewModels
             }
         }
 
-        public string? OtroPreferencia
+        public string OtroPreferencia
         {
             get => _otroPreferencia;
             set => SetProperty(ref _otroPreferencia, value);
         }
 
-        public string? GeneroSeleccionado
+        public string GeneroSeleccionado
         {
             get => _generoSeleccionado;
             set => SetProperty(ref _generoSeleccionado, value);
@@ -220,45 +218,52 @@ namespace C_C_Final.Presentation.ViewModels
                 return;
             }
 
-            _fotoPerfilBytes = await File.ReadAllBytesAsync(dialog.FileName);
+            _fotoPerfilBytes = File.ReadAllBytes(dialog.FileName);
             FotoPerfilUrl = new BitmapImage(new Uri(dialog.FileName));
         }
 
-        private void CloseWindow()
-        {
-            Application.Current?.Windows[Application.Current.Windows.Count - 1]?.Close();
-        }
-
+        // Reemplazar el método MapGenero(byte preferencia) para evitar el uso de switch expression (C# 8.0+) y asegurar exhaustividad.
         private static string MapGenero(byte preferencia)
         {
-            return preferencia switch
+            switch (preferencia)
             {
-                1 => "Solo mujeres",
-                2 => "Solo hombres",
-                3 => "Todos",
-                _ => "Sin preferencia"
-            };
+                case 1:
+                    return "Solo mujeres";
+                case 2:
+                    return "Solo hombres";
+                case 3:
+                    return "Todos";
+                case 4:
+                    return "Sin preferencia";
+                default:
+                    return "Sin preferencia";
+            }
         }
 
-        private static byte MapGenero(string? preferencia)
+        // Reemplazar el método MapGenero(string? preferencia) para evitar el uso de switch expression (C# 8.0+).
+        private static byte MapGenero(string preferencia)
         {
-            return preferencia switch
+            switch (preferencia)
             {
-                "Solo mujeres" => 1,
-                "Solo hombres" => 2,
-                "Todos" => 3,
-                _ => 0
-            };
+                case "Solo mujeres":
+                    return 1;
+                case "Solo hombres":
+                    return 2;
+                case "Todos":
+                    return 3;
+                default:
+                    return 0;
+            }
         }
 
-        private static ImageSource? ConvertToImage(byte[]? bytes)
+        private static ImageSource ConvertToImage(byte[] bytes)
         {
             if (bytes == null || bytes.Length == 0)
             {
                 return null;
             }
 
-            using var stream = new MemoryStream(bytes);
+            var stream = new MemoryStream(bytes);
             var image = new BitmapImage();
             image.BeginInit();
             image.CacheOption = BitmapCacheOption.OnLoad;

@@ -16,15 +16,15 @@ namespace C_C_Final.Infrastructure.Repositories
         {
         }
 
-        public Task<Match?> GetByIdAsync(int idMatch, CancellationToken ct = default)
+        public Task<Match> GetByIdAsync(int idMatch, CancellationToken ct = default)
         {
             return WithConnectionAsync(async connection =>
             {
                 const string sql = "SELECT ID_Match, Perfil_Emisor, Perfil_Receptor, Estado, Fecha_Match FROM dbo.Match WHERE ID_Match = @Id";
-                using var command = CreateCommand(connection, sql);
+                var command = CreateCommand(connection, sql);
                 AddParameter(command, "@Id", idMatch, SqlDbType.Int);
 
-                using var reader = await command.ExecuteReaderAsync(ct).ConfigureAwait(false);
+                var reader = await command.ExecuteReaderAsync(ct).ConfigureAwait(false);
                 if (!await reader.ReadAsync(ct).ConfigureAwait(false))
                 {
                     return null;
@@ -43,7 +43,7 @@ namespace C_C_Final.Infrastructure.Repositories
     WHERE (Perfil_Emisor = @A AND Perfil_Receptor = @B)
        OR (Perfil_Emisor = @B AND Perfil_Receptor = @A)
 ) THEN 1 ELSE 0 END";
-                using var command = CreateCommand(connection, sql);
+                var command = CreateCommand(connection, sql);
                 AddParameter(command, "@A", idPerfilA, SqlDbType.Int);
                 AddParameter(command, "@B", idPerfilB, SqlDbType.Int);
 
@@ -61,13 +61,13 @@ FROM dbo.Match
 WHERE Perfil_Emisor = @Perfil OR Perfil_Receptor = @Perfil
 ORDER BY Fecha_Match DESC
 OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
-                using var command = CreateCommand(connection, sql);
+                var command = CreateCommand(connection, sql);
                 AddParameter(command, "@Perfil", idPerfil, SqlDbType.Int);
                 AddParameter(command, "@Offset", Math.Max(page, 0) * pageSize, SqlDbType.Int);
                 AddParameter(command, "@PageSize", pageSize, SqlDbType.Int);
 
                 var list = new List<Match>();
-                using var reader = await command.ExecuteReaderAsync(ct).ConfigureAwait(false);
+                var reader = await command.ExecuteReaderAsync(ct).ConfigureAwait(false);
                 while (await reader.ReadAsync(ct).ConfigureAwait(false))
                 {
                     list.Add(MapMatch(reader));
@@ -87,7 +87,7 @@ OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
             return WithConnectionAsync(async connection =>
             {
                 const string sql = "UPDATE dbo.Match SET Estado = @Estado WHERE ID_Match = @Id";
-                using var command = CreateCommand(connection, sql);
+                var command = CreateCommand(connection, sql);
                 AddParameter(command, "@Estado", nuevoEstado ?? string.Empty, SqlDbType.Char, 10);
                 AddParameter(command, "@Id", idMatch, SqlDbType.Int);
 
@@ -101,7 +101,7 @@ OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
             return WithConnectionAsync(async connection =>
             {
                 const string sql = "DELETE FROM dbo.Match WHERE ID_Match = @Id";
-                using var command = CreateCommand(connection, sql);
+                var command = CreateCommand(connection, sql);
                 AddParameter(command, "@Id", idMatch, SqlDbType.Int);
 
                 var rows = await command.ExecuteNonQueryAsync(ct).ConfigureAwait(false);
@@ -119,10 +119,10 @@ OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
             return WithConnectionAsync(async connection =>
             {
                 const string sql = "SELECT ID_Chat, ID_Match, Fecha_Creacion, LastMessageAtUtc, LastMessageId FROM dbo.Chat WHERE ID_Match = @Match";
-                using var command = CreateCommand(connection, sql);
+                var command = CreateCommand(connection, sql);
                 AddParameter(command, "@Match", idMatch, SqlDbType.Int);
 
-                using var reader = await command.ExecuteReaderAsync(ct).ConfigureAwait(false);
+                var reader = await command.ExecuteReaderAsync(ct).ConfigureAwait(false);
                 if (!await reader.ReadAsync(ct).ConfigureAwait(false))
                 {
                     return null;
@@ -146,13 +146,13 @@ FROM dbo.Mensaje
 WHERE ID_Chat = @Chat
 ORDER BY Fecha_Envio DESC, ID_Mensaje DESC
 OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
-                using var command = CreateCommand(connection, sql);
+                var command = CreateCommand(connection, sql);
                 AddParameter(command, "@Chat", idChat, SqlDbType.Int);
                 AddParameter(command, "@Offset", Math.Max(page, 0) * pageSize, SqlDbType.Int);
                 AddParameter(command, "@PageSize", pageSize, SqlDbType.Int);
 
                 var list = new List<Mensaje>();
-                using var reader = await command.ExecuteReaderAsync(ct).ConfigureAwait(false);
+                var reader = await command.ExecuteReaderAsync(ct).ConfigureAwait(false);
                 while (await reader.ReadAsync(ct).ConfigureAwait(false))
                 {
                     list.Add(MapMensaje(reader));
@@ -167,7 +167,7 @@ OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
             const string sql = @"INSERT INTO dbo.Match (Perfil_Emisor, Perfil_Receptor, Estado, Fecha_Match)
 OUTPUT INSERTED.ID_Match
 VALUES (@Emisor, @Receptor, @Estado, SYSUTCDATETIME());";
-            using var command = CreateCommand(connection, sql, CommandType.Text, tx);
+            var command = CreateCommand(connection, sql, CommandType.Text, tx);
             AddParameter(command, "@Emisor", idPerfilEmisor, SqlDbType.Int);
             AddParameter(command, "@Receptor", idPerfilReceptor, SqlDbType.Int);
             AddParameter(command, "@Estado", estado ?? string.Empty, SqlDbType.Char, 10);
@@ -190,7 +190,7 @@ BEGIN
     OUTPUT INSERTED.ID_Chat
     VALUES (@Match, SYSUTCDATETIME(), NULL, NULL);
 END";
-            using var command = CreateCommand(connection, sql, CommandType.Text, tx);
+            var command = CreateCommand(connection, sql, CommandType.Text, tx);
             AddParameter(command, "@Match", idMatch, SqlDbType.Int);
 
             var result = await command.ExecuteScalarAsync(ct).ConfigureAwait(false);
@@ -203,7 +203,7 @@ END";
             const string insertSql = @"INSERT INTO dbo.Mensaje (ID_Chat, Remitente, Contenido, Fecha_Envio, Confirmacion_Lectura, IsEdited, EditedAtUtc, IsDeleted)
 OUTPUT INSERTED.ID_Mensaje
 VALUES (@Chat, @Remitente, @Contenido, @Fecha, @Confirmado, 0, NULL, 0);";
-            using var insertCommand = CreateCommand(connection, insertSql, CommandType.Text, tx);
+            var insertCommand = CreateCommand(connection, insertSql, CommandType.Text, tx);
             AddParameter(insertCommand, "@Chat", idChat, SqlDbType.Int);
             AddParameter(insertCommand, "@Remitente", idRemitentePerfil, SqlDbType.Int);
             AddParameter(insertCommand, "@Contenido", contenido ?? string.Empty, SqlDbType.NVarChar, -1);
@@ -214,7 +214,7 @@ VALUES (@Chat, @Remitente, @Contenido, @Fecha, @Confirmado, 0, NULL, 0);";
             var mensajeId = Convert.ToInt64(mensajeIdObj);
 
             const string updateChatSql = "UPDATE dbo.Chat SET LastMessageAtUtc = @Fecha, LastMessageId = @Mensaje WHERE ID_Chat = @Chat";
-            using var updateCommand = CreateCommand(connection, updateChatSql, CommandType.Text, tx);
+            var updateCommand = CreateCommand(connection, updateChatSql, CommandType.Text, tx);
             AddParameter(updateCommand, "@Fecha", fechaEnvio, SqlDbType.DateTime2);
             AddParameter(updateCommand, "@Mensaje", mensajeId, SqlDbType.BigInt);
             AddParameter(updateCommand, "@Chat", idChat, SqlDbType.Int);

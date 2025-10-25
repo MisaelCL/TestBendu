@@ -54,13 +54,13 @@ namespace C_C_Final.Infrastructure.Data
 
         protected async Task<T> WithConnectionAsync<T>(Func<SqlConnection, Task<T>> action, CancellationToken ct)
         {
-            using var connection = await OpenConnectionAsync(ct).ConfigureAwait(false);
+            var connection = await OpenConnectionAsync(ct).ConfigureAwait(false);
             return await action(connection).ConfigureAwait(false);
         }
 
         protected async Task WithConnectionAsync(Func<SqlConnection, Task> action, CancellationToken ct)
         {
-            using var connection = await OpenConnectionAsync(ct).ConfigureAwait(false);
+            var connection = await OpenConnectionAsync(ct).ConfigureAwait(false);
             await action(connection).ConfigureAwait(false);
         }
     }

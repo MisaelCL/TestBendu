@@ -4,7 +4,7 @@
     <TargetFramework>net8.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <RootNamespace>C_C_Final</RootNamespace>
-    <Nullable>disable</Nullable>
+    <Nullable>false</Nullable>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
