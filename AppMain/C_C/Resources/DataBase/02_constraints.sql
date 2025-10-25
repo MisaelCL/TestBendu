@@ -40,5 +40,37 @@ BEGIN
     BEGIN
         ALTER TABLE dbo.Alumno WITH CHECK
         ADD CONSTRAINT CK_Alumno_Genero CHECK (Genero IN ('M','F'));
+END;
+
+IF OBJECT_ID('dbo.Preferencias','U') IS NOT NULL
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM sys.check_constraints WHERE name = 'CK_Pref_Edades')
+    BEGIN
+        ALTER TABLE dbo.Preferencias WITH CHECK
+        ADD CONSTRAINT CK_Pref_Edades CHECK (Edad_Minima >= 18 AND Edad_Maxima <= 99 AND Edad_Minima <= Edad_Maxima);
+    END;
+
+    IF NOT EXISTS (SELECT 1 FROM sys.check_constraints WHERE name = 'CK_Pref_Genero')
+    BEGIN
+        ALTER TABLE dbo.Preferencias WITH CHECK
+        ADD CONSTRAINT CK_Pref_Genero CHECK (Preferencia_Genero IN (0,1,2,3));
+    END;
+
+    IF NOT EXISTS (SELECT 1 FROM sys.check_constraints WHERE name = 'CK_Pref_Radio')
+    BEGIN
+        ALTER TABLE dbo.Preferencias WITH CHECK
+        ADD CONSTRAINT CK_Pref_Radio CHECK (RadioKm BETWEEN 1 AND 1000);
+    END;
+END;
+
+IF OBJECT_ID('dbo.Intereses_Buscados','U') IS NOT NULL
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM sys.check_constraints WHERE name = 'CK_Intereses_Def')
+    BEGIN
+        ALTER TABLE dbo.Intereses_Buscados WITH CHECK
+        ADD CONSTRAINT CK_Intereses_Def CHECK (
+            (ID_Interes IS NOT NULL AND Nombre_Interes IS NULL) OR
+            (ID_Interes IS NULL AND Nombre_Interes IS NOT NULL)
+        );
     END;
 END;

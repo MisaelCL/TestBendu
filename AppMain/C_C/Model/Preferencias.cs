@@ -9,4 +9,5 @@ public class Preferencias
     public int Edad_Maxima { get; set; }
     public string Preferencia_Carrera { get; set; } = string.Empty;
     public string? Intereses { get; set; }
+    public int RadioKm { get; set; }
 }

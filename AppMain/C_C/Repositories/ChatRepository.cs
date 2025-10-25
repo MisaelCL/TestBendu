@@ -78,6 +78,7 @@ ORDER BY CASE WHEN c.LastMessageAtUtc IS NULL THEN 1 ELSE 0 END,
     public Task<(int PerfilA, int PerfilB, int ID_Match)?> ObtenerParticipantesAsync(int ID_Chat, CancellationToken ct = default)
     {
         return WithConnectionAsync<System.ValueTuple<int, int, int>?>(async connection =>
+        return WithConnectionAsync<(int PerfilA, int PerfilB, int ID_Match)?>(async connection =>
         {
             const string sql = @"SELECT m.Perfil_Emisor, m.Perfil_Receptor, m.ID_Match
 FROM dbo.Chat AS c
@@ -91,7 +92,7 @@ WHERE c.ID_Chat = @Chat";
                 return System.ValueTuple.Create(reader.GetInt32(0), reader.GetInt32(1), reader.GetInt32(2));
             }
 
-            return null;
+            return (int, int, int)?null;
         }, ct);
     }
 
