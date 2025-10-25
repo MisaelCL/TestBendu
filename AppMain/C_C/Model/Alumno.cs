@@ -9,6 +9,7 @@ public class Alumno
     public string Amaterno { get; set; } = string.Empty;
     public DateTime F_Nac { get; set; }
     public char Genero { get; set; }
+    public string Correo { get; set; } = string.Empty;
     public string? Correo { get; set; }
     public string Carrera { get; set; } = string.Empty;
 }

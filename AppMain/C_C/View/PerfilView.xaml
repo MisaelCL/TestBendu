@@ -13,6 +13,8 @@
             <TextBox Text="{Binding Perfil.Nikname, UpdateSourceTrigger=PropertyChanged}" Margin="0 0 0 12" />
             <TextBlock Text="Biografía" FontWeight="SemiBold" />
             <TextBox Text="{Binding Perfil.Biografia, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" Height="120" TextWrapping="Wrap" Margin="0 0 0 12" />
+            <TextBlock Text="Foto de perfil (Base64)" FontWeight="SemiBold" />
+            <TextBox Text="{Binding FotoPerfilBase64, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" Height="80" TextWrapping="Wrap" />
             <TextBlock Text="Foto de perfil" FontWeight="SemiBold" />
             <TextBox Text="{Binding Perfil.Foto_Perfil, UpdateSourceTrigger=PropertyChanged}" />
             <TextBox Text="{Binding Perfil.Nombre, UpdateSourceTrigger=PropertyChanged}" Margin="0 0 0 8" />

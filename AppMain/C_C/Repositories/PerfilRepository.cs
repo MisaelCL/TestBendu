@@ -1,3 +1,4 @@
+using System.Data;
 using System.Threading;
 using C_C.Model;
 using C_C.Resources.utils;
@@ -18,11 +19,13 @@ public sealed class PerfilRepository : RepositoryBase, IPerfilRepository
 
     public Task<Perfil?> GetAsync(int ID_Perfil, CancellationToken ct = default)
     {
+        return GetInternalAsync("SELECT ID_Perfil, ID_Cuenta, Nikname, Biografia, Foto_Perfil FROM dbo.Perfil WHERE ID_Perfil = @Perfil", new SqlParameter[] { P("@Perfil", ID_Perfil) }, ct);
         return GetInternalAsync("SELECT ID_Perfil, ID_Cuenta, Nikname, Biografia, Foto_Perfil, Fecha_Creacion FROM dbo.Perfil WHERE ID_Perfil = @Perfil", new SqlParameter[] { P("@Perfil", ID_Perfil) }, ct);
     }
 
     public Task<Perfil?> GetByNickAsync(string nik, CancellationToken ct = default)
     {
+        return GetInternalAsync("SELECT ID_Perfil, ID_Cuenta, Nikname, Biografia, Foto_Perfil FROM dbo.Perfil WHERE Nikname = @Nick", new SqlParameter[] { P("@Nick", nik) }, ct);
         return GetInternalAsync("SELECT ID_Perfil, ID_Cuenta, Nikname, Biografia, Foto_Perfil, Fecha_Creacion FROM dbo.Perfil WHERE Nikname = @Nick", new SqlParameter[] { P("@Nick", nik) }, ct);
     }
 
@@ -40,6 +43,7 @@ WHERE ID_Perfil = @Perfil";
             {
                 P("@Nikname", p.Nikname),
                 P("@Biografia", p.Biografia ?? (object)DBNull.Value),
+                P("@Foto", p.Foto_Perfil, SqlDbType.VarBinary),
                 P("@Foto", p.Foto_Perfil ?? (object)DBNull.Value),
                 P("@Perfil", p.ID_Perfil)
             });
@@ -65,6 +69,7 @@ WHERE ID_Perfil = @Perfil";
                     ID_Cuenta = reader.GetInt32(1),
                     Nikname = reader.GetString(2),
                     Biografia = reader.IsDBNull(3) ? null : reader.GetString(3),
+                    Foto_Perfil = reader.IsDBNull(4) ? null : (byte[])reader.GetValue(4)
                     Foto_Perfil = reader.IsDBNull(4) ? null : reader.GetString(4),
                     Fecha_Creacion = reader.GetDateTime(5)
                 };
