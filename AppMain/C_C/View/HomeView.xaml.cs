@@ -1,5 +1,9 @@
-﻿using System.Windows;
+using System;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
+using C_C_Final.Presentation.Helpers;
+using C_C_Final.Presentation.ViewModels;
 
 namespace C_C_Final.View
 {
@@ -8,6 +12,9 @@ namespace C_C_Final.View
         public HomeView()
         {
             InitializeComponent();
+            var viewModel = AppBootstrapper.CreateInboxViewModel();
+            DataContext = viewModel;
+            Loaded += async (_, _) => await LoadAsync(viewModel).ConfigureAwait(false);
         }
 
         private void btnMinimize_Click(object sender, RoutedEventArgs e)
@@ -27,6 +34,18 @@ namespace C_C_Final.View
             if (e.ButtonState == MouseButtonState.Pressed)
             {
                 DragMove();
+            }
+        }
+
+        private static async Task LoadAsync(InboxViewModel viewModel)
+        {
+            try
+            {
+                await viewModel.LoadAsync(0).ConfigureAwait(false);
+            }
+            catch (Exception)
+            {
+                // Ignora errores de carga inicial para permitir que la vista se muestre.
             }
         }
     }
