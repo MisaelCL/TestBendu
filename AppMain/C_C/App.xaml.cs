@@ -1,5 +1,6 @@
 using System;
 using System.Windows;
+using C_C.Model;
 using C_C.Repositories;
 using C_C.Resources.utils;
 using C_C.Services;
