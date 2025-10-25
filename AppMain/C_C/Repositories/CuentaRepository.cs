@@ -21,7 +21,7 @@ public sealed class CuentaRepository : RepositoryBase, ICuentaRepository
     {
         return WithConnectionAsync(async connection =>
         {
-            const string sql = @"SELECT ID_Cuenta, ID_Alumno, Email, PasswordHash, Fecha_Registro, Ultimo_Acceso, IsActive
+            const string sql = @"SELECT ID_Cuenta, Email, Hash_Contrasena, Estado_Cuenta, Fecha_Registro
 FROM dbo.Cuenta WHERE Email = @Email";
             await using var command = new SqlCommand(sql, connection);
             command.Parameters.Add(P("@Email", email));
@@ -31,12 +31,10 @@ FROM dbo.Cuenta WHERE Email = @Email";
                 return new Cuenta
                 {
                     ID_Cuenta = reader.GetInt32(0),
-                    ID_Alumno = reader.GetInt32(1),
-                    Email = reader.GetString(2),
-                    PasswordHash = reader.GetString(3),
-                    Fecha_Registro = reader.GetDateTime(4),
-                    Ultimo_Acceso = reader.IsDBNull(5) ? null : reader.GetDateTime(5),
-                    IsActive = reader.GetBoolean(6)
+                    Email = reader.GetString(1),
+                    Hash_Contrasena = reader.GetString(2),
+                    Estado_Cuenta = reader.GetByte(3),
+                    Fecha_Registro = reader.GetDateTime(4)
                 };
             }
 
@@ -48,16 +46,14 @@ FROM dbo.Cuenta WHERE Email = @Email";
     {
         return WithConnectionAsync(async connection =>
         {
-            const string sql = @"INSERT INTO dbo.Cuenta (ID_Alumno, Email, PasswordHash, Fecha_Registro, Ultimo_Acceso, IsActive)
-VALUES (@Alumno, @Email, @Hash, @FechaRegistro, @UltimoAcceso, @Activo);
+            const string sql = @"INSERT INTO dbo.Cuenta (Email, Hash_Contrasena, Estado_Cuenta, Fecha_Registro)
+VALUES (@Email, @Hash, @Estado, @FechaRegistro);
 SELECT CAST(SCOPE_IDENTITY() AS int);";
             await using var command = new SqlCommand(sql, connection);
-            command.Parameters.Add(P("@Alumno", c.ID_Alumno));
             command.Parameters.Add(P("@Email", c.Email));
-            command.Parameters.Add(P("@Hash", c.PasswordHash));
+            command.Parameters.Add(P("@Hash", c.Hash_Contrasena));
+            command.Parameters.Add(P("@Estado", c.Estado_Cuenta));
             command.Parameters.Add(P("@FechaRegistro", c.Fecha_Registro));
-            command.Parameters.Add(P("@UltimoAcceso", c.Ultimo_Acceso ?? (object)DBNull.Value));
-            command.Parameters.Add(P("@Activo", c.IsActive));
 
             var result = await command.ExecuteScalarAsync(ct).ConfigureAwait(false);
             var id = Convert.ToInt32(result, CultureInfo.InvariantCulture);

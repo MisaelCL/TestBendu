@@ -21,8 +21,8 @@ public sealed class MatchRepository : RepositoryBase, IMatchRepository
     {
         return WithConnectionAsync(async connection =>
         {
-            const string sql = @"INSERT INTO dbo.Match (Perfil_Emisor, Perfil_Receptor, Estado, Fecha_Creacion)
-VALUES (@Emisor, @Receptor, @Estado, SYSUTCDATETIME());
+            const string sql = @"INSERT INTO dbo.[Match] (Perfil_Emisor, Perfil_Receptor, Estado)
+VALUES (@Emisor, @Receptor, @Estado);
 SELECT CAST(SCOPE_IDENTITY() AS int);";
             await using var command = new SqlCommand(sql, connection);
             command.Parameters.Add(P("@Emisor", Perfil_Emisor));
@@ -39,9 +39,8 @@ SELECT CAST(SCOPE_IDENTITY() AS int);";
     {
         return WithConnectionAsync(async connection =>
         {
-            const string sql = @"UPDATE dbo.Match
-SET Estado = @Estado,
-    Fecha_Respuesta = SYSUTCDATETIME()
+            const string sql = @"UPDATE dbo.[Match]
+SET Estado = @Estado
 WHERE ID_Match = @Match";
             await using var command = new SqlCommand(sql, connection);
             command.Parameters.Add(P("@Estado", Estado));
@@ -56,7 +55,7 @@ WHERE ID_Match = @Match";
     {
         return WithConnectionAsync(async connection =>
         {
-            const string sql = @"SELECT TOP 1 1 FROM dbo.Match WHERE (Perfil_Emisor = @A AND Perfil_Receptor = @B) OR (Perfil_Emisor = @B AND Perfil_Receptor = @A)";
+            const string sql = @"SELECT TOP 1 1 FROM dbo.[Match] WHERE (Perfil_Emisor = @A AND Perfil_Receptor = @B) OR (Perfil_Emisor = @B AND Perfil_Receptor = @A)";
             await using var command = new SqlCommand(sql, connection);
             command.Parameters.Add(P("@A", a));
             command.Parameters.Add(P("@B", b));

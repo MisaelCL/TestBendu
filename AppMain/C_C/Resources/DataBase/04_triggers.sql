@@ -4,15 +4,16 @@ AFTER INSERT
 AS
 BEGIN
     SET NOCOUNT ON;
-    ;WITH ult AS (
-        SELECT i.ID_Chat, MAX(i.Fecha_Envio) AS MaxFecha
+    ;WITH ordered AS (
+        SELECT i.ID_Chat,
+               i.ID_Mensaje,
+               i.Fecha_Envio,
+               ROW_NUMBER() OVER (PARTITION BY i.ID_Chat ORDER BY i.Fecha_Envio DESC, i.ID_Mensaje DESC) AS rn
         FROM inserted i
-        GROUP BY i.ID_Chat
     )
     UPDATE c
-    SET c.LastMessageAtUtc = u.MaxFecha,
-        c.LastMessageId    = m.ID_Mensaje
+    SET c.LastMessageAtUtc = o.Fecha_Envio,
+        c.LastMessageId    = o.ID_Mensaje
     FROM dbo.Chat c
-    JOIN ult u ON u.ID_Chat = c.ID_Chat
-    JOIN dbo.Mensaje m ON m.ID_Chat = u.ID_Chat AND m.Fecha_Envio = u.MaxFecha;
+    JOIN ordered o ON o.ID_Chat = c.ID_Chat AND o.rn = 1;
 END;

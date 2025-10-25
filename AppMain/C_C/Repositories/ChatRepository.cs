@@ -42,22 +42,22 @@ public sealed class ChatRepository : RepositoryBase, IChatRepository
             await using var reader = await command.ExecuteReaderAsync(ct).ConfigureAwait(false);
             if (await reader.ReadAsync(ct).ConfigureAwait(false))
             {
-                var lastAt = reader.IsDBNull(0) ? null : reader.GetDateTime(0);
-                var lastId = reader.IsDBNull(1) ? null : reader.GetInt64(1);
+                DateTime? lastAt = reader.IsDBNull(0) ? null : reader.GetDateTime(0);
+                long? lastId = reader.IsDBNull(1) ? null : reader.GetInt64(1);
                 return (lastAt, lastId);
             }
 
-            return (null, null);
+            return (LastAt: (DateTime?)null, LastId: (long?)null);
         }, ct);
     }
 
     public Task<IEnumerable<(int ID_Chat, int ID_Match, DateTime Fecha_Creacion, DateTime? LastAt, long? LastId)>> ListarChatsPorPerfilAsync(int ID_Perfil, int top, CancellationToken ct = default)
     {
-        return WithConnectionAsync(async connection =>
+        return WithConnectionAsync<IEnumerable<(int ID_Chat, int ID_Match, DateTime Fecha_Creacion, DateTime? LastAt, long? LastId)>>(async connection =>
         {
             const string sql = @"SELECT TOP(@Top) c.ID_Chat, c.ID_Match, c.Fecha_Creacion, c.LastMessageAtUtc, c.LastMessageId
 FROM dbo.Chat AS c
-JOIN dbo.Match AS m ON m.ID_Match = c.ID_Match
+JOIN dbo.[Match] AS m ON m.ID_Match = c.ID_Match
 WHERE m.Perfil_Emisor = @Perfil OR m.Perfil_Receptor = @Perfil
 ORDER BY CASE WHEN c.LastMessageAtUtc IS NULL THEN 1 ELSE 0 END,
          c.LastMessageAtUtc DESC, c.Fecha_Creacion DESC;";
@@ -77,18 +77,18 @@ ORDER BY CASE WHEN c.LastMessageAtUtc IS NULL THEN 1 ELSE 0 END,
 
     public Task<(int PerfilA, int PerfilB, int ID_Match)?> ObtenerParticipantesAsync(int ID_Chat, CancellationToken ct = default)
     {
-        return WithConnectionAsync(async connection =>
+        return WithConnectionAsync<System.ValueTuple<int, int, int>?>(async connection =>
         {
             const string sql = @"SELECT m.Perfil_Emisor, m.Perfil_Receptor, m.ID_Match
 FROM dbo.Chat AS c
-JOIN dbo.Match AS m ON m.ID_Match = c.ID_Match
+JOIN dbo.[Match] AS m ON m.ID_Match = c.ID_Match
 WHERE c.ID_Chat = @Chat";
             await using var command = new SqlCommand(sql, connection);
             command.Parameters.Add(P("@Chat", ID_Chat));
             await using var reader = await command.ExecuteReaderAsync(ct).ConfigureAwait(false);
             if (await reader.ReadAsync(ct).ConfigureAwait(false))
             {
-                return (reader.GetInt32(0), reader.GetInt32(1), reader.GetInt32(2));
+                return System.ValueTuple.Create(reader.GetInt32(0), reader.GetInt32(1), reader.GetInt32(2));
             }
 
             return null;
