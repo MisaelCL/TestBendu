@@ -2,7 +2,8 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using C_C_Final.ViewModel;
+using C_C_Final.Presentation.Helpers;
+using C_C_Final.Presentation.ViewModels;
 
 namespace C_C_Final.View
 {
@@ -14,6 +15,7 @@ namespace C_C_Final.View
 
             // Suscríbete al evento DataContextChanged (no existe override)
             this.DataContextChanged += RegistroView_DataContextChanged;
+            DataContext = AppBootstrapper.CreateRegistroViewModel();
         }
 
         // Manejador del cambio de DataContext: attach/detach de PropertyChanged

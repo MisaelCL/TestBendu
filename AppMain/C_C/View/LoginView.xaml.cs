@@ -1,13 +1,15 @@
-﻿using System.Windows;
+using System.Windows;
 using System.Windows.Input;
+using C_C_Final.Presentation.ViewModels;
 
 namespace C_C_Final.View
 {
     public partial class LoginView : Window
     {
-        public LoginView()  
+        public LoginView()
         {
             InitializeComponent();
+            DataContext = new LoginViewModel();
         }
 
         private void btnMinimizar_Click(object sender, RoutedEventArgs e)

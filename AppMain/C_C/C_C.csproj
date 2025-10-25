@@ -2,38 +2,20 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
-    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
-    <EnableDefaultItems>false</EnableDefaultItems>
-    <RootNamespace>C_C</RootNamespace>
+    <RootNamespace>C_C_Final</RootNamespace>
+    <Nullable>false</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="appsettings.json" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="Resources/DataBase/*.sql" CopyToOutputDirectory="PreserveNewest" />
-    <Resource Include="Resources/Images/**/*" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.0" />
-    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+    <Resource Include="Resources\Images\**\*" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="App.xaml" />
-    <Compile Include="App.xaml.cs" />
-    <Page Include="View/**/*.xaml" />
-    <Compile Include="View/**/*.xaml.cs" />
-    <Compile Include="ViewModel/**/*.cs" />
-    <Compile Include="Model/**/*.cs" />
-    <Compile Include="Repositories/**/*.cs" />
-    <Compile Include="Services/**/*.cs" />
-    <Compile Include="Resources/utils/**/*.cs" />
+    <None Update="App.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>
