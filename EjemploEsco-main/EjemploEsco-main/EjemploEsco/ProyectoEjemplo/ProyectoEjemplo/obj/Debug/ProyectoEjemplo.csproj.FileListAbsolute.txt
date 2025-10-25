@@ -1,0 +1,44 @@
+C:\Users\lenovo\Documents\.NET\ProyectoEjemplo\ProyectoEjemplo\obj\Debug\ProyectoEjemplo.csproj.AssemblyReference.cache
+C:\Users\lenovo\Documents\.NET\ProyectoEjemplo\ProyectoEjemplo\obj\Debug\CustomControls\BindablePasswordBox.g.cs
+C:\Users\lenovo\Documents\.NET\ProyectoEjemplo\ProyectoEjemplo\obj\Debug\MainWindow.g.cs
+C:\Users\lenovo\Documents\.NET\ProyectoEjemplo\ProyectoEjemplo\obj\Debug\View\LoginView.g.cs
+C:\Users\lenovo\Documents\.NET\ProyectoEjemplo\ProyectoEjemplo\obj\Debug\App.g.cs
+C:\Users\lenovo\Documents\.NET\ProyectoEjemplo\ProyectoEjemplo\obj\Debug\GeneratedInternalTypeHelper.g.cs
+C:\Users\lenovo\Documents\.NET\ProyectoEjemplo\ProyectoEjemplo\obj\Debug\ProyectoEjemplo_MarkupCompile.cache
+C:\Users\lenovo\Documents\.NET\ProyectoEjemplo\ProyectoEjemplo\obj\Debug\ProyectoEjemplo_MarkupCompile.lref
+C:\Users\lenovo\Documents\.NET\ProyectoEjemplo\ProyectoEjemplo\obj\Debug\CustomControls\BindablePasswordBox.baml
+C:\Users\lenovo\Documents\.NET\ProyectoEjemplo\ProyectoEjemplo\obj\Debug\MainWindow.baml
+C:\Users\lenovo\Documents\.NET\ProyectoEjemplo\ProyectoEjemplo\obj\Debug\ProyectoEjemplo.exe
+C:\Users\lenovo\Documents\.NET\ProyectoEjemplo\ProyectoEjemplo\obj\Debug\ProyectoEjemplo.pdb
+C:\Users\lenovo\Documents\5 sem\.NET\ProyectoEjemplo\ProyectoEjemplo\obj\Debug\ProyectoEjemplo.csproj.AssemblyReference.cache
+C:\Users\lenovo\Documents\5 sem\.NET\ProyectoEjemplo\ProyectoEjemplo\obj\Debug\CustomControls\BindablePasswordBox.g.cs
+C:\Users\lenovo\Documents\5 sem\.NET\ProyectoEjemplo\ProyectoEjemplo\obj\Debug\MainWindow.g.cs
+C:\Users\lenovo\Documents\5 sem\.NET\ProyectoEjemplo\ProyectoEjemplo\obj\Debug\View\LoginView.g.cs
+C:\Users\lenovo\Documents\5 sem\.NET\ProyectoEjemplo\ProyectoEjemplo\obj\Debug\View\RegistroView.g.cs
+C:\Users\lenovo\Documents\5 sem\.NET\ProyectoEjemplo\ProyectoEjemplo\obj\Debug\App.g.cs
+C:\Users\lenovo\Documents\5 sem\.NET\ProyectoEjemplo\ProyectoEjemplo\obj\Debug\GeneratedInternalTypeHelper.g.cs
+C:\Users\lenovo\Documents\5 sem\.NET\ProyectoEjemplo\ProyectoEjemplo\obj\Debug\ProyectoEjemplo_MarkupCompile.cache
+C:\Users\lenovo\Documents\5 sem\.NET\ProyectoEjemplo\ProyectoEjemplo\obj\Debug\ProyectoEjemplo_MarkupCompile.lref
+C:\Users\mcamp\OneDrive\Desktop\EjemploEsco\ProyectoEjemplo\ProyectoEjemplo\obj\Debug\ProyectoEjemplo.csproj.AssemblyReference.cache
+C:\Users\mcamp\OneDrive\Desktop\EjemploEsco\ProyectoEjemplo\ProyectoEjemplo\obj\Debug\ProyectoEjemplo.exe.config
+C:\Users\mcamp\OneDrive\Desktop\EjemploEsco\ProyectoEjemplo\ProyectoEjemplo\obj\Debug\CustomControls\BindablePasswordBox.g.cs
+C:\Users\mcamp\OneDrive\Desktop\EjemploEsco\ProyectoEjemplo\ProyectoEjemplo\obj\Debug\MainWindow.g.cs
+C:\Users\mcamp\OneDrive\Desktop\EjemploEsco\ProyectoEjemplo\ProyectoEjemplo\obj\Debug\View\LoginView.g.cs
+C:\Users\mcamp\OneDrive\Desktop\EjemploEsco\ProyectoEjemplo\ProyectoEjemplo\obj\Debug\View\RegistroView.g.cs
+C:\Users\mcamp\OneDrive\Desktop\EjemploEsco\ProyectoEjemplo\ProyectoEjemplo\obj\Debug\App.g.cs
+C:\Users\mcamp\OneDrive\Desktop\EjemploEsco\ProyectoEjemplo\ProyectoEjemplo\obj\Debug\GeneratedInternalTypeHelper.g.cs
+C:\Users\mcamp\OneDrive\Desktop\EjemploEsco\ProyectoEjemplo\ProyectoEjemplo\obj\Debug\ProyectoEjemplo_MarkupCompile.cache
+C:\Users\mcamp\OneDrive\Desktop\EjemploEsco\ProyectoEjemplo\ProyectoEjemplo\obj\Debug\ProyectoEjemplo_MarkupCompile.lref
+C:\Users\mcamp\OneDrive\Desktop\EjemploEsco\ProyectoEjemplo\ProyectoEjemplo\obj\Debug\ProyectoEjemplo.exe
+C:\Users\mcamp\OneDrive\Desktop\EjemploEsco\ProyectoEjemplo\ProyectoEjemplo\obj\Debug\ProyectoEjemplo.pdb
+C:\Users\mcamp\OneDrive\Desktop\EjemploEsco\ProyectoEjemplo\ProyectoEjemplo\bin\Debug\ProyectoEjemplo.exe.config
+C:\Users\mcamp\OneDrive\Desktop\EjemploEsco\ProyectoEjemplo\ProyectoEjemplo\bin\Debug\ProyectoEjemplo.exe
+C:\Users\mcamp\OneDrive\Desktop\EjemploEsco\ProyectoEjemplo\ProyectoEjemplo\bin\Debug\ProyectoEjemplo.pdb
+C:\Users\mcamp\OneDrive\Desktop\EjemploEsco\ProyectoEjemplo\ProyectoEjemplo\obj\Debug\CustomControls\BindablePasswordBox.baml
+C:\Users\mcamp\OneDrive\Desktop\EjemploEsco\ProyectoEjemplo\ProyectoEjemplo\obj\Debug\MainWindow.baml
+C:\Users\mcamp\OneDrive\Desktop\EjemploEsco\ProyectoEjemplo\ProyectoEjemplo\obj\Debug\View\LoginView.baml
+C:\Users\mcamp\OneDrive\Desktop\EjemploEsco\ProyectoEjemplo\ProyectoEjemplo\obj\Debug\View\RegistroView.baml
+C:\Users\mcamp\OneDrive\Desktop\EjemploEsco\ProyectoEjemplo\ProyectoEjemplo\obj\Debug\ProyectoEjemplo.g.resources
+C:\Users\mcamp\OneDrive\Desktop\EjemploEsco\ProyectoEjemplo\ProyectoEjemplo\obj\Debug\ProyectoEjemplo.Properties.Resources.resources
+C:\Users\mcamp\OneDrive\Desktop\EjemploEsco\ProyectoEjemplo\ProyectoEjemplo\obj\Debug\ProyectoEjemplo.csproj.GenerateResource.cache
+C:\Users\mcamp\OneDrive\Desktop\EjemploEsco\ProyectoEjemplo\ProyectoEjemplo\obj\Debug\ProyectoEjemplo.csproj.CoreCompileInputs.cache

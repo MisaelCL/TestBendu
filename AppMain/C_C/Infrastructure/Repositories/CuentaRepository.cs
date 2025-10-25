@@ -33,7 +33,7 @@ namespace C_C_Final.Infrastructure.Repositories
             }, ct);
         }
 
-        public Task<Cuenta?> GetByEmailAsync(string email, CancellationToken ct = default)
+        public Task<Cuenta> GetByEmailAsync(string email, CancellationToken ct = default)
         {
             return WithConnectionAsync(async connection =>
             {

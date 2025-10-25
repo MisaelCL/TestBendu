@@ -24,7 +24,7 @@ namespace C_C_Final.Infrastructure.Data
             return connection;
         }
 
-        protected SqlCommand CreateCommand(SqlConnection connection, string sql, CommandType commandType = CommandType.Text, SqlTransaction? transaction = null)
+        protected SqlCommand CreateCommand(SqlConnection connection, string sql, CommandType commandType = CommandType.Text, SqlTransaction transaction = null)
         {
             var command = connection.CreateCommand();
             command.CommandText = sql;
@@ -38,7 +38,7 @@ namespace C_C_Final.Infrastructure.Data
             return command;
         }
 
-        protected static void AddParameter(SqlCommand command, string name, object? value, SqlDbType? type = null, int? size = null)
+        protected static void AddParameter(SqlCommand command, string name, object value, SqlDbType? type = null, int? size = null)
         {
             var parameter = command.Parameters.AddWithValue(name, value ?? DBNull.Value);
             if (type.HasValue)
