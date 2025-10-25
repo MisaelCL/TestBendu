@@ -85,8 +85,7 @@ public sealed class RegistroViewModel : BaseViewModel
             var cuenta = new Cuenta
             {
                 Email = Email,
-                ID_Alumno = 0,
-                IsActive = true
+                Estado_Cuenta = 1
             };
 
             await _cuentaService.RegistrarAsync(cuenta, Password, CancellationToken.None).ConfigureAwait(false);

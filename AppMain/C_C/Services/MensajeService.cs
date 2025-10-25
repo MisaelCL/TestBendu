@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using C_C.Model;
 using C_C.Resources.utils;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 
 namespace C_C.Services;
@@ -46,11 +47,12 @@ public sealed class MensajeService : IMensajeService
         msg.IsDeleted = false;
         msg.IsEdited = false;
         msg.Confirmacion_Lectura = false;
+        msg.EditedAtUtc = null;
         msg.Fecha_Envio = DateTime.UtcNow;
 
         await using var connection = _connectionFactory.CreateConnection();
         await connection.OpenAsync(ct).ConfigureAwait(false);
-        await using var transaction = await connection.BeginTransactionAsync(ct).ConfigureAwait(false);
+        await using var transaction = (SqlTransaction)await connection.BeginTransactionAsync(ct).ConfigureAwait(false);
 
         try
         {

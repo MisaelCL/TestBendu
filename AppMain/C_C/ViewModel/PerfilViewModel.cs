@@ -15,6 +15,7 @@ public sealed class PerfilViewModel : BaseViewModel
     private readonly ILogger<PerfilViewModel> _logger;
     private Perfil? _perfil;
     private bool _isBusy;
+    private string? _fotoPerfilBase64;
 
     public PerfilViewModel(IPerfilService perfilService, ILogger<PerfilViewModel> logger)
     {
@@ -30,7 +31,49 @@ public sealed class PerfilViewModel : BaseViewModel
         {
             if (SetProperty(ref _perfil, value))
             {
+                var encoded = value?.Foto_Perfil is { Length: > 0 } bytes
+                    ? Convert.ToBase64String(bytes)
+                    : null;
+                SetProperty(ref _fotoPerfilBase64, encoded, nameof(FotoPerfilBase64));
                 (GuardarCommand as RelayCommand)?.RaiseCanExecuteChanged();
+            }
+        }
+    }
+
+    public string? FotoPerfilBase64
+    {
+        get => _fotoPerfilBase64;
+        set
+        {
+            var trimmed = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+            byte[]? fotoBytes = null;
+
+            if (trimmed is not null)
+            {
+                try
+                {
+                    fotoBytes = Convert.FromBase64String(trimmed);
+                }
+                catch (FormatException ex)
+                {
+                    _logger.LogWarning(ex, "El valor de la foto de perfil no es Base64 válido.");
+                    return;
+                }
+            }
+
+            if (!SetProperty(ref _fotoPerfilBase64, trimmed, nameof(FotoPerfilBase64)))
+            {
+                if (Perfil is not null)
+                {
+                    Perfil.Foto_Perfil = fotoBytes;
+                }
+
+                return;
+            }
+
+            if (Perfil is not null)
+            {
+                Perfil.Foto_Perfil = fotoBytes;
             }
         }
     }

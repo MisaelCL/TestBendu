@@ -72,7 +72,7 @@ public sealed class LoginViewModel : BaseViewModel
             IsBusy = true;
             Error = null;
             var cuenta = await _cuentaService.ObtenerPorEmailAsync(Email, CancellationToken.None).ConfigureAwait(false);
-            if (cuenta is null || !_passwordHasher.Verify(Password, cuenta.PasswordHash))
+            if (cuenta is null || !_passwordHasher.Verify(Password, cuenta.Hash_Contrasena))
             {
                 Error = "Credenciales inválidas";
                 return;
