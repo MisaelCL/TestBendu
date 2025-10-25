@@ -1,4 +1,5 @@
-namespace C_C.Model;
+using System;
+namespace C_C.Domain;
 
 public class Match
 {
@@ -6,6 +7,5 @@ public class Match
     public int Perfil_Emisor { get; set; }
     public int Perfil_Receptor { get; set; }
     public string Estado { get; set; } = string.Empty;
-    public DateTime Fecha_Creacion { get; set; }
-    public DateTime? Fecha_Respuesta { get; set; }
+    public DateTime Fecha_Match { get; set; }
 }

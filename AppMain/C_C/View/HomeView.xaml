@@ -6,6 +6,7 @@
         <StackPanel>
             <TextBlock Text="Tus chats" FontSize="24" Margin="0 0 0 12" />
             <Button Content="Actualizar" Command="{Binding LoadChatsCommand}" Width="120" Margin="0 0 0 12" />
+            <TextBlock Text="{Binding Error}" Foreground="OrangeRed" Margin="0 0 0 12" />
             <ListView ItemsSource="{Binding Chats}">
                 <ListView.ItemTemplate>
                     <DataTemplate>

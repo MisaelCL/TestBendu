@@ -1,20 +1,37 @@
 <Window x:Class="C_C.View.PerfilView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="C_C - Perfil" Height="420" Width="500" WindowStartupLocation="CenterScreen">
+        Title="C_C - Perfil" Height="440" Width="520" WindowStartupLocation="CenterScreen">
     <Grid Margin="16">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <StackPanel Spacing="8">
-            <TextBlock Text="Perfil" FontSize="24" />
-            <TextBox Text="{Binding Perfil.Nombre, UpdateSourceTrigger=PropertyChanged}" />
-            <TextBox Text="{Binding Perfil.Apellido_Paterno, UpdateSourceTrigger=PropertyChanged}" />
-            <TextBox Text="{Binding Perfil.Apellido_Materno, UpdateSourceTrigger=PropertyChanged}" />
-            <TextBox Text="{Binding Perfil.Nickname, UpdateSourceTrigger=PropertyChanged}" />
-            <TextBox Text="{Binding Perfil.Biografia, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" Height="120" TextWrapping="Wrap" />
+        <StackPanel Orientation="Horizontal" Margin="0 0 0 12">
+            <StackPanel Width="120" Margin="0 0 12 0">
+                <TextBlock Text="ID Perfil" FontWeight="SemiBold" />
+                <TextBox Text="{Binding PerfilId, UpdateSourceTrigger=PropertyChanged}" />
+            </StackPanel>
+            <StackPanel Width="120" Margin="0 0 12 0">
+                <TextBlock Text="ID Cuenta" FontWeight="SemiBold" />
+                <TextBox Text="{Binding CuentaId, UpdateSourceTrigger=PropertyChanged}" />
+            </StackPanel>
+            <Button Content="Cargar" Command="{Binding LoadCommand}" Width="100" VerticalAlignment="Bottom" />
         </StackPanel>
-        <Button Grid.Row="1" Content="Guardar" Command="{Binding GuardarCommand}" Width="120" Height="32" HorizontalAlignment="Right" Margin="0 12 0 0" />
+        <StackPanel Grid.Row="1">
+            <TextBlock Text="Nikname" FontWeight="SemiBold" />
+            <TextBox Text="{Binding Nikname, UpdateSourceTrigger=PropertyChanged}" Margin="0 0 0 12" />
+            <TextBlock Text="Biografía" FontWeight="SemiBold" />
+            <TextBox Text="{Binding Biografia, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" Height="120" TextWrapping="Wrap" Margin="0 0 0 12" />
+            <TextBlock Text="Foto de perfil (Base64)" FontWeight="SemiBold" />
+            <TextBox Text="{Binding FotoPerfilBase64, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" Height="80" TextWrapping="Wrap" Margin="0 0 0 12" />
+            <TextBlock Text="Fecha de creación" FontWeight="SemiBold" />
+            <TextBlock Text="{Binding FechaCreacion}" />
+        </StackPanel>
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
+            <TextBlock Text="{Binding Error}" Foreground="OrangeRed" Margin="0 0 12 0" VerticalAlignment="Center" />
+            <Button Content="Guardar" Command="{Binding SaveCommand}" Width="120" Height="32" />
+        </StackPanel>
     </Grid>
 </Window>

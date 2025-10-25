@@ -1,3 +1,4 @@
+using System;
 using BCrypt.Net;
 
 namespace C_C.Resources.utils;

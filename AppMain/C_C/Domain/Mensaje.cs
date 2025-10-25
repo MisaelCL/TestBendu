@@ -1,4 +1,5 @@
-namespace C_C.Model;
+using System;
+namespace C_C.Domain;
 
 public class Mensaje
 {
@@ -7,7 +8,8 @@ public class Mensaje
     public int Remitente { get; set; }
     public string Contenido { get; set; } = string.Empty;
     public DateTime Fecha_Envio { get; set; }
-    public bool IsDeleted { get; set; }
-    public bool IsEdited { get; set; }
     public bool Confirmacion_Lectura { get; set; }
+    public bool IsEdited { get; set; }
+    public DateTime? EditedAtUtc { get; set; }
+    public bool IsDeleted { get; set; }
 }

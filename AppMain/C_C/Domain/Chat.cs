@@ -1,4 +1,5 @@
-namespace C_C.Model;
+using System;
+namespace C_C.Domain;
 
 public class Chat
 {
