@@ -20,9 +20,9 @@ namespace C_C_Final.Presentation.ViewModels
         private readonly IPerfilRepository _perfilRepository;
         private readonly MatchService _matchService;
         private readonly ObservableCollection<SugerenciaItemViewModel> _sugerencias = new ObservableCollection<SugerenciaItemViewModel>();
-        private SugerenciaItemViewModel? _perfilActual;
+        private SugerenciaItemViewModel _perfilActual;
         private bool _isSettingsMenuOpen;
-        private string? _estadoMensaje;
+        private string _estadoMensaje;
         private int _perfilId;
         private int _currentIndex;
         private readonly int _pageSize = 20;
@@ -44,7 +44,7 @@ namespace C_C_Final.Presentation.ViewModels
 
         public ObservableCollection<SugerenciaItemViewModel> Sugerencias => _sugerencias;
 
-        public SugerenciaItemViewModel? PerfilActual
+        public SugerenciaItemViewModel PerfilActual
         {
             get => _perfilActual;
             private set => SetProperty(ref _perfilActual, value);
@@ -56,7 +56,7 @@ namespace C_C_Final.Presentation.ViewModels
             set => SetProperty(ref _isSettingsMenuOpen, value);
         }
 
-        public string? EstadoMensaje
+        public string EstadoMensaje
         {
             get => _estadoMensaje;
             private set => SetProperty(ref _estadoMensaje, value);
@@ -159,14 +159,14 @@ namespace C_C_Final.Presentation.ViewModels
             PerfilActual = _sugerencias[_currentIndex];
         }
 
-        private static ImageSource? ConvertToImage(byte[]? bytes)
+        private static ImageSource ConvertToImage(byte[] bytes)
         {
             if (bytes == null || bytes.Length == 0)
             {
                 return null;
             }
 
-            using var stream = new MemoryStream(bytes);
+            var stream = new MemoryStream(bytes);
             var image = new BitmapImage();
             image.BeginInit();
             image.CacheOption = BitmapCacheOption.OnLoad;
@@ -183,6 +183,6 @@ namespace C_C_Final.Presentation.ViewModels
         public int PerfilId { get; set; }
         public string NombreEdad { get; set; } = string.Empty;
         public string CarreraTexto { get; set; } = string.Empty;
-        public ImageSource? FotoUrl { get; set; }
+        public ImageSource FotoUrl { get; set; }
     }
 }

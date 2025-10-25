@@ -12,7 +12,7 @@ namespace C_C_Final.Presentation.ViewModels
     {
         private string _username = string.Empty;
         private string _password = string.Empty;
-        private string? _errorMessage;
+        private string _errorMessage;
         private bool _isViewVisible = true;
 
         public LoginViewModel()
@@ -33,7 +33,7 @@ namespace C_C_Final.Presentation.ViewModels
             set => SetProperty(ref _password, value);
         }
 
-        public string? ErrorMessage
+        public string ErrorMessage
         {
             get => _errorMessage;
             private set => SetProperty(ref _errorMessage, value);

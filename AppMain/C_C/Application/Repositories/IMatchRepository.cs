@@ -8,7 +8,7 @@ namespace C_C_Final.Application.Repositories
 {
     public interface IMatchRepository
     {
-        Task<Match?> GetByIdAsync(int idMatch, CancellationToken ct = default);
+        Task<Match> GetByIdAsync(int idMatch, CancellationToken ct = default);
         Task<bool> ExistsAsync(int idPerfilA, int idPerfilB, CancellationToken ct = default);
         Task<IReadOnlyList<Match>> ListByPerfilAsync(int idPerfil, int page, int pageSize, CancellationToken ct = default);
 
@@ -17,13 +17,13 @@ namespace C_C_Final.Application.Repositories
         Task<bool> DeleteMatchAsync(int idMatch, CancellationToken ct = default);
 
         Task<int> EnsureChatForMatchAsync(int idMatch, CancellationToken ct = default);
-        Task<Chat?> GetChatByMatchIdAsync(int idMatch, CancellationToken ct = default);
+        Task<Chat> GetChatByMatchIdAsync(int idMatch, CancellationToken ct = default);
 
         Task<long> AddMensajeAsync(int idChat, int idRemitentePerfil, string contenido, bool confirmacionLectura, CancellationToken ct = default);
         Task<IReadOnlyList<Mensaje>> ListMensajesAsync(int idChat, int page, int pageSize, CancellationToken ct = default);
 
-        Task<int> CreateMatchAsync(SqlConnection cn, SqlTransaction? tx, int idPerfilEmisor, int idPerfilReceptor, string estado, CancellationToken ct = default);
-        Task<int> EnsureChatForMatchAsync(SqlConnection cn, SqlTransaction? tx, int idMatch, CancellationToken ct = default);
-        Task<long> AddMensajeAsync(SqlConnection cn, SqlTransaction? tx, int idChat, int idRemitentePerfil, string contenido, bool confirmacionLectura, CancellationToken ct = default);
+        Task<int> CreateMatchAsync(SqlConnection cn, SqlTransaction tx, int idPerfilEmisor, int idPerfilReceptor, string estado, CancellationToken ct = default);
+        Task<int> EnsureChatForMatchAsync(SqlConnection cn, SqlTransaction tx, int idMatch, CancellationToken ct = default);
+        Task<long> AddMensajeAsync(SqlConnection cn, SqlTransaction tx, int idChat, int idRemitentePerfil, string contenido, bool confirmacionLectura, CancellationToken ct = default);
     }
 }

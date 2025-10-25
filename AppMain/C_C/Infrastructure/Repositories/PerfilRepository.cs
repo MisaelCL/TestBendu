@@ -20,10 +20,10 @@ namespace C_C_Final.Infrastructure.Repositories
             return WithConnectionAsync(async connection =>
             {
                 const string sql = "SELECT ID_Perfil, ID_Cuenta, Nikname, Biografia, Foto_Perfil, Fecha_Creacion FROM dbo.Perfil WHERE ID_Perfil = @Id";
-                using var command = CreateCommand(connection, sql);
+                var command = CreateCommand(connection, sql);
                 AddParameter(command, "@Id", idPerfil, SqlDbType.Int);
 
-                using var reader = await command.ExecuteReaderAsync(ct).ConfigureAwait(false);
+                var reader = await command.ExecuteReaderAsync(ct).ConfigureAwait(false);
                 if (!await reader.ReadAsync(ct).ConfigureAwait(false))
                 {
                     return null;
@@ -38,10 +38,10 @@ namespace C_C_Final.Infrastructure.Repositories
             return WithConnectionAsync(async connection =>
             {
                 const string sql = "SELECT ID_Perfil, ID_Cuenta, Nikname, Biografia, Foto_Perfil, Fecha_Creacion FROM dbo.Perfil WHERE ID_Cuenta = @Cuenta";
-                using var command = CreateCommand(connection, sql);
+                var command = CreateCommand(connection, sql);
                 AddParameter(command, "@Cuenta", idCuenta, SqlDbType.Int);
 
-                using var reader = await command.ExecuteReaderAsync(ct).ConfigureAwait(false);
+                var reader = await command.ExecuteReaderAsync(ct).ConfigureAwait(false);
                 if (!await reader.ReadAsync(ct).ConfigureAwait(false))
                 {
                     return null;
@@ -56,10 +56,10 @@ namespace C_C_Final.Infrastructure.Repositories
             return WithConnectionAsync(async connection =>
             {
                 const string sql = "SELECT ID_Preferencias, ID_Perfil, Preferencia_Genero, Edad_Minima, Edad_Maxima, Preferencia_Carrera, Intereses FROM dbo.Preferencias WHERE ID_Perfil = @Perfil";
-                using var command = CreateCommand(connection, sql);
+                var command = CreateCommand(connection, sql);
                 AddParameter(command, "@Perfil", idPerfil, SqlDbType.Int);
 
-                using var reader = await command.ExecuteReaderAsync(ct).ConfigureAwait(false);
+                var reader = await command.ExecuteReaderAsync(ct).ConfigureAwait(false);
                 if (!await reader.ReadAsync(ct).ConfigureAwait(false))
                 {
                     return null;
@@ -84,7 +84,7 @@ SET Nikname = @Nikname,
     Foto_Perfil = @Foto,
     Fecha_Creacion = @Fecha
 WHERE ID_Perfil = @Id";
-                using var command = CreateCommand(connection, sql);
+                var command = CreateCommand(connection, sql);
                 AddParameter(command, "@Nikname", perfil.Nikname ?? string.Empty, SqlDbType.NVarChar, 50);
                 AddParameter(command, "@Biografia", perfil.Biografia ?? string.Empty, SqlDbType.NVarChar, -1);
                 AddParameter(command, "@Foto", perfil.FotoPerfil, SqlDbType.VarBinary);
@@ -106,7 +106,7 @@ WHERE ID_Perfil = @Id";
             return WithConnectionAsync(async connection =>
             {
                 const string sql = "DELETE FROM dbo.Perfil WHERE ID_Perfil = @Id";
-                using var command = CreateCommand(connection, sql);
+                var command = CreateCommand(connection, sql);
                 AddParameter(command, "@Id", idPerfil, SqlDbType.Int);
 
                 var rows = await command.ExecuteNonQueryAsync(ct).ConfigureAwait(false);
@@ -119,7 +119,7 @@ WHERE ID_Perfil = @Id";
             const string sql = @"INSERT INTO dbo.Perfil (ID_Cuenta, Nikname, Biografia, Foto_Perfil, Fecha_Creacion)
 OUTPUT INSERTED.ID_Perfil
 VALUES (@Cuenta, @Nikname, @Biografia, @Foto, @Fecha);";
-            using var command = CreateCommand(connection, sql, CommandType.Text, tx);
+            var command = CreateCommand(connection, sql, CommandType.Text, tx);
             AddParameter(command, "@Cuenta", perfil.IdCuenta, SqlDbType.Int);
             AddParameter(command, "@Nikname", perfil.Nikname ?? string.Empty, SqlDbType.NVarChar, 50);
             AddParameter(command, "@Biografia", perfil.Biografia ?? string.Empty, SqlDbType.NVarChar, -1);
@@ -145,7 +145,7 @@ WHEN NOT MATCHED THEN
     INSERT (ID_Perfil, Preferencia_Genero, Edad_Minima, Edad_Maxima, Preferencia_Carrera, Intereses)
     VALUES (@Perfil, @Genero, @MinEdad, @MaxEdad, @Carrera, @Intereses)
 OUTPUT inserted.ID_Preferencias;";
-            using var command = CreateCommand(connection, sql, CommandType.Text, tx);
+            var command = CreateCommand(connection, sql, CommandType.Text, tx);
             AddParameter(command, "@Perfil", prefs.IdPerfil, SqlDbType.Int);
             AddParameter(command, "@Genero", prefs.PreferenciaGenero, SqlDbType.TinyInt);
             AddParameter(command, "@MinEdad", prefs.EdadMinima, SqlDbType.Int);
