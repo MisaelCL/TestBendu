@@ -4,17 +4,17 @@
         Title="C_C - Iniciar sesión" Height="300" Width="400"
         WindowStartupLocation="CenterScreen">
     <Border Padding="24" Background="#FF1F2933">
-        <StackPanel Spacing="12">
-            <TextBlock Text="Bienvenido a C_C" FontSize="20" Foreground="White" HorizontalAlignment="Center" />
-            <StackPanel>
-                <TextBlock Text="Correo" Foreground="White" />
+        <StackPanel>
+            <TextBlock Text="Bienvenido a C_C" FontSize="20" Foreground="White" HorizontalAlignment="Center" Margin="0 0 0 12" />
+            <StackPanel Margin="0 0 0 12">
+                <TextBlock Text="Correo" Foreground="White" Margin="0 0 0 4" />
                 <TextBox Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}" />
             </StackPanel>
-            <StackPanel>
-                <TextBlock Text="Contraseña" Foreground="White" />
+            <StackPanel Margin="0 0 0 12">
+                <TextBlock Text="Contraseña" Foreground="White" Margin="0 0 0 4" />
                 <PasswordBox x:Name="PasswordBox" PasswordChanged="OnPasswordChanged" />
             </StackPanel>
-            <Button Content="Iniciar sesión" Command="{Binding LoginCommand}" Height="32" />
+            <Button Content="Iniciar sesión" Command="{Binding LoginCommand}" Height="32" Margin="0 0 0 12" />
             <TextBlock Text="{Binding Error}" Foreground="OrangeRed" TextWrapping="Wrap" />
         </StackPanel>
     </Border>

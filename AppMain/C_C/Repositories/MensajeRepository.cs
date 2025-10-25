@@ -23,7 +23,7 @@ public sealed class MensajeRepository : RepositoryBase, IMensajeRepository
     {
         return WithConnectionAsync(async connection =>
         {
-            await using var transaction = await connection.BeginTransactionAsync(ct).ConfigureAwait(false);
+            await using var transaction = (SqlTransaction)await connection.BeginTransactionAsync(ct).ConfigureAwait(false);
             try
             {
                 var id = await EnviarAsync(msg, connection, transaction, ct).ConfigureAwait(false);
@@ -100,7 +100,7 @@ SELECT CAST(SCOPE_IDENTITY() AS bigint);";
 
     public Task<IReadOnlyList<Mensaje>> ObtenerPaginaAsync(int ID_Chat, int top, DateTime? anchorFecha, long? anchorId, CancellationToken ct = default)
     {
-        return WithConnectionAsync(async connection =>
+        return WithConnectionAsync<IReadOnlyList<Mensaje>>(async connection =>
         {
             var sql = new StringBuilder();
             sql.Append(@"SELECT TOP(@Top) ID_Mensaje, ID_Chat, Remitente, Contenido, Fecha_Envio, IsDeleted, IsEdited, Confirmacion_Lectura
