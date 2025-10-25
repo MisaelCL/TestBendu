@@ -3,9 +3,9 @@ using C_C.ViewModel;
 
 namespace C_C.View;
 
-public partial class HomeView : Window
+public partial class ChatView : Window
 {
-    public HomeView(HomeViewModel viewModel)
+    public ChatView(ChatViewModel viewModel)
     {
         InitializeComponent();
         DataContext = viewModel;

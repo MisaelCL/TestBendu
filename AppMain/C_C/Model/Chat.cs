@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+namespace C_C.Model;
 
-namespace C_C.Model
+public class Chat
 {
-    public class Chat
-    {
-        public int IdChat { get; set; }
-        public int IdMatch { get; set; }
-        public DateTime FechaInicioChat { get; set; }
-    }
+    public int ID_Chat { get; set; }
+    public int ID_Match { get; set; }
+    public DateTime Fecha_Creacion { get; set; }
+    public DateTime? LastMessageAtUtc { get; set; }
+    public long? LastMessageId { get; set; }
 }

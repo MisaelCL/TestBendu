@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+namespace C_C.Model;
 
-namespace C_C.Model
+public class Cuenta
 {
-    public class Cuenta
-    {
-        public int IdCuenta { get; set; }
-        public string HashContrasena { get; set; }
-        public int Matricula { get; set; }
-        public DateTime FechaRegistro { get; set; }
-        public string EstadoCuenta { get; set; }
-    }
+    public int ID_Cuenta { get; set; }
+    public int ID_Alumno { get; set; }
+    public string Email { get; set; } = string.Empty;
+    public string PasswordHash { get; set; } = string.Empty;
+    public DateTime Fecha_Registro { get; set; }
+    public DateTime? Ultimo_Acceso { get; set; }
+    public bool IsActive { get; set; }
 }

@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 
-namespace C_C.Model
+namespace C_C.Model;
+
+public interface ICuentaRepository
 {
-    public interface ICuentaRepository
-    {
-        bool AutenticateCuenta(int Matricula, string HashContraseña);
-        void AddCuenta(int Matricula, string contraseña);
-        void DeleteCuenta(int Matricula);
-        void EditContraseña(int Matricula, string nuevaContraseña);
-    }
+    Task<Cuenta?> GetByEmailAsync(string email, CancellationToken ct = default);
+    Task<int> InsertAsync(Cuenta c, CancellationToken ct = default);
 }

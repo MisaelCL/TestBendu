@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+namespace C_C.Model;
 
-namespace C_C.Model
+public class Match
 {
-    public class Match
-    {
-        public int Id { get; set; }
-        public int IdPerfilEmisor { get; set; }
-        public int IdPerfilReceptor { get; set; }
-        public DateTime FechaMatch { get; set; }
-        public string EstadoMatch { get; set; }
-    }
+    public int ID_Match { get; set; }
+    public int Perfil_Emisor { get; set; }
+    public int Perfil_Receptor { get; set; }
+    public string Estado { get; set; } = string.Empty;
+    public DateTime Fecha_Creacion { get; set; }
+    public DateTime? Fecha_Respuesta { get; set; }
 }
