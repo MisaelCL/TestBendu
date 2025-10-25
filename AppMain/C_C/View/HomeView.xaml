@@ -1,102 +1,21 @@
-﻿<Window x:Class="C_C.View.HomeView"
+<Window x:Class="C_C.View.HomeView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:C_C.View"
-        mc:Ignorable="d"
-        Title="C&amp;C App - Home" Height="800" Width="450"
-        WindowStyle = "SingleBorderWindow" ResizeMode="NoResize"
-        WindowStartupLocation="CenterScreen"
-        Background="Transparent"
-        AllowsTransparency="False">
-
-    <Window.Resources>
-        <!-- Colores -->
-        <SolidColorBrush x:Key="FondoPrincipal" Color="#001f3f"/>
-        <SolidColorBrush x:Key="AcentoPrincipal" Color="#00bfff"/>
-        <SolidColorBrush x:Key="BotonRechazar" Color="#FF0000"/>
-        <SolidColorBrush x:Key="BotonAceptar" Color="#008000"/>
-
-        <!-- Estilo para los botones de abajo -->
-        <Style x:Key="BotonRedondo" TargetType="Button">
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" CornerRadius="35">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-    </Window.Resources>
-
-
-    <Border CornerRadius="30" Background="{StaticResource FondoPrincipal}">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-
-            <!-- Barra de Navegación Superior -->
-            <Border Grid.Row="0" Background= "#0097b2" CornerRadius="30,30,0,0" Padding="15,25,15,15">
-                <Grid Margin="0,-3,0,0" RenderTransformOrigin="0.504,0.536">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="6*"/>
-                        <ColumnDefinition Width="19*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-
-                    <Ellipse Grid.Column="0" Width="40" Height="40" Fill="White" Stroke="DarkGray" StrokeThickness="2" Cursor="Hand" Margin="0,2,0,2"/>
-                    <TextBlock Grid.Column="2" Foreground="White" FontSize="36" FontWeight="Bold" FontFamily="Impact" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="91,0,0,0"/>
-                    <Button x:Name="BotonIrAChats" Grid.Column="2" Content="☰" FontSize="30" FontWeight="Bold" Foreground="White" Background="Transparent" BorderThickness="0" Cursor="Hand" VerticalAlignment="Center" Click="BotonIrAChats_Click" Grid.ColumnSpan="2" Margin="266,0,0,0"/>
-                    <Image Source="Resources\Images\C_C_LOGO.png" Grid.Column="2" HorizontalAlignment="Left" Height="59" Margin="29,-15,0,0" VerticalAlignment="Top" Width="151"/>
-                </Grid>
-            </Border>
-
-            <!-- Tarjeta de Perfil -->
-            <Grid Grid.Row="1" Margin="20">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-
-
-                <Border Grid.Row="0" CornerRadius="20" Background="#555555">
-                    <Grid>
-                        <Button Content="&lt;" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="36" FontWeight="Bold" Foreground="White" Background="#80000000" BorderThickness="0" Margin="10,0" Cursor="Hand"/>
-                        <Button Content="&gt;" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="36" FontWeight="Bold" Foreground="White" Background="#80000000" BorderThickness="0" Margin="10,0" Cursor="Hand"/>
-                        <Border VerticalAlignment="Bottom" CornerRadius="0,0,20,20">
-                            <Border.Background>
-                                <LinearGradientBrush StartPoint="0.5,1" EndPoint="0.5,0">
-                                    <GradientStop Color="#CC000000" Offset="0"/>
-                                    <GradientStop Color="Transparent" Offset="1"/>
-                                </LinearGradientBrush>
-                            </Border.Background>
-                            <StackPanel Margin="20">
-                                <TextBlock Text="Hipo, 24" FontSize="32" FontWeight="Bold" Foreground="White"/>
-                                <TextBlock Text="Licenciatura en historia" FontSize="20" Foreground="White"/>
-                            </StackPanel>
-                        </Border>
-                    </Grid>
-                </Border>
-
-                <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
-                    <Button Width="70" Height="70" Style="{StaticResource BotonRedondo}" Background="{StaticResource BotonRechazar}" Margin="0,0,40,0">
-                        <TextBlock Text="✕" FontSize="36" Foreground="White"/>
-                    </Button>
-                    <Button Width="70" Height="70" Style="{StaticResource BotonRedondo}" Background="{StaticResource BotonAceptar}">
-                        <TextBlock Text="♥" FontSize="36" Foreground="White" Margin="0,-5,0,0"/>
-                    </Button>
-                </StackPanel>
-            </Grid>
-        </Grid>
-    </Border>
+        Title="C_C - Inicio" Height="480" Width="800" WindowStartupLocation="CenterScreen">
+    <Grid Margin="16">
+        <StackPanel>
+            <TextBlock Text="Tus chats" FontSize="24" Margin="0 0 0 12" />
+            <Button Content="Actualizar" Command="{Binding LoadChatsCommand}" Width="120" Margin="0 0 0 12" />
+            <ListView ItemsSource="{Binding Chats}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <TextBlock Text="{Binding ID_Chat}" FontWeight="Bold" />
+                            <TextBlock Text="{Binding LastMessageAtUtc}" FontStyle="Italic" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackPanel>
+    </Grid>
 </Window>
-
-

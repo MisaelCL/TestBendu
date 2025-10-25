@@ -1,20 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+namespace C_C.Model;
 
-namespace C_C.Model
+public class Alumno
 {
-    public class Alumno
-    {
-        public int Matricula { get; set; }
-        public string Nombre { get; set; }
-        public string Amaterno { get; set; }
-        public string Apaterno { get; set; }
-        public int Edad { get; set; }
-        public Char Genero { get; set; }
-        public string Carrera { get; set; }
-        public string Email { get; set; }
-    }
+    public int ID_Alumno { get; set; }
+    public string Matricula { get; set; } = string.Empty;
+    public string Nombre { get; set; } = string.Empty;
+    public string Apellido_Paterno { get; set; } = string.Empty;
+    public string? Apellido_Materno { get; set; }
+    public DateTime Fecha_Nacimiento { get; set; }
+    public string Genero { get; set; } = string.Empty;
+    public string Carrera { get; set; } = string.Empty;
+    public DateTime Fecha_Registro { get; set; }
 }
