@@ -1,0 +1,21 @@
+<Window x:Class="C_C.View.HomeView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="C_C - Inicio" Height="480" Width="800" WindowStartupLocation="CenterScreen">
+    <Grid Margin="16">
+        <StackPanel>
+            <TextBlock Text="Tus chats" FontSize="24" Margin="0 0 0 12" />
+            <Button Content="Actualizar" Command="{Binding LoadChatsCommand}" Width="120" Margin="0 0 0 12" />
+            <ListView ItemsSource="{Binding Chats}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <TextBlock Text="{Binding ID_Chat}" FontWeight="Bold" />
+                            <TextBlock Text="{Binding LastMessageAtUtc}" FontStyle="Italic" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackPanel>
+    </Grid>
+</Window>
