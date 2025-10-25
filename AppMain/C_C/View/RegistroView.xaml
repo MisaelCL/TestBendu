@@ -10,26 +10,26 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <DockPanel Grid.Row="0" Margin="0 0 0 12">
-                <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" Spacing="8">
-                    <Button Content="_" Width="28" Height="24" Click="OnMinimizeClick" />
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                    <Button Content="_" Width="28" Height="24" Click="OnMinimizeClick" Margin="0 0 8 0" />
                     <Button Content="X" Width="28" Height="24" Click="OnCloseClick" />
                 </StackPanel>
                 <TextBlock Text="Crear cuenta" Foreground="White" FontSize="18" VerticalAlignment="Center" MouseDown="OnDragWindow" />
             </DockPanel>
-            <StackPanel Grid.Row="1" Spacing="12">
-                <StackPanel>
-                    <TextBlock Text="Correo" Foreground="White" />
+            <StackPanel Grid.Row="1">
+                <StackPanel Margin="0 0 0 12">
+                    <TextBlock Text="Correo" Foreground="White" Margin="0 0 0 4" />
                     <TextBox Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
-                <StackPanel>
-                    <TextBlock Text="Contraseña" Foreground="White" />
+                <StackPanel Margin="0 0 0 12">
+                    <TextBlock Text="Contraseña" Foreground="White" Margin="0 0 0 4" />
                     <PasswordBox x:Name="PasswordBox" PasswordChanged="OnPasswordChanged" />
                 </StackPanel>
-                <StackPanel>
-                    <TextBlock Text="Confirmar contraseña" Foreground="White" />
+                <StackPanel Margin="0 0 0 12">
+                    <TextBlock Text="Confirmar contraseña" Foreground="White" Margin="0 0 0 4" />
                     <PasswordBox x:Name="ConfirmPasswordBox" PasswordChanged="OnConfirmPasswordChanged" />
                 </StackPanel>
-                <Button Content="Registrar" Command="{Binding RegistrarCommand}" Height="32" />
+                <Button Content="Registrar" Command="{Binding RegistrarCommand}" Height="32" Margin="0 0 0 12" />
                 <TextBlock Text="{Binding Error}" Foreground="OrangeRed" TextWrapping="Wrap" />
             </StackPanel>
         </Grid>
