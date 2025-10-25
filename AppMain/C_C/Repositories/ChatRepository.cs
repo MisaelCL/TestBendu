@@ -57,7 +57,7 @@ public sealed class ChatRepository : RepositoryBase, IChatRepository
         {
             const string sql = @"SELECT TOP(@Top) c.ID_Chat, c.ID_Match, c.Fecha_Creacion, c.LastMessageAtUtc, c.LastMessageId
 FROM dbo.Chat AS c
-JOIN dbo.Match AS m ON m.ID_Match = c.ID_Match
+JOIN dbo.[Match] AS m ON m.ID_Match = c.ID_Match
 WHERE m.Perfil_Emisor = @Perfil OR m.Perfil_Receptor = @Perfil
 ORDER BY CASE WHEN c.LastMessageAtUtc IS NULL THEN 1 ELSE 0 END,
          c.LastMessageAtUtc DESC, c.Fecha_Creacion DESC;";
@@ -77,18 +77,19 @@ ORDER BY CASE WHEN c.LastMessageAtUtc IS NULL THEN 1 ELSE 0 END,
 
     public Task<(int PerfilA, int PerfilB, int ID_Match)?> ObtenerParticipantesAsync(int ID_Chat, CancellationToken ct = default)
     {
+        return WithConnectionAsync<System.ValueTuple<int, int, int>?>(async connection =>
         return WithConnectionAsync<(int PerfilA, int PerfilB, int ID_Match)?>(async connection =>
         {
             const string sql = @"SELECT m.Perfil_Emisor, m.Perfil_Receptor, m.ID_Match
 FROM dbo.Chat AS c
-JOIN dbo.Match AS m ON m.ID_Match = c.ID_Match
+JOIN dbo.[Match] AS m ON m.ID_Match = c.ID_Match
 WHERE c.ID_Chat = @Chat";
             await using var command = new SqlCommand(sql, connection);
             command.Parameters.Add(P("@Chat", ID_Chat));
             await using var reader = await command.ExecuteReaderAsync(ct).ConfigureAwait(false);
             if (await reader.ReadAsync(ct).ConfigureAwait(false))
             {
-                return (reader.GetInt32(0), reader.GetInt32(1), reader.GetInt32(2));
+                return System.ValueTuple.Create(reader.GetInt32(0), reader.GetInt32(1), reader.GetInt32(2));
             }
 
             return (int, int, int)?null;
