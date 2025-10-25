@@ -42,18 +42,18 @@ public sealed class ChatRepository : RepositoryBase, IChatRepository
             await using var reader = await command.ExecuteReaderAsync(ct).ConfigureAwait(false);
             if (await reader.ReadAsync(ct).ConfigureAwait(false))
             {
-                var lastAt = reader.IsDBNull(0) ? null : reader.GetDateTime(0);
-                var lastId = reader.IsDBNull(1) ? null : reader.GetInt64(1);
+                DateTime? lastAt = reader.IsDBNull(0) ? null : reader.GetDateTime(0);
+                long? lastId = reader.IsDBNull(1) ? null : reader.GetInt64(1);
                 return (lastAt, lastId);
             }
 
-            return (null, null);
+            return (LastAt: (DateTime?)null, LastId: (long?)null);
         }, ct);
     }
 
     public Task<IEnumerable<(int ID_Chat, int ID_Match, DateTime Fecha_Creacion, DateTime? LastAt, long? LastId)>> ListarChatsPorPerfilAsync(int ID_Perfil, int top, CancellationToken ct = default)
     {
-        return WithConnectionAsync(async connection =>
+        return WithConnectionAsync<IEnumerable<(int ID_Chat, int ID_Match, DateTime Fecha_Creacion, DateTime? LastAt, long? LastId)>>(async connection =>
         {
             const string sql = @"SELECT TOP(@Top) c.ID_Chat, c.ID_Match, c.Fecha_Creacion, c.LastMessageAtUtc, c.LastMessageId
 FROM dbo.Chat AS c
@@ -77,7 +77,7 @@ ORDER BY CASE WHEN c.LastMessageAtUtc IS NULL THEN 1 ELSE 0 END,
 
     public Task<(int PerfilA, int PerfilB, int ID_Match)?> ObtenerParticipantesAsync(int ID_Chat, CancellationToken ct = default)
     {
-        return WithConnectionAsync(async connection =>
+        return WithConnectionAsync<(int PerfilA, int PerfilB, int ID_Match)?>(async connection =>
         {
             const string sql = @"SELECT m.Perfil_Emisor, m.Perfil_Receptor, m.ID_Match
 FROM dbo.Chat AS c
