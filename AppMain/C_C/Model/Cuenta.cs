@@ -2,11 +2,11 @@ namespace C_C.Model;
 
 public class Cuenta
 {
-    public int ID_Cuenta { get; set; }
-    public int ID_Alumno { get; set; }
+    public int IDCuenta { get; set; }
+    public int IDAlumno { get; set; }
     public string Email { get; set; } = string.Empty;
     public string PasswordHash { get; set; } = string.Empty;
-    public DateTime Fecha_Registro { get; set; }
-    public DateTime? Ultimo_Acceso { get; set; }
+    public DateTime FechaRegistro { get; set; }
+    public DateTime? UltimoAcceso { get; set; }
     public bool IsActive { get; set; }
 }
