@@ -47,6 +47,7 @@ public sealed class MensajeService : IMensajeService
         msg.IsDeleted = false;
         msg.IsEdited = false;
         msg.Confirmacion_Lectura = false;
+        msg.EditedAtUtc = null;
         msg.Fecha_Envio = DateTime.UtcNow;
 
         await using var connection = _connectionFactory.CreateConnection();

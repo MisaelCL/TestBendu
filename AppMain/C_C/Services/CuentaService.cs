@@ -32,9 +32,12 @@ public sealed class CuentaService : ICuentaService
             throw new ArgumentException("La contraseña es obligatoria", nameof(plainPassword));
         }
 
-        cuenta.PasswordHash = _passwordHasher.Hash(plainPassword);
+        cuenta.Hash_Contrasena = _passwordHasher.Hash(plainPassword);
         cuenta.Fecha_Registro = DateTime.UtcNow;
-        cuenta.Ultimo_Acceso = cuenta.Ultimo_Acceso ?? cuenta.Fecha_Registro;
+        if (cuenta.Estado_Cuenta == 0)
+        {
+            cuenta.Estado_Cuenta = 1;
+        }
         var id = await _cuentaRepository.InsertAsync(cuenta, ct).ConfigureAwait(false);
         _logger.LogInformation("Cuenta {CuentaId} registrada", id);
         return id;

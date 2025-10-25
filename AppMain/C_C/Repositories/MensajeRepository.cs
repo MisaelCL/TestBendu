@@ -40,17 +40,18 @@ public sealed class MensajeRepository : RepositoryBase, IMensajeRepository
 
     public async Task<long> EnviarAsync(Mensaje msg, SqlConnection connection, SqlTransaction? transaction, CancellationToken ct = default)
     {
-        const string sql = @"INSERT INTO dbo.Mensaje (ID_Chat, Remitente, Contenido, Fecha_Envio, IsDeleted, IsEdited, Confirmacion_Lectura)
-VALUES (@Chat, @Remitente, @Contenido, @FechaEnvio, @IsDeleted, @IsEdited, @Confirmado);
+        const string sql = @"INSERT INTO dbo.Mensaje (ID_Chat, Remitente, Contenido, Fecha_Envio, Confirmacion_Lectura, IsEdited, EditedAtUtc, IsDeleted)
+VALUES (@Chat, @Remitente, @Contenido, @FechaEnvio, @Confirmado, @IsEdited, @EditadoEn, @IsDeleted);
 SELECT CAST(SCOPE_IDENTITY() AS bigint);";
         await using var command = new SqlCommand(sql, connection, transaction);
         command.Parameters.Add(P("@Chat", msg.ID_Chat));
         command.Parameters.Add(P("@Remitente", msg.Remitente));
         command.Parameters.Add(P("@Contenido", msg.Contenido));
         command.Parameters.Add(P("@FechaEnvio", msg.Fecha_Envio));
+        command.Parameters.Add(P("@Confirmado", msg.Confirmacion_Lectura));
         command.Parameters.Add(P("@IsDeleted", msg.IsDeleted));
         command.Parameters.Add(P("@IsEdited", msg.IsEdited));
-        command.Parameters.Add(P("@Confirmado", msg.Confirmacion_Lectura));
+        command.Parameters.Add(P("@EditadoEn", msg.EditedAtUtc ?? (object)DBNull.Value));
 
         var result = await command.ExecuteScalarAsync(ct).ConfigureAwait(false);
         var id = Convert.ToInt64(result, CultureInfo.InvariantCulture);
@@ -75,7 +76,7 @@ SELECT CAST(SCOPE_IDENTITY() AS bigint);";
     {
         return WithConnectionAsync(async connection =>
         {
-            const string sql = "UPDATE dbo.Mensaje SET Contenido = @Contenido, IsEdited = 1 WHERE ID_Mensaje = @Mensaje AND IsDeleted = 0";
+            const string sql = "UPDATE dbo.Mensaje SET Contenido = @Contenido, IsEdited = 1, EditedAtUtc = SYSUTCDATETIME() WHERE ID_Mensaje = @Mensaje AND IsDeleted = 0";
             await using var command = new SqlCommand(sql, connection);
             command.Parameters.Add(P("@Contenido", nuevo));
             command.Parameters.Add(P("@Mensaje", ID_Mensaje));
@@ -103,7 +104,7 @@ SELECT CAST(SCOPE_IDENTITY() AS bigint);";
         return WithConnectionAsync<IReadOnlyList<Mensaje>>(async connection =>
         {
             var sql = new StringBuilder();
-            sql.Append(@"SELECT TOP(@Top) ID_Mensaje, ID_Chat, Remitente, Contenido, Fecha_Envio, IsDeleted, IsEdited, Confirmacion_Lectura
+            sql.Append(@"SELECT TOP(@Top) ID_Mensaje, ID_Chat, Remitente, Contenido, Fecha_Envio, Confirmacion_Lectura, IsEdited, EditedAtUtc, IsDeleted
 FROM dbo.Mensaje
 WHERE ID_Chat = @Chat");
             if (anchorFecha.HasValue && anchorId.HasValue)
@@ -132,9 +133,10 @@ WHERE ID_Chat = @Chat");
                     Remitente = reader.GetInt32(2),
                     Contenido = reader.GetString(3),
                     Fecha_Envio = reader.GetDateTime(4),
-                    IsDeleted = reader.GetBoolean(5),
+                    Confirmacion_Lectura = reader.GetBoolean(5),
                     IsEdited = reader.GetBoolean(6),
-                    Confirmacion_Lectura = reader.GetBoolean(7)
+                    EditedAtUtc = reader.IsDBNull(7) ? null : reader.GetDateTime(7),
+                    IsDeleted = reader.GetBoolean(8)
                 });
             }
 

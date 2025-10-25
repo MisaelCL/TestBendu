@@ -9,6 +9,12 @@
         </Grid.RowDefinitions>
         <StackPanel>
             <TextBlock Text="Perfil" FontSize="24" Margin="0 0 0 8" />
+            <TextBlock Text="Nikname" FontWeight="SemiBold" />
+            <TextBox Text="{Binding Perfil.Nikname, UpdateSourceTrigger=PropertyChanged}" Margin="0 0 0 12" />
+            <TextBlock Text="Biografía" FontWeight="SemiBold" />
+            <TextBox Text="{Binding Perfil.Biografia, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" Height="120" TextWrapping="Wrap" Margin="0 0 0 12" />
+            <TextBlock Text="Foto de perfil" FontWeight="SemiBold" />
+            <TextBox Text="{Binding Perfil.Foto_Perfil, UpdateSourceTrigger=PropertyChanged}" />
             <TextBox Text="{Binding Perfil.Nombre, UpdateSourceTrigger=PropertyChanged}" Margin="0 0 0 8" />
             <TextBox Text="{Binding Perfil.Apellido_Paterno, UpdateSourceTrigger=PropertyChanged}" Margin="0 0 0 8" />
             <TextBox Text="{Binding Perfil.Apellido_Materno, UpdateSourceTrigger=PropertyChanged}" Margin="0 0 0 8" />
