@@ -1,6 +1,4 @@
 using System;
-using System.Threading;
-using System.Threading.Tasks;
 using C_C_Final.Model;
 using C_C_Final.Repositories;
 
@@ -17,56 +15,56 @@ namespace C_C_Final.Services
             _connectionFactory = connectionFactory;
         }
 
-        public async Task<int> CreateMatchAsync(int idPerfilEmisor, int idPerfilReceptor, string estado, CancellationToken ct = default)
+        public int CreateMatch(int idPerfilEmisor, int idPerfilReceptor, string estado)
         {
-            using var unitOfWork = await UnitOfWork.CreateAsync(_connectionFactory, ct).ConfigureAwait(false);
+            using var unitOfWork = UnitOfWork.Create(_connectionFactory);
             try
             {
-                var matchId = await _matchRepository.CreateMatchAsync(unitOfWork.Connection, unitOfWork.Transaction, idPerfilEmisor, idPerfilReceptor, estado, ct).ConfigureAwait(false);
-                await _matchRepository.EnsureChatForMatchAsync(unitOfWork.Connection, unitOfWork.Transaction, matchId, ct).ConfigureAwait(false);
-                await unitOfWork.CommitAsync(ct).ConfigureAwait(false);
+                var matchId = _matchRepository.CreateMatch(unitOfWork.Connection, unitOfWork.Transaction, idPerfilEmisor, idPerfilReceptor, estado);
+                _matchRepository.EnsureChatForMatch(unitOfWork.Connection, unitOfWork.Transaction, matchId);
+                unitOfWork.Commit();
                 return matchId;
             }
             catch
             {
-                await unitOfWork.RollbackAsync(ct).ConfigureAwait(false);
+                unitOfWork.Rollback();
                 throw;
             }
         }
 
-        public async Task<int> EnsureChatForMatchAsync(int idMatch, CancellationToken ct = default)
+        public int EnsureChatForMatch(int idMatch)
         {
-            using var unitOfWork = await UnitOfWork.CreateAsync(_connectionFactory, ct).ConfigureAwait(false);
+            using var unitOfWork = UnitOfWork.Create(_connectionFactory);
             try
             {
-                var chatId = await _matchRepository.EnsureChatForMatchAsync(unitOfWork.Connection, unitOfWork.Transaction, idMatch, ct).ConfigureAwait(false);
-                await unitOfWork.CommitAsync(ct).ConfigureAwait(false);
+                var chatId = _matchRepository.EnsureChatForMatch(unitOfWork.Connection, unitOfWork.Transaction, idMatch);
+                unitOfWork.Commit();
                 return chatId;
             }
             catch
             {
-                await unitOfWork.RollbackAsync(ct).ConfigureAwait(false);
+                unitOfWork.Rollback();
                 throw;
             }
         }
 
-        public async Task<long> SendMessageAsync(int idChat, int idRemitentePerfil, string contenido, CancellationToken ct = default)
+        public long SendMessage(int idChat, int idRemitentePerfil, string contenido)
         {
             if (string.IsNullOrWhiteSpace(contenido))
             {
                 throw new ArgumentException("El contenido del mensaje es obligatorio", nameof(contenido));
             }
 
-            using var unitOfWork = await UnitOfWork.CreateAsync(_connectionFactory, ct).ConfigureAwait(false);
+            using var unitOfWork = UnitOfWork.Create(_connectionFactory);
             try
             {
-                var mensajeId = await _matchRepository.AddMensajeAsync(unitOfWork.Connection, unitOfWork.Transaction, idChat, idRemitentePerfil, contenido, false, ct).ConfigureAwait(false);
-                await unitOfWork.CommitAsync(ct).ConfigureAwait(false);
+                var mensajeId = _matchRepository.AddMensaje(unitOfWork.Connection, unitOfWork.Transaction, idChat, idRemitentePerfil, contenido, false);
+                unitOfWork.Commit();
                 return mensajeId;
             }
             catch
             {
-                await unitOfWork.RollbackAsync(ct).ConfigureAwait(false);
+                unitOfWork.Rollback();
                 throw;
             }
         }

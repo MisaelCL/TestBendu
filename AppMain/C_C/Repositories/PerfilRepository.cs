@@ -1,8 +1,6 @@
 using System;
 using System.Data;
 using System.Data.SqlClient;
-using System.Threading;
-using System.Threading.Tasks;
 using C_C_Final.Model;
 
 namespace C_C_Final.Repositories
@@ -13,68 +11,68 @@ namespace C_C_Final.Repositories
         {
         }
 
-        public Task<Perfil?> GetByIdAsync(int idPerfil, CancellationToken ct = default)
+        public Perfil? GetById(int idPerfil)
         {
-            return WithConnectionAsync(async connection =>
+            return WithConnection(connection =>
             {
                 const string sql = "SELECT ID_Perfil, ID_Cuenta, Nikname, Biografia, Foto_Perfil, Fecha_Creacion FROM dbo.Perfil WHERE ID_Perfil = @Id";
-                var command = CreateCommand(connection, sql);
+                using var command = CreateCommand(connection, sql);
                 AddParameter(command, "@Id", idPerfil, SqlDbType.Int);
 
-                var reader = await command.ExecuteReaderAsync(ct).ConfigureAwait(false);
-                if (!await reader.ReadAsync(ct).ConfigureAwait(false))
+                using var reader = command.ExecuteReader();
+                if (!reader.Read())
                 {
                     return null;
                 }
 
                 return MapPerfil(reader);
-            }, ct);
+            });
         }
 
-        public Task<Perfil?> GetByCuentaIdAsync(int idCuenta, CancellationToken ct = default)
+        public Perfil? GetByCuentaId(int idCuenta)
         {
-            return WithConnectionAsync(async connection =>
+            return WithConnection(connection =>
             {
                 const string sql = "SELECT ID_Perfil, ID_Cuenta, Nikname, Biografia, Foto_Perfil, Fecha_Creacion FROM dbo.Perfil WHERE ID_Cuenta = @Cuenta";
-                var command = CreateCommand(connection, sql);
+                using var command = CreateCommand(connection, sql);
                 AddParameter(command, "@Cuenta", idCuenta, SqlDbType.Int);
 
-                var reader = await command.ExecuteReaderAsync(ct).ConfigureAwait(false);
-                if (!await reader.ReadAsync(ct).ConfigureAwait(false))
+                using var reader = command.ExecuteReader();
+                if (!reader.Read())
                 {
                     return null;
                 }
 
                 return MapPerfil(reader);
-            }, ct);
+            });
         }
 
-        public Task<Preferencias?> GetPreferenciasByPerfilAsync(int idPerfil, CancellationToken ct = default)
+        public Preferencias? GetPreferenciasByPerfil(int idPerfil)
         {
-            return WithConnectionAsync(async connection =>
+            return WithConnection(connection =>
             {
                 const string sql = "SELECT ID_Preferencias, ID_Perfil, Preferencia_Genero, Edad_Minima, Edad_Maxima, Preferencia_Carrera, Intereses FROM dbo.Preferencias WHERE ID_Perfil = @Perfil";
-                var command = CreateCommand(connection, sql);
+                using var command = CreateCommand(connection, sql);
                 AddParameter(command, "@Perfil", idPerfil, SqlDbType.Int);
 
-                var reader = await command.ExecuteReaderAsync(ct).ConfigureAwait(false);
-                if (!await reader.ReadAsync(ct).ConfigureAwait(false))
+                using var reader = command.ExecuteReader();
+                if (!reader.Read())
                 {
                     return null;
                 }
 
                 return MapPreferencias(reader);
-            }, ct);
+            });
         }
 
-        public Task<int> CreatePerfilAsync(Perfil perfil, CancellationToken ct = default)
+        public int CreatePerfil(Perfil perfil)
         {
-            return WithConnectionAsync(connection => CreatePerfilAsync(connection, null, perfil, ct), ct);
+            return WithConnection(connection => CreatePerfil(connection, null, perfil));
         }
 
-        public Task<bool> UpdatePerfilAsync(Perfil perfil, CancellationToken ct = default)
+        public bool UpdatePerfil(Perfil perfil)
         {
-            return WithConnectionAsync(async connection =>
+            return WithConnection(connection =>
             {
                 const string sql = @"UPDATE dbo.Perfil
 SET Nikname = @Nikname,
@@ -82,53 +80,53 @@ SET Nikname = @Nikname,
     Foto_Perfil = @Foto,
     Fecha_Creacion = @Fecha
 WHERE ID_Perfil = @Id";
-                var command = CreateCommand(connection, sql);
+                using var command = CreateCommand(connection, sql);
                 AddParameter(command, "@Nikname", perfil.Nikname ?? string.Empty, SqlDbType.NVarChar, 50);
                 AddParameter(command, "@Biografia", perfil.Biografia ?? string.Empty, SqlDbType.NVarChar, -1);
                 AddParameter(command, "@Foto", perfil.FotoPerfil, SqlDbType.VarBinary);
                 AddParameter(command, "@Fecha", perfil.FechaCreacion, SqlDbType.DateTime2);
                 AddParameter(command, "@Id", perfil.IdPerfil, SqlDbType.Int);
 
-                var rows = await command.ExecuteNonQueryAsync(ct).ConfigureAwait(false);
+                var rows = command.ExecuteNonQuery();
                 return rows > 0;
-            }, ct);
+            });
         }
 
-        public Task<int> UpsertPreferenciasAsync(Preferencias prefs, CancellationToken ct = default)
+        public int UpsertPreferencias(Preferencias prefs)
         {
-            return WithConnectionAsync(connection => UpsertPreferenciasAsync(connection, null, prefs, ct), ct);
+            return WithConnection(connection => UpsertPreferencias(connection, null, prefs));
         }
 
-        public Task<bool> DeletePerfilAsync(int idPerfil, CancellationToken ct = default)
+        public bool DeletePerfil(int idPerfil)
         {
-            return WithConnectionAsync(async connection =>
+            return WithConnection(connection =>
             {
                 const string sql = "DELETE FROM dbo.Perfil WHERE ID_Perfil = @Id";
-                var command = CreateCommand(connection, sql);
+                using var command = CreateCommand(connection, sql);
                 AddParameter(command, "@Id", idPerfil, SqlDbType.Int);
 
-                var rows = await command.ExecuteNonQueryAsync(ct).ConfigureAwait(false);
+                var rows = command.ExecuteNonQuery();
                 return rows > 0;
-            }, ct);
+            });
         }
 
-        public async Task<int> CreatePerfilAsync(SqlConnection connection, SqlTransaction? tx, Perfil perfil, CancellationToken ct = default)
+        public int CreatePerfil(SqlConnection connection, SqlTransaction? tx, Perfil perfil)
         {
             const string sql = @"INSERT INTO dbo.Perfil (ID_Cuenta, Nikname, Biografia, Foto_Perfil, Fecha_Creacion)
 OUTPUT INSERTED.ID_Perfil
 VALUES (@Cuenta, @Nikname, @Biografia, @Foto, @Fecha);";
-            var command = CreateCommand(connection, sql, CommandType.Text, tx);
+            using var command = CreateCommand(connection, sql, CommandType.Text, tx);
             AddParameter(command, "@Cuenta", perfil.IdCuenta, SqlDbType.Int);
             AddParameter(command, "@Nikname", perfil.Nikname ?? string.Empty, SqlDbType.NVarChar, 50);
             AddParameter(command, "@Biografia", perfil.Biografia ?? string.Empty, SqlDbType.NVarChar, -1);
             AddParameter(command, "@Foto", perfil.FotoPerfil, SqlDbType.VarBinary);
             AddParameter(command, "@Fecha", perfil.FechaCreacion, SqlDbType.DateTime2);
 
-            var result = await command.ExecuteScalarAsync(ct).ConfigureAwait(false);
+            var result = command.ExecuteScalar();
             return Convert.ToInt32(result);
         }
 
-        public async Task<int> UpsertPreferenciasAsync(SqlConnection connection, SqlTransaction? tx, Preferencias prefs, CancellationToken ct = default)
+        public int UpsertPreferencias(SqlConnection connection, SqlTransaction? tx, Preferencias prefs)
         {
             const string sql = @"MERGE dbo.Preferencias AS Target
 USING (SELECT @Perfil AS ID_Perfil) AS Source
@@ -143,7 +141,7 @@ WHEN NOT MATCHED THEN
     INSERT (ID_Perfil, Preferencia_Genero, Edad_Minima, Edad_Maxima, Preferencia_Carrera, Intereses)
     VALUES (@Perfil, @Genero, @MinEdad, @MaxEdad, @Carrera, @Intereses)
 OUTPUT inserted.ID_Preferencias;";
-            var command = CreateCommand(connection, sql, CommandType.Text, tx);
+            using var command = CreateCommand(connection, sql, CommandType.Text, tx);
             AddParameter(command, "@Perfil", prefs.IdPerfil, SqlDbType.Int);
             AddParameter(command, "@Genero", prefs.PreferenciaGenero, SqlDbType.TinyInt);
             AddParameter(command, "@MinEdad", prefs.EdadMinima, SqlDbType.Int);
@@ -151,7 +149,7 @@ OUTPUT inserted.ID_Preferencias;";
             AddParameter(command, "@Carrera", prefs.PreferenciaCarrera ?? string.Empty, SqlDbType.NVarChar, 50);
             AddParameter(command, "@Intereses", prefs.Intereses ?? string.Empty, SqlDbType.NVarChar, -1);
 
-            var result = await command.ExecuteScalarAsync(ct).ConfigureAwait(false);
+            var result = command.ExecuteScalar();
             return Convert.ToInt32(result);
         }
 

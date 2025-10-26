@@ -1,28 +1,19 @@
 using System;
-
 using System.Data;
 using System.Data.SqlClient;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace C_C_Final.Repositories
 {
     public abstract class RepositoryBase
     {
         protected const int DefaultCommandTimeout = 30;
+
         protected RepositoryBase(SqlConnectionFactory connectionFactory)
         {
             ConnectionFactory = connectionFactory;
         }
 
         protected SqlConnectionFactory ConnectionFactory { get; }
-
-        protected async Task<SqlConnection> OpenConnectionAsync(CancellationToken ct)
-        {
-            var connection = ConnectionFactory.CreateConnection();
-            await connection.OpenAsync(ct).ConfigureAwait(false);
-            return connection;
-        }
 
         protected SqlCommand CreateCommand(SqlConnection connection, string sql, CommandType commandType = CommandType.Text, SqlTransaction transaction = null)
         {
@@ -52,16 +43,23 @@ namespace C_C_Final.Repositories
             }
         }
 
-        protected async Task<T> WithConnectionAsync<T>(Func<SqlConnection, Task<T>> action, CancellationToken ct)
+        protected SqlConnection OpenConnection()
         {
-            var connection = await OpenConnectionAsync(ct).ConfigureAwait(false);
-            return await action(connection).ConfigureAwait(false);
+            var connection = ConnectionFactory.CreateConnection();
+            connection.Open();
+            return connection;
         }
 
-        protected async Task WithConnectionAsync(Func<SqlConnection, Task> action, CancellationToken ct)
+        protected T WithConnection<T>(Func<SqlConnection, T> action)
         {
-            var connection = await OpenConnectionAsync(ct).ConfigureAwait(false);
-            await action(connection).ConfigureAwait(false);
+            using var connection = OpenConnection();
+            return action(connection);
+        }
+
+        protected void WithConnection(Action<SqlConnection> action)
+        {
+            using var connection = OpenConnection();
+            action(connection);
         }
     }
 }

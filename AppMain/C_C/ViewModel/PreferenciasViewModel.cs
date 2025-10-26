@@ -1,8 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -19,7 +17,7 @@ namespace C_C_Final.ViewModel
         private string _nikName = string.Empty;
         private string _descripcion = string.Empty;
         private byte[] _fotoPerfilBytes;
-        private ImageSource _fotoPerfilUrl;
+        private ImageSource? _fotoPerfilUrl;
         private DateTime _fechaCreacion;
         private int _edadMin = 18;
         private int _edadMax = 35;
@@ -37,9 +35,9 @@ namespace C_C_Final.ViewModel
                 "Solo hombres",
                 "Todos"
             });
-            EditarFotoCommand = new RelayCommand(async _ => await EditarFotoAsync());
+            EditarFotoCommand = new RelayCommand(_ => EditarFoto());
             EditarNombreCommand = new RelayCommand(_ => { });
-            GuardarPerfilCommand = new RelayCommand(async _ => await GuardarAsync(), _ => !IsBusy);
+            GuardarPerfilCommand = new RelayCommand(_ => Guardar(), _ => !IsBusy);
             EditarDescripcionCommand = new RelayCommand(_ => { });
             LogoutCommand = new RelayCommand(_ => MessageBox.Show("Sesión finalizada", "Cuenta", MessageBoxButton.OK, MessageBoxImage.Information));
             EliminarCuentaCommand = new RelayCommand(_ => MessageBox.Show("Para eliminar tu cuenta contacta al administrador.", "Cuenta", MessageBoxButton.OK, MessageBoxImage.Information));
@@ -59,7 +57,7 @@ namespace C_C_Final.ViewModel
             set => SetProperty(ref _descripcion, value);
         }
 
-        public ImageSource FotoPerfilUrl
+        public ImageSource? FotoPerfilUrl
         {
             get => _fotoPerfilUrl;
             private set => SetProperty(ref _fotoPerfilUrl, value);
@@ -119,7 +117,6 @@ namespace C_C_Final.ViewModel
             }
         }
 
-        public ICommand GoBackCommand { get; }
         public ICommand EditarFotoCommand { get; }
         public ICommand EditarNombreCommand { get; }
         public ICommand GuardarPerfilCommand { get; }
@@ -127,10 +124,10 @@ namespace C_C_Final.ViewModel
         public ICommand LogoutCommand { get; }
         public ICommand EliminarCuentaCommand { get; }
 
-        public async Task LoadAsync(int cuentaId, CancellationToken ct = default)
+        public void Load(int cuentaId)
         {
             _idCuenta = cuentaId;
-            var perfil = await _perfilRepository.GetByCuentaIdAsync(cuentaId, ct);
+            var perfil = _perfilRepository.GetByCuentaId(cuentaId);
             if (perfil == null)
             {
                 return;
@@ -140,10 +137,10 @@ namespace C_C_Final.ViewModel
             _fechaCreacion = perfil.FechaCreacion;
             NikName = perfil.Nikname;
             Descripcion = perfil.Biografia;
-            _fotoPerfilBytes = perfil.FotoPerfil;
+            _fotoPerfilBytes = perfil.FotoPerfil ?? Array.Empty<byte>();
             FotoPerfilUrl = ConvertToImage(_fotoPerfilBytes);
 
-            var preferencias = await _perfilRepository.GetPreferenciasByPerfilAsync(_idPerfil, ct);
+            var preferencias = _perfilRepository.GetPreferenciasByPerfil(_idPerfil);
             if (preferencias != null)
             {
                 EdadMin = preferencias.EdadMinima;
@@ -157,7 +154,7 @@ namespace C_C_Final.ViewModel
             }
         }
 
-        private async Task GuardarAsync()
+        private void Guardar()
         {
             if (_idPerfil == 0)
             {
@@ -178,7 +175,7 @@ namespace C_C_Final.ViewModel
                     FechaCreacion = _fechaCreacion
                 };
 
-                await _perfilRepository.UpdatePerfilAsync(perfil, CancellationToken.None);
+                _perfilRepository.UpdatePerfil(perfil);
 
                 var preferencias = new Preferencias
                 {
@@ -190,7 +187,7 @@ namespace C_C_Final.ViewModel
                     Intereses = string.Empty
                 };
 
-                await _perfilRepository.UpsertPreferenciasAsync(preferencias, CancellationToken.None);
+                _perfilRepository.UpsertPreferencias(preferencias);
                 MessageBox.Show("Preferencias actualizadas", "Preferencias", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
@@ -203,7 +200,7 @@ namespace C_C_Final.ViewModel
             }
         }
 
-        private async Task EditarFotoAsync()
+        private void EditarFoto()
         {
             var dialog = new Microsoft.Win32.OpenFileDialog
             {
@@ -220,7 +217,6 @@ namespace C_C_Final.ViewModel
             FotoPerfilUrl = new BitmapImage(new Uri(dialog.FileName));
         }
 
-        // Reemplazar el método MapGenero(byte preferencia) para evitar el uso de switch expression (C# 8.0+) y asegurar exhaustividad.
         private static string MapGenero(byte preferencia)
         {
             switch (preferencia)
@@ -238,7 +234,6 @@ namespace C_C_Final.ViewModel
             }
         }
 
-        // Reemplazar el método MapGenero(string? preferencia) para evitar el uso de switch expression (C# 8.0+).
         private static byte MapGenero(string preferencia)
         {
             switch (preferencia)
@@ -254,7 +249,7 @@ namespace C_C_Final.ViewModel
             }
         }
 
-        private static ImageSource ConvertToImage(byte[] bytes)
+        private static ImageSource? ConvertToImage(byte[] bytes)
         {
             if (bytes == null || bytes.Length == 0)
             {

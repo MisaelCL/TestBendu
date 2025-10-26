@@ -1,5 +1,4 @@
 using System;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using C_C_Final.Helpers;
@@ -16,7 +15,7 @@ namespace C_C_Final.ViewModel
 
         public LoginViewModel()
         {
-            LoginCommand = new RelayCommand(async _ => await LoginAsync());
+            LoginCommand = new RelayCommand(_ => Login());
             OpenRegistroCommand = new RelayCommand(_ => AbrirRegistro());
         }
 
@@ -47,12 +46,11 @@ namespace C_C_Final.ViewModel
         public ICommand LoginCommand { get; }
         public ICommand OpenRegistroCommand { get; }
 
-        private async Task LoginAsync()
+        private void Login()
         {
             try
             {
                 ErrorMessage = null;
-                await Task.Delay(300);
                 if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Password))
                 {
                     ErrorMessage = "Ingresa tu usuario y contraseña";

@@ -1,8 +1,6 @@
 using System;
 using System.Data;
 using System.Data.SqlClient;
-using System.Threading;
-using System.Threading.Tasks;
 using C_C_Final.Model;
 
 namespace C_C_Final.Repositories
@@ -13,112 +11,112 @@ namespace C_C_Final.Repositories
         {
         }
 
-        public Task<Cuenta> GetByIdAsync(int idCuenta, CancellationToken ct = default)
+        public Cuenta? GetById(int idCuenta)
         {
-            return WithConnectionAsync(async connection =>
+            return WithConnection(connection =>
             {
                 const string sql = "SELECT ID_Cuenta, Email, Hash_Contrasena, Estado_Cuenta, Fecha_Registro FROM dbo.Cuenta WHERE ID_Cuenta = @Id";
-                var command = CreateCommand(connection, sql);
+                using var command = CreateCommand(connection, sql);
                 AddParameter(command, "@Id", idCuenta, SqlDbType.Int);
 
-                var reader = await command.ExecuteReaderAsync(ct).ConfigureAwait(false);
-                if (!await reader.ReadAsync(ct).ConfigureAwait(false))
+                using var reader = command.ExecuteReader();
+                if (!reader.Read())
                 {
                     return null;
                 }
 
                 return MapCuenta(reader);
-            }, ct);
+            });
         }
 
-        public Task<Cuenta> GetByEmailAsync(string email, CancellationToken ct = default)
+        public Cuenta? GetByEmail(string email)
         {
-            return WithConnectionAsync(async connection =>
+            return WithConnection(connection =>
             {
                 const string sql = "SELECT ID_Cuenta, Email, Hash_Contrasena, Estado_Cuenta, Fecha_Registro FROM dbo.Cuenta WHERE Email = @Email";
-                var command = CreateCommand(connection, sql);
+                using var command = CreateCommand(connection, sql);
                 AddParameter(command, "@Email", email, SqlDbType.NVarChar, 260);
 
-                var reader = await command.ExecuteReaderAsync(ct).ConfigureAwait(false);
-                if (!await reader.ReadAsync(ct).ConfigureAwait(false))
+                using var reader = command.ExecuteReader();
+                if (!reader.Read())
                 {
                     return null;
                 }
 
                 return MapCuenta(reader);
-            }, ct);
+            });
         }
 
-        public Task<bool> ExistsByEmailAsync(string email, CancellationToken ct = default)
+        public bool ExistsByEmail(string email)
         {
-            return WithConnectionAsync(async connection =>
+            return WithConnection(connection =>
             {
                 const string sql = "SELECT CASE WHEN EXISTS (SELECT 1 FROM dbo.Cuenta WHERE Email = @Email) THEN 1 ELSE 0 END";
-                var command = CreateCommand(connection, sql);
+                using var command = CreateCommand(connection, sql);
                 AddParameter(command, "@Email", email, SqlDbType.NVarChar, 260);
 
-                var result = await command.ExecuteScalarAsync(ct).ConfigureAwait(false);
+                var result = command.ExecuteScalar();
                 return Convert.ToInt32(result) == 1;
-            }, ct);
+            });
         }
 
-        public Task<int> CreateCuentaAsync(string email, string passwordHash, byte estadoCuenta, CancellationToken ct = default)
+        public int CreateCuenta(string email, string passwordHash, byte estadoCuenta)
         {
-            return WithConnectionAsync(connection => CreateCuentaAsync(connection, null, email, passwordHash, estadoCuenta, ct), ct);
+            return WithConnection(connection => CreateCuenta(connection, null, email, passwordHash, estadoCuenta));
         }
 
-        public Task<int> CreateAlumnoAsync(Alumno alumno, CancellationToken ct = default)
+        public int CreateAlumno(Alumno alumno)
         {
-            return WithConnectionAsync(connection => CreateAlumnoAsync(connection, null, alumno, ct), ct);
+            return WithConnection(connection => CreateAlumno(connection, null, alumno));
         }
 
-        public Task<bool> UpdatePasswordAsync(int idCuenta, string newPasswordHash, CancellationToken ct = default)
+        public bool UpdatePassword(int idCuenta, string newPasswordHash)
         {
-            return WithConnectionAsync(async connection =>
+            return WithConnection(connection =>
             {
                 const string sql = "UPDATE dbo.Cuenta SET Hash_Contrasena = @Hash WHERE ID_Cuenta = @Id";
-                var command = CreateCommand(connection, sql);
+                using var command = CreateCommand(connection, sql);
                 AddParameter(command, "@Hash", newPasswordHash, SqlDbType.NVarChar, -1);
                 AddParameter(command, "@Id", idCuenta, SqlDbType.Int);
 
-                var rows = await command.ExecuteNonQueryAsync(ct).ConfigureAwait(false);
+                var rows = command.ExecuteNonQuery();
                 return rows > 0;
-            }, ct);
+            });
         }
 
-        public Task<bool> DeleteCuentaAsync(int idCuenta, CancellationToken ct = default)
+        public bool DeleteCuenta(int idCuenta)
         {
-            return WithConnectionAsync(async connection =>
+            return WithConnection(connection =>
             {
                 const string sql = "DELETE FROM dbo.Cuenta WHERE ID_Cuenta = @Id";
-                var command = CreateCommand(connection, sql);
+                using var command = CreateCommand(connection, sql);
                 AddParameter(command, "@Id", idCuenta, SqlDbType.Int);
 
-                var rows = await command.ExecuteNonQueryAsync(ct).ConfigureAwait(false);
+                var rows = command.ExecuteNonQuery();
                 return rows > 0;
-            }, ct);
+            });
         }
 
-        public async Task<int> CreateCuentaAsync(SqlConnection connection, SqlTransaction tx, string email, string passwordHash, byte estadoCuenta, CancellationToken ct = default)
+        public int CreateCuenta(SqlConnection connection, SqlTransaction tx, string email, string passwordHash, byte estadoCuenta)
         {
             const string sql = @"INSERT INTO dbo.Cuenta (Email, Hash_Contrasena, Estado_Cuenta, Fecha_Registro)
 OUTPUT INSERTED.ID_Cuenta
 VALUES (@Email, @Hash, @Estado, @Fecha);";
-            var command = CreateCommand(connection, sql, CommandType.Text, tx);
+            using var command = CreateCommand(connection, sql, CommandType.Text, tx);
             AddParameter(command, "@Email", email, SqlDbType.NVarChar, 260);
             AddParameter(command, "@Hash", passwordHash, SqlDbType.NVarChar, -1);
             AddParameter(command, "@Estado", estadoCuenta, SqlDbType.TinyInt);
             AddParameter(command, "@Fecha", DateTime.UtcNow, SqlDbType.DateTime2);
 
-            var result = await command.ExecuteScalarAsync(ct).ConfigureAwait(false);
+            var result = command.ExecuteScalar();
             return Convert.ToInt32(result);
         }
 
-        public async Task<int> CreateAlumnoAsync(SqlConnection connection, SqlTransaction tx, Alumno alumno, CancellationToken ct = default)
+        public int CreateAlumno(SqlConnection connection, SqlTransaction tx, Alumno alumno)
         {
             const string sql = @"INSERT INTO dbo.Alumno (Matricula, ID_Cuenta, Nombre, Apaterno, Amaterno, F_Nac, Genero, Correo, Carrera)
 VALUES (@Matricula, @Cuenta, @Nombre, @Apaterno, @Amaterno, @Nacimiento, @Genero, @Correo, @Carrera);";
-            var command = CreateCommand(connection, sql, CommandType.Text, tx);
+            using var command = CreateCommand(connection, sql, CommandType.Text, tx);
             AddParameter(command, "@Matricula", alumno.Matricula, SqlDbType.NVarChar, 50);
             AddParameter(command, "@Cuenta", alumno.IdCuenta, SqlDbType.Int);
             AddParameter(command, "@Nombre", alumno.Nombre, SqlDbType.NVarChar, 100);
@@ -129,7 +127,7 @@ VALUES (@Matricula, @Cuenta, @Nombre, @Apaterno, @Amaterno, @Nacimiento, @Genero
             AddParameter(command, "@Correo", alumno.Correo, SqlDbType.NVarChar, 260);
             AddParameter(command, "@Carrera", alumno.Carrera, SqlDbType.NVarChar, 100);
 
-            await command.ExecuteNonQueryAsync(ct).ConfigureAwait(false);
+            command.ExecuteNonQuery();
             return alumno.IdCuenta;
         }
 

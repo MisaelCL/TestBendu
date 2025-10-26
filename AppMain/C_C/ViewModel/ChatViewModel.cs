@@ -2,8 +2,6 @@ using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -19,7 +17,7 @@ namespace C_C_Final.ViewModel
         private readonly IPerfilRepository _perfilRepository;
         private readonly MatchService _matchService;
         private readonly ObservableCollection<MensajeItemViewModel> _mensajes = new ObservableCollection<MensajeItemViewModel>();
-        private ImageSource _contactoAvatarUrl;
+        private ImageSource? _contactoAvatarUrl;
         private string _contactoNombre = string.Empty;
         private string _nuevoMensaje = string.Empty;
         private bool _isChatMenuOpen;
@@ -37,10 +35,10 @@ namespace C_C_Final.ViewModel
             GoBackCommand = new RelayCommand(_ => CloseWindow());
             OpenMenuCommand = new RelayCommand(_ => IsChatMenuOpen = !IsChatMenuOpen);
             OpenThreadMenuCommand = new RelayCommand(_ => IsThreadMenuOpen = !IsThreadMenuOpen);
-            EnviarMensajeCommand = new RelayCommand(async _ => await EnviarMensajeAsync());
+            EnviarMensajeCommand = new RelayCommand(_ => EnviarMensaje());
             VerPerfilCommand = new RelayCommand(_ => MessageBox.Show("Abrir perfil del contacto", "Chat", MessageBoxButton.OK, MessageBoxImage.Information));
-            BloquearContactoCommand = new RelayCommand(async _ => await BloquearContactoAsync());
-            EliminarChatCommand = new RelayCommand(async _ => await EliminarChatAsync());
+            BloquearContactoCommand = new RelayCommand(_ => BloquearContacto());
+            EliminarChatCommand = new RelayCommand(_ => EliminarChat());
             SilenciarChatCommand = new RelayCommand(_ => MessageBox.Show("Chat silenciado", "Chat", MessageBoxButton.OK, MessageBoxImage.Information));
             MarcarNoLeidoCommand = new RelayCommand(_ => MessageBox.Show("Chat marcado como no leído", "Chat", MessageBoxButton.OK, MessageBoxImage.Information));
         }
@@ -87,43 +85,43 @@ namespace C_C_Final.ViewModel
         public ICommand SilenciarChatCommand { get; }
         public ICommand MarcarNoLeidoCommand { get; }
 
-        public async Task LoadAsync(int matchId, int perfilActualId, CancellationToken ct = default)
+        public void Load(int matchId, int perfilActualId)
         {
             _matchId = matchId;
             _perfilActualId = perfilActualId;
             Mensajes.Clear();
 
-            var match = await _matchRepository.GetByIdAsync(matchId, ct);
+            var match = _matchRepository.GetById(matchId);
             if (match == null)
             {
                 throw new InvalidOperationException("El match especificado no existe");
             }
 
             var contactoId = match.PerfilEmisor == perfilActualId ? match.PerfilReceptor : match.PerfilEmisor;
-            var perfilContacto = await _perfilRepository.GetByIdAsync(contactoId, ct);
+            var perfilContacto = _perfilRepository.GetById(contactoId);
             if (perfilContacto != null)
             {
                 ContactoNombre = perfilContacto.Nikname;
                 ContactoAvatarUrl = ConvertToImage(perfilContacto.FotoPerfil);
             }
 
-            var chat = await _matchRepository.GetChatByMatchIdAsync(matchId, ct) ?? new Chat();
+            var chat = _matchRepository.GetChatByMatchId(matchId) ?? new Chat();
             if (chat.IdChat == 0)
             {
-                var chatId = await _matchRepository.EnsureChatForMatchAsync(matchId, ct);
-                chat = await _matchRepository.GetChatByMatchIdAsync(matchId, ct) ?? new Chat { IdChat = chatId };
+                var chatId = _matchRepository.EnsureChatForMatch(matchId);
+                chat = _matchRepository.GetChatByMatchId(matchId) ?? new Chat { IdChat = chatId };
             }
 
             _chatId = chat.IdChat;
 
-            var mensajes = await _matchRepository.ListMensajesAsync(_chatId, 0, 50, ct);
+            var mensajes = _matchRepository.ListMensajes(_chatId, 0, 50);
             foreach (var mensaje in mensajes.OrderBy(m => m.FechaEnvio))
             {
                 Mensajes.Add(MapMensaje(mensaje));
             }
         }
 
-        private async Task EnviarMensajeAsync()
+        private void EnviarMensaje()
         {
             if (string.IsNullOrWhiteSpace(NuevoMensaje) || _chatId == 0)
             {
@@ -132,7 +130,7 @@ namespace C_C_Final.ViewModel
 
             var contenido = NuevoMensaje.Trim();
             NuevoMensaje = string.Empty;
-            var mensajeId = await _matchService.SendMessageAsync(_chatId, _perfilActualId, contenido, CancellationToken.None);
+            var mensajeId = _matchService.SendMessage(_chatId, _perfilActualId, contenido);
             var mensaje = new Mensaje
             {
                 IdMensaje = mensajeId,
@@ -147,25 +145,25 @@ namespace C_C_Final.ViewModel
             Mensajes.Add(MapMensaje(mensaje));
         }
 
-        private async Task BloquearContactoAsync()
+        private void BloquearContacto()
         {
             if (_matchId == 0)
             {
                 return;
             }
 
-            await _matchRepository.UpdateEstadoAsync(_matchId, "roto", CancellationToken.None);
+            _matchRepository.UpdateEstado(_matchId, "roto");
             MessageBox.Show("El contacto fue bloqueado", "Chat", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
-        private async Task EliminarChatAsync()
+        private void EliminarChat()
         {
             if (_matchId == 0)
             {
                 return;
             }
 
-            await _matchRepository.DeleteMatchAsync(_matchId, CancellationToken.None);
+            _matchRepository.DeleteMatch(_matchId);
             Application.Current?.Windows[Application.Current.Windows.Count - 1]?.Close();
         }
 

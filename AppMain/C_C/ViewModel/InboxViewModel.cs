@@ -2,8 +2,6 @@ using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -33,11 +31,11 @@ namespace C_C_Final.ViewModel
 
             OpenSettingsCommand = new RelayCommand(_ => IsSettingsMenuOpen = !IsSettingsMenuOpen);
             GoMiPerfilCommand = new RelayCommand(_ => EstadoMensaje = "Abre tu perfil para editar tu información");
-            BloquearPerfilCommand = new RelayCommand(async _ => await BloquearActualAsync());
+            BloquearPerfilCommand = new RelayCommand(_ => BloquearActual());
             PrevCommand = new RelayCommand(_ => MoverAnterior());
             NextCommand = new RelayCommand(_ => MoverSiguiente());
-            LikeCommand = new RelayCommand(async _ => await AceptarActualAsync());
-            DislikeCommand = new RelayCommand(async _ => await RechazarActualAsync());
+            LikeCommand = new RelayCommand(_ => AceptarActual());
+            DislikeCommand = new RelayCommand(_ => RechazarActual());
         }
 
         public ObservableCollection<SugerenciaItemViewModel> Sugerencias => _sugerencias;
@@ -68,17 +66,17 @@ namespace C_C_Final.ViewModel
         public ICommand LikeCommand { get; }
         public ICommand DislikeCommand { get; }
 
-        public async Task LoadAsync(int perfilId, CancellationToken ct = default)
+        public void Load(int perfilId)
         {
             _perfilId = perfilId;
             _sugerencias.Clear();
             _currentIndex = 0;
 
-            var matches = await _matchRepository.ListByPerfilAsync(perfilId, 0, _pageSize, ct);
+            var matches = _matchRepository.ListByPerfil(perfilId, 0, _pageSize);
             foreach (var match in matches.OrderByDescending(m => m.FechaMatch))
             {
                 var otherPerfilId = match.PerfilEmisor == perfilId ? match.PerfilReceptor : match.PerfilEmisor;
-                var perfil = await _perfilRepository.GetByIdAsync(otherPerfilId, ct);
+                var perfil = _perfilRepository.GetById(otherPerfilId);
                 if (perfil == null)
                 {
                     continue;
@@ -99,37 +97,37 @@ namespace C_C_Final.ViewModel
             EstadoMensaje = _sugerencias.Count == 0 ? "No hay chats disponibles" : "Selecciona un perfil para interactuar.";
         }
 
-        private async Task AceptarActualAsync()
+        private void AceptarActual()
         {
             if (PerfilActual == null)
             {
                 return;
             }
 
-            await _matchRepository.UpdateEstadoAsync(PerfilActual.MatchId, "aceptado", CancellationToken.None);
-            await _matchService.EnsureChatForMatchAsync(PerfilActual.MatchId, CancellationToken.None);
+            _matchRepository.UpdateEstado(PerfilActual.MatchId, "aceptado");
+            _matchService.EnsureChatForMatch(PerfilActual.MatchId);
             EstadoMensaje = $"Has aceptado a {PerfilActual.NombreEdad}";
         }
 
-        private async Task RechazarActualAsync()
+        private void RechazarActual()
         {
             if (PerfilActual == null)
             {
                 return;
             }
 
-            await _matchRepository.UpdateEstadoAsync(PerfilActual.MatchId, "rechazado", CancellationToken.None);
+            _matchRepository.UpdateEstado(PerfilActual.MatchId, "rechazado");
             EstadoMensaje = $"Has rechazado a {PerfilActual.NombreEdad}";
         }
 
-        private async Task BloquearActualAsync()
+        private void BloquearActual()
         {
             if (PerfilActual == null)
             {
                 return;
             }
 
-            await _matchRepository.DeleteMatchAsync(PerfilActual.MatchId, CancellationToken.None);
+            _matchRepository.DeleteMatch(PerfilActual.MatchId);
             _sugerencias.Remove(PerfilActual);
             PerfilActual = _sugerencias.Count > 0 ? _sugerencias[Math.Min(_currentIndex, _sugerencias.Count - 1)] : null;
             EstadoMensaje = "El perfil se eliminó de tu bandeja.";
@@ -157,7 +155,7 @@ namespace C_C_Final.ViewModel
             PerfilActual = _sugerencias[_currentIndex];
         }
 
-        private static ImageSource ConvertToImage(byte[] bytes)
+        private static ImageSource? ConvertToImage(byte[] bytes)
         {
             if (bytes == null || bytes.Length == 0)
             {
@@ -181,6 +179,6 @@ namespace C_C_Final.ViewModel
         public int PerfilId { get; set; }
         public string NombreEdad { get; set; } = string.Empty;
         public string CarreraTexto { get; set; } = string.Empty;
-        public ImageSource FotoUrl { get; set; }
+        public ImageSource? FotoUrl { get; set; }
     }
 }

@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Threading;
-using System.Threading.Tasks;
 using C_C_Final.Model;
 
 namespace C_C_Final.Repositories
@@ -14,167 +12,167 @@ namespace C_C_Final.Repositories
         {
         }
 
-        public Task<Match> GetByIdAsync(int idMatch, CancellationToken ct = default)
+        public Match? GetById(int idMatch)
         {
-            return WithConnectionAsync(async connection =>
+            return WithConnection(connection =>
             {
                 const string sql = "SELECT ID_Match, Perfil_Emisor, Perfil_Receptor, Estado, Fecha_Match FROM dbo.Match WHERE ID_Match = @Id";
-                var command = CreateCommand(connection, sql);
+                using var command = CreateCommand(connection, sql);
                 AddParameter(command, "@Id", idMatch, SqlDbType.Int);
 
-                var reader = await command.ExecuteReaderAsync(ct).ConfigureAwait(false);
-                if (!await reader.ReadAsync(ct).ConfigureAwait(false))
+                using var reader = command.ExecuteReader();
+                if (!reader.Read())
                 {
                     return null;
                 }
 
                 return MapMatch(reader);
-            }, ct);
+            });
         }
 
-        public Task<bool> ExistsAsync(int idPerfilA, int idPerfilB, CancellationToken ct = default)
+        public bool Exists(int idPerfilA, int idPerfilB)
         {
-            return WithConnectionAsync(async connection =>
+            return WithConnection(connection =>
             {
                 const string sql = @"SELECT CASE WHEN EXISTS (
     SELECT 1 FROM dbo.Match
     WHERE (Perfil_Emisor = @A AND Perfil_Receptor = @B)
        OR (Perfil_Emisor = @B AND Perfil_Receptor = @A)
 ) THEN 1 ELSE 0 END";
-                var command = CreateCommand(connection, sql);
+                using var command = CreateCommand(connection, sql);
                 AddParameter(command, "@A", idPerfilA, SqlDbType.Int);
                 AddParameter(command, "@B", idPerfilB, SqlDbType.Int);
 
-                var result = await command.ExecuteScalarAsync(ct).ConfigureAwait(false);
+                var result = command.ExecuteScalar();
                 return Convert.ToInt32(result) == 1;
-            }, ct);
+            });
         }
 
-        public Task<IReadOnlyList<Match>> ListByPerfilAsync(int idPerfil, int page, int pageSize, CancellationToken ct = default)
+        public IReadOnlyList<Match> ListByPerfil(int idPerfil, int page, int pageSize)
         {
-            return WithConnectionAsync(async connection =>
+            return WithConnection(connection =>
             {
                 const string sql = @"SELECT ID_Match, Perfil_Emisor, Perfil_Receptor, Estado, Fecha_Match
 FROM dbo.Match
 WHERE Perfil_Emisor = @Perfil OR Perfil_Receptor = @Perfil
 ORDER BY Fecha_Match DESC
 OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
-                var command = CreateCommand(connection, sql);
+                using var command = CreateCommand(connection, sql);
                 AddParameter(command, "@Perfil", idPerfil, SqlDbType.Int);
                 AddParameter(command, "@Offset", Math.Max(page, 0) * pageSize, SqlDbType.Int);
                 AddParameter(command, "@PageSize", pageSize, SqlDbType.Int);
 
                 var list = new List<Match>();
-                var reader = await command.ExecuteReaderAsync(ct).ConfigureAwait(false);
-                while (await reader.ReadAsync(ct).ConfigureAwait(false))
+                using var reader = command.ExecuteReader();
+                while (reader.Read())
                 {
                     list.Add(MapMatch(reader));
                 }
 
                 return (IReadOnlyList<Match>)list;
-            }, ct);
+            });
         }
 
-        public Task<int> CreateMatchAsync(int idPerfilEmisor, int idPerfilReceptor, string estado, CancellationToken ct = default)
+        public int CreateMatch(int idPerfilEmisor, int idPerfilReceptor, string estado)
         {
-            return WithConnectionAsync(connection => CreateMatchAsync(connection, null, idPerfilEmisor, idPerfilReceptor, estado, ct), ct);
+            return WithConnection(connection => CreateMatch(connection, null, idPerfilEmisor, idPerfilReceptor, estado));
         }
 
-        public Task<bool> UpdateEstadoAsync(int idMatch, string nuevoEstado, CancellationToken ct = default)
+        public bool UpdateEstado(int idMatch, string nuevoEstado)
         {
-            return WithConnectionAsync(async connection =>
+            return WithConnection(connection =>
             {
                 const string sql = "UPDATE dbo.Match SET Estado = @Estado WHERE ID_Match = @Id";
-                var command = CreateCommand(connection, sql);
+                using var command = CreateCommand(connection, sql);
                 AddParameter(command, "@Estado", nuevoEstado ?? string.Empty, SqlDbType.Char, 10);
                 AddParameter(command, "@Id", idMatch, SqlDbType.Int);
 
-                var rows = await command.ExecuteNonQueryAsync(ct).ConfigureAwait(false);
+                var rows = command.ExecuteNonQuery();
                 return rows > 0;
-            }, ct);
+            });
         }
 
-        public Task<bool> DeleteMatchAsync(int idMatch, CancellationToken ct = default)
+        public bool DeleteMatch(int idMatch)
         {
-            return WithConnectionAsync(async connection =>
+            return WithConnection(connection =>
             {
                 const string sql = "DELETE FROM dbo.Match WHERE ID_Match = @Id";
-                var command = CreateCommand(connection, sql);
+                using var command = CreateCommand(connection, sql);
                 AddParameter(command, "@Id", idMatch, SqlDbType.Int);
 
-                var rows = await command.ExecuteNonQueryAsync(ct).ConfigureAwait(false);
+                var rows = command.ExecuteNonQuery();
                 return rows > 0;
-            }, ct);
+            });
         }
 
-        public Task<int> EnsureChatForMatchAsync(int idMatch, CancellationToken ct = default)
+        public int EnsureChatForMatch(int idMatch)
         {
-            return WithConnectionAsync(connection => EnsureChatForMatchAsync(connection, null, idMatch, ct), ct);
+            return WithConnection(connection => EnsureChatForMatch(connection, null, idMatch));
         }
 
-        public Task<Chat?> GetChatByMatchIdAsync(int idMatch, CancellationToken ct = default)
+        public Chat? GetChatByMatchId(int idMatch)
         {
-            return WithConnectionAsync(async connection =>
+            return WithConnection(connection =>
             {
                 const string sql = "SELECT ID_Chat, ID_Match, Fecha_Creacion, LastMessageAtUtc, LastMessageId FROM dbo.Chat WHERE ID_Match = @Match";
-                var command = CreateCommand(connection, sql);
+                using var command = CreateCommand(connection, sql);
                 AddParameter(command, "@Match", idMatch, SqlDbType.Int);
 
-                var reader = await command.ExecuteReaderAsync(ct).ConfigureAwait(false);
-                if (!await reader.ReadAsync(ct).ConfigureAwait(false))
+                using var reader = command.ExecuteReader();
+                if (!reader.Read())
                 {
                     return null;
                 }
 
                 return MapChat(reader);
-            }, ct);
+            });
         }
 
-        public Task<long> AddMensajeAsync(int idChat, int idRemitentePerfil, string contenido, bool confirmacionLectura, CancellationToken ct = default)
+        public long AddMensaje(int idChat, int idRemitentePerfil, string contenido, bool confirmacionLectura)
         {
-            return WithConnectionAsync(connection => AddMensajeAsync(connection, null, idChat, idRemitentePerfil, contenido, confirmacionLectura, ct), ct);
+            return WithConnection(connection => AddMensaje(connection, null, idChat, idRemitentePerfil, contenido, confirmacionLectura));
         }
 
-        public Task<IReadOnlyList<Mensaje>> ListMensajesAsync(int idChat, int page, int pageSize, CancellationToken ct = default)
+        public IReadOnlyList<Mensaje> ListMensajes(int idChat, int page, int pageSize)
         {
-            return WithConnectionAsync(async connection =>
+            return WithConnection(connection =>
             {
                 const string sql = @"SELECT ID_Mensaje, ID_Chat, Remitente, Contenido, Fecha_Envio, Confirmacion_Lectura, IsEdited, EditedAtUtc, IsDeleted
 FROM dbo.Mensaje
 WHERE ID_Chat = @Chat
 ORDER BY Fecha_Envio DESC, ID_Mensaje DESC
 OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
-                var command = CreateCommand(connection, sql);
+                using var command = CreateCommand(connection, sql);
                 AddParameter(command, "@Chat", idChat, SqlDbType.Int);
                 AddParameter(command, "@Offset", Math.Max(page, 0) * pageSize, SqlDbType.Int);
                 AddParameter(command, "@PageSize", pageSize, SqlDbType.Int);
 
                 var list = new List<Mensaje>();
-                var reader = await command.ExecuteReaderAsync(ct).ConfigureAwait(false);
-                while (await reader.ReadAsync(ct).ConfigureAwait(false))
+                using var reader = command.ExecuteReader();
+                while (reader.Read())
                 {
                     list.Add(MapMensaje(reader));
                 }
 
                 return (IReadOnlyList<Mensaje>)list;
-            }, ct);
+            });
         }
 
-        public async Task<int> CreateMatchAsync(SqlConnection connection, SqlTransaction? tx, int idPerfilEmisor, int idPerfilReceptor, string estado, CancellationToken ct = default)
+        public int CreateMatch(SqlConnection connection, SqlTransaction? tx, int idPerfilEmisor, int idPerfilReceptor, string estado)
         {
             const string sql = @"INSERT INTO dbo.Match (Perfil_Emisor, Perfil_Receptor, Estado, Fecha_Match)
 OUTPUT INSERTED.ID_Match
 VALUES (@Emisor, @Receptor, @Estado, SYSUTCDATETIME());";
-            var command = CreateCommand(connection, sql, CommandType.Text, tx);
+            using var command = CreateCommand(connection, sql, CommandType.Text, tx);
             AddParameter(command, "@Emisor", idPerfilEmisor, SqlDbType.Int);
             AddParameter(command, "@Receptor", idPerfilReceptor, SqlDbType.Int);
             AddParameter(command, "@Estado", estado ?? string.Empty, SqlDbType.Char, 10);
 
-            var result = await command.ExecuteScalarAsync(ct).ConfigureAwait(false);
+            var result = command.ExecuteScalar();
             return Convert.ToInt32(result);
         }
 
-        public async Task<int> EnsureChatForMatchAsync(SqlConnection connection, SqlTransaction? tx, int idMatch, CancellationToken ct = default)
+        public int EnsureChatForMatch(SqlConnection connection, SqlTransaction? tx, int idMatch)
         {
             const string sql = @"DECLARE @Existing INT;
 SELECT @Existing = ID_Chat FROM dbo.Chat WITH (UPDLOCK, HOLDLOCK) WHERE ID_Match = @Match;
@@ -188,35 +186,35 @@ BEGIN
     OUTPUT INSERTED.ID_Chat
     VALUES (@Match, SYSUTCDATETIME(), NULL, NULL);
 END";
-            var command = CreateCommand(connection, sql, CommandType.Text, tx);
+            using var command = CreateCommand(connection, sql, CommandType.Text, tx);
             AddParameter(command, "@Match", idMatch, SqlDbType.Int);
 
-            var result = await command.ExecuteScalarAsync(ct).ConfigureAwait(false);
+            var result = command.ExecuteScalar();
             return Convert.ToInt32(result);
         }
 
-        public async Task<long> AddMensajeAsync(SqlConnection connection, SqlTransaction? tx, int idChat, int idRemitentePerfil, string contenido, bool confirmacionLectura, CancellationToken ct = default)
+        public long AddMensaje(SqlConnection connection, SqlTransaction? tx, int idChat, int idRemitentePerfil, string contenido, bool confirmacionLectura)
         {
             var fechaEnvio = DateTime.UtcNow;
             const string insertSql = @"INSERT INTO dbo.Mensaje (ID_Chat, Remitente, Contenido, Fecha_Envio, Confirmacion_Lectura, IsEdited, EditedAtUtc, IsDeleted)
 OUTPUT INSERTED.ID_Mensaje
 VALUES (@Chat, @Remitente, @Contenido, @Fecha, @Confirmado, 0, NULL, 0);";
-            var insertCommand = CreateCommand(connection, insertSql, CommandType.Text, tx);
+            using var insertCommand = CreateCommand(connection, insertSql, CommandType.Text, tx);
             AddParameter(insertCommand, "@Chat", idChat, SqlDbType.Int);
             AddParameter(insertCommand, "@Remitente", idRemitentePerfil, SqlDbType.Int);
             AddParameter(insertCommand, "@Contenido", contenido ?? string.Empty, SqlDbType.NVarChar, -1);
             AddParameter(insertCommand, "@Fecha", fechaEnvio, SqlDbType.DateTime2);
             AddParameter(insertCommand, "@Confirmado", confirmacionLectura, SqlDbType.Bit);
 
-            var mensajeIdObj = await insertCommand.ExecuteScalarAsync(ct).ConfigureAwait(false);
+            var mensajeIdObj = insertCommand.ExecuteScalar();
             var mensajeId = Convert.ToInt64(mensajeIdObj);
 
             const string updateChatSql = "UPDATE dbo.Chat SET LastMessageAtUtc = @Fecha, LastMessageId = @Mensaje WHERE ID_Chat = @Chat";
-            var updateCommand = CreateCommand(connection, updateChatSql, CommandType.Text, tx);
+            using var updateCommand = CreateCommand(connection, updateChatSql, CommandType.Text, tx);
             AddParameter(updateCommand, "@Fecha", fechaEnvio, SqlDbType.DateTime2);
             AddParameter(updateCommand, "@Mensaje", mensajeId, SqlDbType.BigInt);
             AddParameter(updateCommand, "@Chat", idChat, SqlDbType.Int);
-            await updateCommand.ExecuteNonQueryAsync(ct).ConfigureAwait(false);
+            updateCommand.ExecuteNonQuery();
 
             return mensajeId;
         }

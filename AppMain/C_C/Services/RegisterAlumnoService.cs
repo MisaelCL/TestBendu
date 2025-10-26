@@ -2,8 +2,6 @@ using System;
 using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using C_C_Final.Model;
 using C_C_Final.Repositories;
 
@@ -40,7 +38,7 @@ namespace C_C_Final.Services
             _connectionFactory = connectionFactory;
         }
 
-        public async Task<int> RegisterAsync(RegisterAlumnoRequest request, CancellationToken ct = default)
+        public int Register(RegisterAlumnoRequest request)
         {
             if (request is null)
             {
@@ -62,11 +60,11 @@ namespace C_C_Final.Services
                 throw new ArgumentException("El género debe ser 'M' o 'F'", nameof(request));
             }
 
-            using var unitOfWork = await UnitOfWork.CreateAsync(_connectionFactory, ct).ConfigureAwait(false);
+            using var unitOfWork = UnitOfWork.Create(_connectionFactory);
             try
             {
                 var passwordHash = ComputeHash(request.Password);
-                var cuentaId = await _cuentaRepository.CreateCuentaAsync(unitOfWork.Connection, unitOfWork.Transaction, request.Email, passwordHash, request.EstadoCuenta, ct).ConfigureAwait(false);
+                var cuentaId = _cuentaRepository.CreateCuenta(unitOfWork.Connection, unitOfWork.Transaction, request.Email, passwordHash, request.EstadoCuenta);
 
                 var alumno = new Alumno
                 {
@@ -80,7 +78,7 @@ namespace C_C_Final.Services
                     Correo = request.CorreoAlumno,
                     Carrera = request.Carrera
                 };
-                await _cuentaRepository.CreateAlumnoAsync(unitOfWork.Connection, unitOfWork.Transaction, alumno, ct).ConfigureAwait(false);
+                _cuentaRepository.CreateAlumno(unitOfWork.Connection, unitOfWork.Transaction, alumno);
 
                 var perfil = new Perfil
                 {
@@ -90,7 +88,7 @@ namespace C_C_Final.Services
                     FotoPerfil = request.FotoPerfil,
                     FechaCreacion = DateTime.UtcNow
                 };
-                var perfilId = await _perfilRepository.CreatePerfilAsync(unitOfWork.Connection, unitOfWork.Transaction, perfil, ct).ConfigureAwait(false);
+                var perfilId = _perfilRepository.CreatePerfil(unitOfWork.Connection, unitOfWork.Transaction, perfil);
 
                 var preferencias = new Preferencias
                 {
@@ -101,14 +99,14 @@ namespace C_C_Final.Services
                     PreferenciaCarrera = string.Empty,
                     Intereses = string.Empty
                 };
-                await _perfilRepository.UpsertPreferenciasAsync(unitOfWork.Connection, unitOfWork.Transaction, preferencias, ct).ConfigureAwait(false);
+                _perfilRepository.UpsertPreferencias(unitOfWork.Connection, unitOfWork.Transaction, preferencias);
 
-                await unitOfWork.CommitAsync(ct).ConfigureAwait(false);
+                unitOfWork.Commit();
                 return cuentaId;
             }
             catch
             {
-                await unitOfWork.RollbackAsync(ct).ConfigureAwait(false);
+                unitOfWork.Rollback();
                 throw;
             }
         }

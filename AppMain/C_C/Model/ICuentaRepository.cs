@@ -1,21 +1,19 @@
 using System.Data.SqlClient;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace C_C_Final.Model
 {
     public interface ICuentaRepository
     {
-        Task<Cuenta> GetByIdAsync(int idCuenta, CancellationToken ct = default);
-        Task<Cuenta> GetByEmailAsync(string email, CancellationToken ct = default);
-        Task<bool> ExistsByEmailAsync(string email, CancellationToken ct = default);
+        Cuenta? GetById(int idCuenta);
+        Cuenta? GetByEmail(string email);
+        bool ExistsByEmail(string email);
 
-        Task<int> CreateCuentaAsync(string email, string passwordHash, byte estadoCuenta, CancellationToken ct = default);
-        Task<int> CreateAlumnoAsync(Alumno alumno, CancellationToken ct = default);
-        Task<bool> UpdatePasswordAsync(int idCuenta, string newPasswordHash, CancellationToken ct = default);
-        Task<bool> DeleteCuentaAsync(int idCuenta, CancellationToken ct = default);
+        int CreateCuenta(string email, string passwordHash, byte estadoCuenta);
+        int CreateAlumno(Alumno alumno);
+        bool UpdatePassword(int idCuenta, string newPasswordHash);
+        bool DeleteCuenta(int idCuenta);
 
-        Task<int> CreateCuentaAsync(SqlConnection cn, SqlTransaction tx, string email, string passwordHash, byte estadoCuenta, CancellationToken ct = default);
-        Task<int> CreateAlumnoAsync(SqlConnection cn, SqlTransaction tx, Alumno alumno, CancellationToken ct = default);
+        int CreateCuenta(SqlConnection cn, SqlTransaction tx, string email, string passwordHash, byte estadoCuenta);
+        int CreateAlumno(SqlConnection cn, SqlTransaction tx, Alumno alumno);
     }
 }

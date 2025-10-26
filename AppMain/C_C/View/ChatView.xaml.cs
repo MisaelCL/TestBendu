@@ -1,5 +1,4 @@
 using System;
-using System.Threading.Tasks;
 using System.Windows;
 using C_C_Final.Helpers;
 using C_C_Final.ViewModel;
@@ -13,14 +12,14 @@ namespace C_C_Final.View
             InitializeComponent();
             var viewModel = AppBootstrapper.CreateChatViewModel();
             DataContext = viewModel;
-            Loaded += async (_, _) => await LoadAsync(viewModel).ConfigureAwait(false);
+            Loaded += (_, _) => Load(viewModel);
         }
 
-        private static async Task LoadAsync(ChatViewModel viewModel)
+        private static void Load(ChatViewModel viewModel)
         {
             try
             {
-                await viewModel.LoadAsync(0, 0).ConfigureAwait(false);
+                viewModel.Load(0, 0);
             }
             catch (Exception)
             {

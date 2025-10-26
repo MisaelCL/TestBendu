@@ -1,7 +1,5 @@
 using System;
 using System.Data.SqlClient;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace C_C_Final.Repositories
 {
@@ -20,26 +18,22 @@ namespace C_C_Final.Repositories
         public SqlConnection Connection => _connection;
         public SqlTransaction Transaction => _transaction;
 
-        public static async Task<UnitOfWork> CreateAsync(SqlConnectionFactory factory, CancellationToken ct)
+        public static UnitOfWork Create(SqlConnectionFactory factory)
         {
             var connection = factory.CreateConnection();
-            await connection.OpenAsync(ct).ConfigureAwait(false);
+            connection.Open();
             var transaction = connection.BeginTransaction();
             return new UnitOfWork(connection, transaction);
         }
 
-        public async Task CommitAsync(CancellationToken ct)
+        public void Commit()
         {
-            // CommitAsync no está disponible en SqlTransaction en .NET Framework.
-            // Usar el método síncrono Commit en su lugar.
-            await Task.Run(() => _transaction.Commit(), ct).ConfigureAwait(false);
+            _transaction.Commit();
         }
 
-        public async Task RollbackAsync(CancellationToken ct)
+        public void Rollback()
         {
-            // RollbackAsync no está disponible en SqlTransaction en .NET Framework.
-            // Usar el método síncrono Rollback en su lugar.
-            await Task.Run(() => _transaction.Rollback(), ct).ConfigureAwait(false);
+            _transaction.Rollback();
         }
 
         public void Dispose()

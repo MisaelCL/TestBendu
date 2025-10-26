@@ -1,7 +1,5 @@
 using System;
 using System.Collections.ObjectModel;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using C_C_Final.Services;
@@ -35,7 +33,7 @@ namespace C_C_Final.ViewModel
         public RegistroViewModel(RegisterAlumnoService registerAlumnoService)
         {
             _registerAlumnoService = registerAlumnoService;
-            RegisterCommand = new RelayCommand(async _ => await RegistrarAsync(), _ => !IsBusy);
+            RegisterCommand = new RelayCommand(_ => Registrar(), _ => !IsBusy);
         }
 
         public ObservableCollection<string> Carreras => _carreras;
@@ -110,7 +108,7 @@ namespace C_C_Final.ViewModel
 
         public ICommand RegisterCommand { get; }
 
-        private async Task RegistrarAsync()
+        private void Registrar()
         {
             if (IsBusy)
             {
@@ -159,7 +157,7 @@ namespace C_C_Final.ViewModel
                     Biografia = string.Empty
                 };
 
-                await _registerAlumnoService.RegisterAsync(request, CancellationToken.None);
+                _registerAlumnoService.Register(request);
 
                 Password = string.Empty;
                 ConfirmPassword = string.Empty;

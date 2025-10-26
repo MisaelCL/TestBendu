@@ -1,8 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -32,8 +30,8 @@ namespace C_C_Final.ViewModel
             GoBackCommand = new RelayCommand(_ => OnGoBack());
             OpenMenuCommand = new RelayCommand(_ => { });
             EditarPerfilCommand = new RelayCommand(_ => { });
-            SubirFotoCommand = new RelayCommand(async _ => await SubirFotoAsync());
-            GuardarDescripcionCommand = new RelayCommand(async _ => await GuardarAsync(), _ => !IsBusy);
+            SubirFotoCommand = new RelayCommand(_ => SubirFoto());
+            GuardarDescripcionCommand = new RelayCommand(_ => Guardar(), _ => !IsBusy);
         }
 
         public ObservableCollection<PublicacionItemViewModel> Publicaciones { get; }
@@ -86,10 +84,10 @@ namespace C_C_Final.ViewModel
             }
         }
 
-        public async Task LoadAsync(int cuentaId, CancellationToken ct = default)
+        public void Load(int cuentaId)
         {
             _idCuenta = cuentaId;
-            var perfil = await _perfilRepository.GetByCuentaIdAsync(cuentaId, ct);
+            var perfil = _perfilRepository.GetByCuentaId(cuentaId);
             if (perfil == null)
             {
                 return;
@@ -106,7 +104,7 @@ namespace C_C_Final.ViewModel
             UnreadCount = 0;
         }
 
-        private async Task SubirFotoAsync()
+        private void SubirFoto()
         {
             var dialog = new Microsoft.Win32.OpenFileDialog
             {
@@ -119,11 +117,11 @@ namespace C_C_Final.ViewModel
                 return;
             }
 
-            _fotoPerfilBytes = await File.ReadAllBytesAsync(dialog.FileName);
+            _fotoPerfilBytes = File.ReadAllBytes(dialog.FileName);
             FotoPerfilUrl = new BitmapImage(new Uri(dialog.FileName));
         }
 
-        private async Task GuardarAsync()
+        private void Guardar()
         {
             if (_idPerfil == 0)
             {
@@ -144,7 +142,7 @@ namespace C_C_Final.ViewModel
                     FechaCreacion = _fechaCreacion
                 };
 
-                var updated = await _perfilRepository.UpdatePerfilAsync(perfil, CancellationToken.None);
+                var updated = _perfilRepository.UpdatePerfil(perfil);
                 if (updated)
                 {
                     MessageBox.Show("Perfil actualizado", "Perfil", MessageBoxButton.OK, MessageBoxImage.Information);

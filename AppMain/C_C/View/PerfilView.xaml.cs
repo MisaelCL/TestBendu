@@ -1,5 +1,4 @@
 using System;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using C_C_Final.Helpers;
@@ -14,7 +13,7 @@ namespace C_C_Final.View
             InitializeComponent();
             var viewModel = AppBootstrapper.CreatePerfilViewModel();
             DataContext = viewModel;
-            Loaded += async (_, _) => await LoadAsync(viewModel).ConfigureAwait(false);
+            Loaded += (_, _) => Load(viewModel);
         }
 
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
@@ -26,11 +25,11 @@ namespace C_C_Final.View
             }
         }
 
-        private static async Task LoadAsync(PerfilViewModel viewModel)
+        private static void Load(PerfilViewModel viewModel)
         {
             try
             {
-                await viewModel.LoadAsync(0).ConfigureAwait(false);
+                viewModel.Load(0);
             }
             catch (Exception)
             {
