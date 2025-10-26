@@ -44,7 +44,7 @@ namespace C_C_Final.Repositories
                 AddParameter(command, "@B", idPerfilB, SqlDbType.Int);
 
                 var result = command.ExecuteScalar();
-                return Convert.ToInt32(result) == 1;
+                return SafeToInt32(result) == 1;
             });
         }
 
@@ -169,7 +169,7 @@ VALUES (@Emisor, @Receptor, @Estado, SYSUTCDATETIME());";
             AddParameter(command, "@Estado", estado ?? string.Empty, SqlDbType.Char, 10);
 
             var result = command.ExecuteScalar();
-            return Convert.ToInt32(result);
+            return SafeToInt32(result);
         }
 
         public int EnsureChatForMatch(SqlConnection connection, SqlTransaction tx, int idMatch)
@@ -190,7 +190,7 @@ END";
             AddParameter(command, "@Match", idMatch, SqlDbType.Int);
 
             var result = command.ExecuteScalar();
-            return Convert.ToInt32(result);
+            return SafeToInt32(result);
         }
 
         public long AddMensaje(SqlConnection connection, SqlTransaction tx, int idChat, int idRemitentePerfil, string contenido, bool confirmacionLectura)
@@ -207,7 +207,7 @@ VALUES (@Chat, @Remitente, @Contenido, @Fecha, @Confirmado, 0, NULL, 0);";
             AddParameter(insertCommand, "@Confirmado", confirmacionLectura, SqlDbType.Bit);
 
             var mensajeIdObj = insertCommand.ExecuteScalar();
-            var mensajeId = Convert.ToInt64(mensajeIdObj);
+            var mensajeId = SafeToInt64(mensajeIdObj);
 
             const string updateChatSql = "UPDATE dbo.Chat SET LastMessageAtUtc = @Fecha, LastMessageId = @Mensaje WHERE ID_Chat = @Chat";
             using var updateCommand = CreateCommand(connection, updateChatSql, CommandType.Text, tx);
@@ -223,9 +223,9 @@ VALUES (@Chat, @Remitente, @Contenido, @Fecha, @Confirmado, 0, NULL, 0);";
         {
             return new Match
             {
-                IdMatch = reader.GetInt32(0),
-                PerfilEmisor = reader.GetInt32(1),
-                PerfilReceptor = reader.GetInt32(2),
+                IdMatch = reader.IsDBNull(0) ? 0 : reader.GetInt32(0),
+                PerfilEmisor = reader.IsDBNull(1) ? 0 : reader.GetInt32(1),
+                PerfilReceptor = reader.IsDBNull(2) ? 0 : reader.GetInt32(2),
                 Estado = reader.IsDBNull(3) ? string.Empty : reader.GetString(3),
                 FechaMatch = reader.IsDBNull(4) ? DateTime.MinValue : reader.GetDateTime(4)
             };
@@ -235,8 +235,8 @@ VALUES (@Chat, @Remitente, @Contenido, @Fecha, @Confirmado, 0, NULL, 0);";
         {
             return new Chat
             {
-                IdChat = reader.GetInt32(0),
-                IdMatch = reader.GetInt32(1),
+                IdChat = reader.IsDBNull(0) ? 0 : reader.GetInt32(0),
+                IdMatch = reader.IsDBNull(1) ? 0 : reader.GetInt32(1),
                 FechaCreacion = reader.IsDBNull(2) ? DateTime.MinValue : reader.GetDateTime(2),
                 LastMessageAtUtc = reader.IsDBNull(3) ? (DateTime?)null : reader.GetDateTime(3),
                 LastMessageId = reader.IsDBNull(4) ? (long?)null : reader.GetInt64(4)
@@ -247,9 +247,9 @@ VALUES (@Chat, @Remitente, @Contenido, @Fecha, @Confirmado, 0, NULL, 0);";
         {
             return new Mensaje
             {
-                IdMensaje = reader.GetInt64(0),
-                IdChat = reader.GetInt32(1),
-                IdRemitentePerfil = reader.GetInt32(2),
+                IdMensaje = reader.IsDBNull(0) ? 0L : reader.GetInt64(0),
+                IdChat = reader.IsDBNull(1) ? 0 : reader.GetInt32(1),
+                IdRemitentePerfil = reader.IsDBNull(2) ? 0 : reader.GetInt32(2),
                 Contenido = reader.IsDBNull(3) ? string.Empty : reader.GetString(3),
                 FechaEnvio = reader.IsDBNull(4) ? DateTime.MinValue : reader.GetDateTime(4),
                 ConfirmacionLectura = reader.IsDBNull(5) ? false : reader.GetBoolean(5),

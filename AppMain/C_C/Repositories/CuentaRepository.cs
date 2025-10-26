@@ -56,7 +56,7 @@ namespace C_C_Final.Repositories
                 AddParameter(command, "@Email", email, SqlDbType.NVarChar, 260);
 
                 var result = command.ExecuteScalar();
-                return Convert.ToInt32(result) == 1;
+                return SafeToInt32(result) == 1;
             });
         }
 
@@ -109,7 +109,7 @@ VALUES (@Email, @Hash, @Estado, @Fecha);";
             AddParameter(command, "@Fecha", DateTime.UtcNow, SqlDbType.DateTime2);
 
             var result = command.ExecuteScalar();
-            return Convert.ToInt32(result);
+            return SafeToInt32(result);
         }
 
         public int CreateAlumno(SqlConnection connection, SqlTransaction tx, Alumno alumno)
@@ -129,14 +129,14 @@ SELECT CAST(SCOPE_IDENTITY() AS INT);";
             AddParameter(command, "@Carrera", alumno.Carrera, SqlDbType.NVarChar, 100);
 
             var result = command.ExecuteScalar();
-            return Convert.ToInt32(result);
+            return SafeToInt32(result);
         }
 
         private static Cuenta MapCuenta(SqlDataReader reader)
         {
             return new Cuenta
             {
-                IdCuenta = reader.GetInt32(0),
+                IdCuenta = reader.IsDBNull(0) ? 0 : reader.GetInt32(0),
                 Email = reader.IsDBNull(1) ? string.Empty : reader.GetString(1),
                 HashContrasena = reader.IsDBNull(2) ? string.Empty : reader.GetString(2),
                 EstadoCuenta = reader.IsDBNull(3) ? (byte)0 : reader.GetByte(3),

@@ -142,7 +142,7 @@ VALUES (@Cuenta, @Nikname, @Biografia, @Foto, @Fecha);";
             AddParameter(command, "@Fecha", perfil.FechaCreacion, SqlDbType.DateTime2);
 
             var result = command.ExecuteScalar();
-            return Convert.ToInt32(result);
+            return SafeToInt32(result);
         }
 
         public int UpsertPreferencias(SqlConnection connection, SqlTransaction tx, Preferencias prefs)
@@ -214,15 +214,15 @@ OUTPUT inserted.ID_Preferencias;";
             }
 
             var result = command.ExecuteScalar();
-            return Convert.ToInt32(result);
+            return SafeToInt32(result);
         }
 
         private static Perfil MapPerfil(SqlDataReader reader)
         {
             return new Perfil
             {
-                IdPerfil = reader.GetInt32(0),
-                IdCuenta = reader.GetInt32(1),
+                IdPerfil = reader.IsDBNull(0) ? 0 : reader.GetInt32(0),
+                IdCuenta = reader.IsDBNull(1) ? 0 : reader.GetInt32(1),
                 Nikname = reader.IsDBNull(2) ? string.Empty : reader.GetString(2),
                 Biografia = reader.IsDBNull(3) ? string.Empty : reader.GetString(3),
                 FotoPerfil = reader.IsDBNull(4) ? null : (byte[])reader[4],
@@ -234,8 +234,8 @@ OUTPUT inserted.ID_Preferencias;";
         {
             return new Preferencias
             {
-                IdPreferencias = reader.GetInt32(0),
-                IdPerfil = reader.GetInt32(1),
+                IdPreferencias = reader.IsDBNull(0) ? 0 : reader.GetInt32(0),
+                IdPerfil = reader.IsDBNull(1) ? 0 : reader.GetInt32(1),
                 PreferenciaGenero = reader.IsDBNull(2) ? (byte)0 : reader.GetByte(2),
                 EdadMinima = reader.IsDBNull(3) ? 0 : reader.GetInt32(3),
                 EdadMaxima = reader.IsDBNull(4) ? 0 : reader.GetInt32(4),
