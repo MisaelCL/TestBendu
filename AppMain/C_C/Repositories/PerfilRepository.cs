@@ -226,7 +226,7 @@ OUTPUT inserted.ID_Preferencias;";
                 Nikname = reader.IsDBNull(2) ? string.Empty : reader.GetString(2),
                 Biografia = reader.IsDBNull(3) ? string.Empty : reader.GetString(3),
                 FotoPerfil = reader.IsDBNull(4) ? null : (byte[])reader[4],
-                FechaCreacion = reader.GetDateTime(5)
+                FechaCreacion = reader.IsDBNull(5) ? DateTime.MinValue : reader.GetDateTime(5)
             };
         }
 
