@@ -223,8 +223,8 @@ OUTPUT inserted.ID_Preferencias;";
             {
                 IdPerfil = reader.GetInt32(0),
                 IdCuenta = reader.GetInt32(1),
-                Nikname = reader.GetString(2),
-                Biografia = reader.GetString(3),
+                Nikname = reader.IsDBNull(2) ? string.Empty : reader.GetString(2),
+                Biografia = reader.IsDBNull(3) ? string.Empty : reader.GetString(3),
                 FotoPerfil = reader.IsDBNull(4) ? null : (byte[])reader[4],
                 FechaCreacion = reader.GetDateTime(5)
             };
