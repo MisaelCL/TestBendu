@@ -4,7 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModel="clr-namespace:C_C_Final.ViewModel"
-        xmlns:customcontrols="clr-namespace:C_C_Final.CustomControls"
         mc:Ignorable="d"
         Title="C_C - Clase &amp; Cita"
         Width="420"
@@ -12,260 +11,146 @@
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"
         AllowsTransparency="True"
-        Background="Transparent">
+        Background="Transparent"
+        d:DataContext="{d:DesignInstance viewModel:LoginViewModel}">
 
-    <Window.Resources>
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
-    </Window.Resources>
+    <!-- Sombra y fondo -->
+    <Border Background="#55000000" CornerRadius="16" Padding="1">
+        <Border Background="#1F1F1F" CornerRadius="15">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="42"/>
+                    <!-- Barra superior -->
+                    <RowDefinition Height="*"/>
+                    <!-- Contenido -->
+                    <RowDefinition Height="56"/>
+                    <!-- Botonera -->
+                </Grid.RowDefinitions>
 
-    <Window.Visibility>
-        <Binding Path="IsViewVisible"
-                 Mode="TwoWay"
-                 Converter="{StaticResource BooleanToVisibility}" />
-    </Window.Visibility>
+                <!-- Barra superior -->
+                <Grid Grid.Row="0" Background="#232323">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
 
-    <Border CornerRadius="18"
-            Background="#0B2340"
-            BorderBrush="#0B2340"
-            BorderThickness="1">
-        <Grid Margin="16">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-
-            <Grid Grid.Row="0"
-                  Margin="0,0,0,12">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="32" />
-                    <ColumnDefinition Width="32" />
-                </Grid.ColumnDefinitions>
-
-                <TextBlock Text="C_C - Clase &amp; Cita"
-                           Foreground="#E6E9ED"
-                           FontSize="16"
-                           VerticalAlignment="Center"
-                           Margin="8,0,0,0" />
-
-                <Button x:Name="btnMinimizar"
-                        Grid.Column="1"
-                        Width="28"
-                        Height="28"
-                        Margin="0,0,4,0"
-                        BorderThickness="0"
-                        Cursor="Hand"
-                        Click="btnMinimizar_Click">
-                    <Button.Style>
-                        <Style TargetType="Button">
-                            <Setter Property="Background" Value="#05AFC6" />
-                            <Setter Property="Foreground" Value="White" />
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="Button">
-                                        <Border CornerRadius="14"
-                                                Background="{TemplateBinding Background}">
-                                            <TextBlock Text="&#x2013;"
-                                                       FontSize="14"
-                                                       HorizontalAlignment="Center"
-                                                       VerticalAlignment="Center" />
-                                        </Border>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                            <Style.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Background" Value="#0494A8" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                </Button>
-
-                <Button x:Name="btnClose"
-                        Grid.Column="2"
-                        Width="28"
-                        Height="28"
-                        BorderThickness="0"
-                        Cursor="Hand"
-                        Click="btnClose_Click">
-                    <Button.Style>
-                        <Style TargetType="Button">
-                            <Setter Property="Background" Value="#D7596D" />
-                            <Setter Property="Foreground" Value="White" />
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="Button">
-                                        <Border CornerRadius="14"
-                                                Background="{TemplateBinding Background}">
-                                            <TextBlock Text="&#x2715;"
-                                                       FontSize="12"
-                                                       HorizontalAlignment="Center"
-                                                       VerticalAlignment="Center" />
-                                        </Border>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                            <Style.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Background" Value="#C14D60" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                </Button>
-            </Grid>
-
-            <Border Grid.Row="1"
-                    CornerRadius="18"
-                    Background="#0B2340"
-                    BorderBrush="#0B2340"
-                    BorderThickness="1">
-                <StackPanel HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Width="320">
-                    <StackPanel Margin="0,0,0,16">
-                        <Image Source="/C_C_Final;component/Images/C_C_LOGO.png"
-                               Width="140"
-                               Height="140"
-                               HorizontalAlignment="Center"
-                               Stretch="Uniform" />
-                        <Image Source="/C_C_Final;component/Images/Clase_Cita.png"
-                               Width="200"
-                               Height="60"
-                               HorizontalAlignment="Center"
-                               Stretch="Uniform"
-                               Margin="0,8,0,0" />
-                    </StackPanel>
-
-                    <Border Background="#E6E9ED"
-                            CornerRadius="14"
-                            BorderBrush="#05AFC6"
-                            BorderThickness="3"
-                            Padding="20">
-                        <StackPanel>
-                            <TextBlock Text="Matrícula / Correo electrónico:"
-                                       Foreground="#0B2340"
-                                       FontWeight="SemiBold" />
-                            <TextBox Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"
-                                     Margin="0,6,0,12"
-                                     Padding="10"
-                                     FontSize="14"
-                                     Foreground="#0B2340"
-                                     Background="White"
-                                     BorderBrush="#0494A8"
-                                     BorderThickness="1"
-                                     CaretBrush="#0494A8"
-                                     ToolTip="Escribe tu matrícula o correo" />
-
-                            <TextBlock Text="Contraseña:"
-                                       Foreground="#0B2340"
-                                       FontWeight="SemiBold"
-                                       Margin="0,0,0,6" />
-                            <customcontrols:BindablePasswordBox SecurePassword="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                                Height="36"
-                                                                Padding="10"
-                                                                Background="White"
-                                                                BorderBrush="#0494A8"
-                                                                BorderThickness="1" />
-
-                            <TextBlock Text="{Binding ErrorMessage}"
-                                       Foreground="#D7596D"
-                                       FontSize="12"
-                                       Margin="0,10,0,0"
-                                       TextWrapping="Wrap">
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding ErrorMessage}" Value="">
-                                                <Setter Property="Visibility" Value="Collapsed" />
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding ErrorMessage}" Value="{x:Null}">
-                                                <Setter Property="Visibility" Value="Collapsed" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
-                        </StackPanel>
-                    </Border>
-
-                    <Button Content="INICIAR SESIÓN"
-                            Command="{Binding LoginCommand}"
-                            Height="48"
-                            Margin="0,24,0,0"
-                            Background="#05AFC6"
-                            Foreground="White"
-                            FontWeight="Bold"
-                            BorderThickness="0"
-                            Cursor="Hand">
-                        <Button.Template>
-                            <ControlTemplate TargetType="Button">
-                                <Border CornerRadius="18"
-                                        Background="{TemplateBinding Background}">
-                                    <ContentPresenter HorizontalAlignment="Center"
-                                                      VerticalAlignment="Center" />
-                                </Border>
-                            </ControlTemplate>
-                        </Button.Template>
-                        <Button.Style>
-                            <Style TargetType="Button">
-                                <Setter Property="Background" Value="#05AFC6" />
-                                <Setter Property="Foreground" Value="White" />
-                                <Style.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="#0494A8" />
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
-
-                    <Button Content="REGISTRARSE"
-                            Command="{Binding OpenRegistroCommand}"
-                            Height="48"
-                            Margin="0,18,0,0"
-                            Background="#05AFC6"
-                            Foreground="White"
-                            FontWeight="Bold"
-                            BorderThickness="0"
-                            Cursor="Hand">
-                        <Button.Template>
-                            <ControlTemplate TargetType="Button">
-                                <Border CornerRadius="18"
-                                        Background="{TemplateBinding Background}">
-                                    <ContentPresenter HorizontalAlignment="Center"
-                                                      VerticalAlignment="Center" />
-                                </Border>
-                            </ControlTemplate>
-                        </Button.Template>
-                        <Button.Style>
-                            <Style TargetType="Button">
-                                <Setter Property="Background" Value="#05AFC6" />
-                                <Setter Property="Foreground" Value="White" />
-                                <Style.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="#0494A8" />
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
-
-                    <TextBlock Text="¿Aún no tienes cuenta?"
-                               Margin="0,12,0,0"
+                    <TextBlock Text="C_C - Clase &amp; Cita"
+                               VerticalAlignment="Center"
+                               Margin="12,0,0,0"
                                Foreground="#E6E9ED"
-                               TextDecorations="Underline"
-                               HorizontalAlignment="Center"
-                               Cursor="Hand">
-                        <TextBlock.InputBindings>
-                            <MouseBinding MouseAction="LeftClick"
-                                          Command="{Binding OpenRegistroCommand}" />
-                        </TextBlock.InputBindings>
-                    </TextBlock>
-                </StackPanel>
-            </Border>
-        </Grid>
+                               FontWeight="SemiBold"/>
+
+                    <Button x:Name="btnMinimizar"
+                            Grid.Column="1"
+                            Width="36" Height="28" Margin="0,6"
+                            Content="—"
+                            Background="#303030" Foreground="#E6E9ED"
+                            BorderBrush="#505050" BorderThickness="1"
+                            Click="btnMinimizar_Click"/>
+
+                    <Button x:Name="btnClose"
+                            Grid.Column="2"
+                            Width="36" Height="28" Margin="6,6,6,6"
+                            Content="×"
+                            Background="#8A1F1F" Foreground="#E6E9ED"
+                            BorderBrush="#B23A3A" BorderThickness="1"
+                            Click="btnClose_Click"/>
+                </Grid>
+
+                <!-- Contenido -->
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="24" VerticalAlignment="Center">
+                        <TextBlock Text="Bienvenido"
+                                   Foreground="#E6E9ED"
+                                   FontSize="22"
+                                   FontWeight="SemiBold"
+                                   Margin="0,12,0,24"/>
+
+                        <!-- Usuario -->
+                        <TextBox x:Name="txtUsername"
+                                 Height="36"
+                                 Padding="8,6"
+                                 Background="#2A2A2A"
+                                 BorderBrush="#505050"
+                                 Foreground="#E6E9ED"
+                                 BorderThickness="1"
+                                 Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"/>
+
+
+                        <!-- Contraseña -->
+                        <TextBlock Text="Contraseña" Foreground="#C8C8C8" Margin="0,16,0,6"/>
+                        <PasswordBox x:Name="passwordBox"
+                                     Height="36"
+                                     Padding="8,6"
+                                     Background="#2A2A2A"
+                                     BorderBrush="#505050"
+                                     Foreground="#E6E9ED"
+                                     BorderThickness="1"
+                                     PasswordChanged="PasswordBox_PasswordChanged"
+                                     Panel.ZIndex="10"/>
+
+                        <!-- Mensaje de error con DataTrigger (opción B) -->
+                        <TextBlock Text="{Binding ErrorMessage}"
+                                   Foreground="#FF6B6B"
+                                   Margin="0,10,0,0"
+                                   TextWrapping="Wrap">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <!-- por defecto Visible -->
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <!-- Colapsa si no hay texto -->
+                                        <Trigger Property="Text" Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </Trigger>
+                                        <Trigger Property="Text" Value="">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+
+                        <!-- Enlace a registro -->
+                        <TextBlock Text="¿No tienes cuenta? Regístrate"
+                                   Margin="0,18,0,0"
+                                   Foreground="#9FC2FF"
+                                   TextDecorations="Underline"
+                                   HorizontalAlignment="Left"
+                                   Cursor="Hand">
+                            <TextBlock.InputBindings>
+                                <MouseBinding MouseAction="LeftClick"
+                                              Command="{Binding OpenRegistroCommand}"/>
+                            </TextBlock.InputBindings>
+                        </TextBlock>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <!-- Botonera -->
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button Grid.Column="0"
+                            Height="38"
+                            Margin="24,10,6,10"
+                            Content="Iniciar sesión"
+                            Command="{Binding LoginCommand}"
+                            Background="#3B7BF6" Foreground="White"
+                            BorderBrush="#2D5FCC" BorderThickness="1"/>
+
+                    <Button Grid.Column="1"
+                            Height="38"
+                            Margin="6,10,24,10"
+                            Content="Cancelar"
+                            Click="btnClose_Click"
+                            Background="#3A3A3A" Foreground="#E6E9ED"
+                            BorderBrush="#505050" BorderThickness="1"/>
+                </Grid>
+            </Grid>
+        </Border>
     </Border>
 </Window>
