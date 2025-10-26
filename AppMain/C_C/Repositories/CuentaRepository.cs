@@ -115,8 +115,8 @@ VALUES (@Email, @Hash, @Estado, @Fecha);";
         public int CreateAlumno(SqlConnection connection, SqlTransaction tx, Alumno alumno)
         {
             const string sql = @"INSERT INTO dbo.Alumno (Matricula, ID_Cuenta, Nombre, Apaterno, Amaterno, F_Nac, Genero, Correo, Carrera)
-OUTPUT INSERTED.ID_Alumno
-VALUES (@Matricula, @Cuenta, @Nombre, @Apaterno, @Amaterno, @Nacimiento, @Genero, @Correo, @Carrera);";
+VALUES (@Matricula, @Cuenta, @Nombre, @Apaterno, @Amaterno, @Nacimiento, @Genero, @Correo, @Carrera);
+SELECT CAST(SCOPE_IDENTITY() AS INT);";
             using var command = CreateCommand(connection, sql, CommandType.Text, tx);
             AddParameter(command, "@Matricula", alumno.Matricula, SqlDbType.NVarChar, 50);
             AddParameter(command, "@Cuenta", alumno.IdCuenta, SqlDbType.Int);
