@@ -5,7 +5,7 @@ namespace C_C_Final.Model
 {
     public interface IMatchRepository
     {
-        Match? GetById(int idMatch);
+        Match GetById(int idMatch);
         bool Exists(int idPerfilA, int idPerfilB);
         IReadOnlyList<Match> ListByPerfil(int idPerfil, int page, int pageSize);
 
@@ -14,7 +14,7 @@ namespace C_C_Final.Model
         bool DeleteMatch(int idMatch);
 
         int EnsureChatForMatch(int idMatch);
-        Chat? GetChatByMatchId(int idMatch);
+        Chat GetChatByMatchId(int idMatch);
 
         long AddMensaje(int idChat, int idRemitentePerfil, string contenido, bool confirmacionLectura);
         IReadOnlyList<Mensaje> ListMensajes(int idChat, int page, int pageSize);

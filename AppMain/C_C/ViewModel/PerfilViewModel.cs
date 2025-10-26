@@ -16,8 +16,8 @@ namespace C_C_Final.ViewModel
         private int _idCuenta;
         private string _nikName = string.Empty;
         private string _descripcion = string.Empty;
-        private ImageSource? _fotoPerfil;
-        private byte[]? _fotoPerfilBytes;
+        private ImageSource _fotoPerfil;
+        private byte[] _fotoPerfilBytes;
         private bool _hasUnread;
         private int _unreadCount;
         private bool _isBusy;
@@ -54,7 +54,7 @@ namespace C_C_Final.ViewModel
             set => SetProperty(ref _descripcion, value);
         }
 
-        public ImageSource? FotoPerfilUrl
+        public ImageSource FotoPerfilUrl
         {
             get => _fotoPerfil;
             private set => SetProperty(ref _fotoPerfil, value);
@@ -167,7 +167,7 @@ namespace C_C_Final.ViewModel
             Application.Current?.Windows[Application.Current.Windows.Count - 1]?.Close();
         }
 
-        private static ImageSource? ConvertToImage(byte[]? bytes)
+        private static ImageSource ConvertToImage(byte[] bytes)
         {
             if (bytes == null || bytes.Length == 0)
             {

@@ -4,8 +4,8 @@ namespace C_C_Final.Model
 {
     public interface ICuentaRepository
     {
-        Cuenta? GetById(int idCuenta);
-        Cuenta? GetByEmail(string email);
+        Cuenta GetById(int idCuenta);
+        Cuenta GetByEmail(string email);
         bool ExistsByEmail(string email);
 
         int CreateCuenta(string email, string passwordHash, byte estadoCuenta);

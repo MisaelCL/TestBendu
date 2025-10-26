@@ -11,7 +11,7 @@ namespace C_C_Final.Repositories
         {
         }
 
-        public Cuenta? GetById(int idCuenta)
+        public Cuenta GetById(int idCuenta)
         {
             return WithConnection(connection =>
             {
@@ -29,7 +29,7 @@ namespace C_C_Final.Repositories
             });
         }
 
-        public Cuenta? GetByEmail(string email)
+        public Cuenta GetByEmail(string email)
         {
             return WithConnection(connection =>
             {

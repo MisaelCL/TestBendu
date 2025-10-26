@@ -155,7 +155,7 @@ namespace C_C_Final.ViewModel
             PerfilActual = _sugerencias[_currentIndex];
         }
 
-        private static ImageSource? ConvertToImage(byte[] bytes)
+        private static ImageSource ConvertToImage(byte[] bytes)
         {
             if (bytes == null || bytes.Length == 0)
             {
@@ -179,6 +179,6 @@ namespace C_C_Final.ViewModel
         public int PerfilId { get; set; }
         public string NombreEdad { get; set; } = string.Empty;
         public string CarreraTexto { get; set; } = string.Empty;
-        public ImageSource? FotoUrl { get; set; }
+        public ImageSource FotoUrl { get; set; }
     }
 }

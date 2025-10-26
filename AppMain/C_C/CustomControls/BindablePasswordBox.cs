@@ -3,7 +3,7 @@ using System.Windows.Controls;
 
 namespace C_C_Final.CustomControls
 {
-    public sealed class BindablePasswordBox : PasswordBox
+    public sealed class BindablePasswordBox : Control
     {
         public static readonly DependencyProperty SecurePasswordProperty = DependencyProperty.Register(
             nameof(SecurePassword),
@@ -17,27 +17,39 @@ namespace C_C_Final.CustomControls
             set => SetValue(SecurePasswordProperty, value);
         }
 
-        public BindablePasswordBox()
+        private PasswordBox _passwordBox;
+
+        public override void OnApplyTemplate()
         {
-            PasswordChanged += OnPasswordChanged;
+            base.OnApplyTemplate();
+            if (_passwordBox != null)
+            {
+                _passwordBox.PasswordChanged -= OnPasswordChanged;
+            }
+            _passwordBox = GetTemplateChild("PART_PasswordBox") as PasswordBox;
+            if (_passwordBox != null)
+            {
+                _passwordBox.PasswordChanged += OnPasswordChanged;
+                _passwordBox.Password = SecurePassword;
+            }
         }
 
         private void OnPasswordChanged(object sender, RoutedEventArgs e)
         {
-            if (SecurePassword != Password)
+            if (_passwordBox != null && SecurePassword != _passwordBox.Password)
             {
-                SecurePassword = Password;
+                SecurePassword = _passwordBox.Password;
             }
         }
 
         private static void OnSecurePasswordChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is BindablePasswordBox box)
+            if (d is BindablePasswordBox box && box._passwordBox != null)
             {
                 var newValue = e.NewValue as string ?? string.Empty;
-                if (box.Password != newValue)
+                if (box._passwordBox.Password != newValue)
                 {
-                    box.Password = newValue;
+                    box._passwordBox.Password = newValue;
                 }
             }
         }

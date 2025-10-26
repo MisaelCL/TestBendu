@@ -17,7 +17,7 @@ namespace C_C_Final.ViewModel
         private string _nikName = string.Empty;
         private string _descripcion = string.Empty;
         private byte[] _fotoPerfilBytes;
-        private ImageSource? _fotoPerfilUrl;
+        private ImageSource _fotoPerfilUrl;
         private DateTime _fechaCreacion;
         private int _edadMin = 18;
         private int _edadMax = 35;
@@ -57,7 +57,7 @@ namespace C_C_Final.ViewModel
             set => SetProperty(ref _descripcion, value);
         }
 
-        public ImageSource? FotoPerfilUrl
+        public ImageSource FotoPerfilUrl
         {
             get => _fotoPerfilUrl;
             private set => SetProperty(ref _fotoPerfilUrl, value);
@@ -249,7 +249,7 @@ namespace C_C_Final.ViewModel
             }
         }
 
-        private static ImageSource? ConvertToImage(byte[] bytes)
+        private static ImageSource ConvertToImage(byte[] bytes)
         {
             if (bytes == null || bytes.Length == 0)
             {

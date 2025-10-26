@@ -12,7 +12,7 @@ namespace C_C_Final.Repositories
         {
         }
 
-        public Match? GetById(int idMatch)
+        public Match GetById(int idMatch)
         {
             return WithConnection(connection =>
             {
@@ -110,7 +110,7 @@ OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
             return WithConnection(connection => EnsureChatForMatch(connection, null, idMatch));
         }
 
-        public Chat? GetChatByMatchId(int idMatch)
+        public Chat GetChatByMatchId(int idMatch)
         {
             return WithConnection(connection =>
             {
@@ -158,7 +158,7 @@ OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
             });
         }
 
-        public int CreateMatch(SqlConnection connection, SqlTransaction? tx, int idPerfilEmisor, int idPerfilReceptor, string estado)
+        public int CreateMatch(SqlConnection connection, SqlTransaction tx, int idPerfilEmisor, int idPerfilReceptor, string estado)
         {
             const string sql = @"INSERT INTO dbo.Match (Perfil_Emisor, Perfil_Receptor, Estado, Fecha_Match)
 OUTPUT INSERTED.ID_Match
@@ -172,7 +172,7 @@ VALUES (@Emisor, @Receptor, @Estado, SYSUTCDATETIME());";
             return Convert.ToInt32(result);
         }
 
-        public int EnsureChatForMatch(SqlConnection connection, SqlTransaction? tx, int idMatch)
+        public int EnsureChatForMatch(SqlConnection connection, SqlTransaction tx, int idMatch)
         {
             const string sql = @"DECLARE @Existing INT;
 SELECT @Existing = ID_Chat FROM dbo.Chat WITH (UPDLOCK, HOLDLOCK) WHERE ID_Match = @Match;
@@ -193,7 +193,7 @@ END";
             return Convert.ToInt32(result);
         }
 
-        public long AddMensaje(SqlConnection connection, SqlTransaction? tx, int idChat, int idRemitentePerfil, string contenido, bool confirmacionLectura)
+        public long AddMensaje(SqlConnection connection, SqlTransaction tx, int idChat, int idRemitentePerfil, string contenido, bool confirmacionLectura)
         {
             var fechaEnvio = DateTime.UtcNow;
             const string insertSql = @"INSERT INTO dbo.Mensaje (ID_Chat, Remitente, Contenido, Fecha_Envio, Confirmacion_Lectura, IsEdited, EditedAtUtc, IsDeleted)

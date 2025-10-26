@@ -4,9 +4,9 @@ namespace C_C_Final.Model
 {
     public interface IPerfilRepository
     {
-        Perfil? GetById(int idPerfil);
-        Perfil? GetByCuentaId(int idCuenta);
-        Preferencias? GetPreferenciasByPerfil(int idPerfil);
+        Perfil GetById(int idPerfil);
+        Perfil GetByCuentaId(int idCuenta);
+        Preferencias GetPreferenciasByPerfil(int idPerfil);
 
         int CreatePerfil(Perfil perfil);
         bool UpdatePerfil(Perfil perfil);

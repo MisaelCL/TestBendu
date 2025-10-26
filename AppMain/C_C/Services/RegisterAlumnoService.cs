@@ -20,9 +20,9 @@ namespace C_C_Final.Services
         public char Genero { get; set; }
         public string CorreoAlumno { get; set; } = string.Empty;
         public string Carrera { get; set; } = string.Empty;
-        public string? Nikname { get; set; }
-        public string? Biografia { get; set; }
-        public byte[]? FotoPerfil { get; set; }
+        public string Nikname { get; set; }
+        public string Biografia { get; set; }
+        public byte[] FotoPerfil { get; set; }
     }
 
     public sealed class RegisterAlumnoService

@@ -11,7 +11,7 @@ namespace C_C_Final.Repositories
         {
         }
 
-        public Perfil? GetById(int idPerfil)
+        public Perfil GetById(int idPerfil)
         {
             return WithConnection(connection =>
             {
@@ -29,7 +29,7 @@ namespace C_C_Final.Repositories
             });
         }
 
-        public Perfil? GetByCuentaId(int idCuenta)
+        public Perfil GetByCuentaId(int idCuenta)
         {
             return WithConnection(connection =>
             {
@@ -47,7 +47,7 @@ namespace C_C_Final.Repositories
             });
         }
 
-        public Preferencias? GetPreferenciasByPerfil(int idPerfil)
+        public Preferencias GetPreferenciasByPerfil(int idPerfil)
         {
             return WithConnection(connection =>
             {
@@ -110,7 +110,7 @@ WHERE ID_Perfil = @Id";
             });
         }
 
-        public int CreatePerfil(SqlConnection connection, SqlTransaction? tx, Perfil perfil)
+        public int CreatePerfil(SqlConnection connection, SqlTransaction tx, Perfil perfil)
         {
             const string sql = @"INSERT INTO dbo.Perfil (ID_Cuenta, Nikname, Biografia, Foto_Perfil, Fecha_Creacion)
 OUTPUT INSERTED.ID_Perfil
@@ -126,7 +126,7 @@ VALUES (@Cuenta, @Nikname, @Biografia, @Foto, @Fecha);";
             return Convert.ToInt32(result);
         }
 
-        public int UpsertPreferencias(SqlConnection connection, SqlTransaction? tx, Preferencias prefs)
+        public int UpsertPreferencias(SqlConnection connection, SqlTransaction tx, Preferencias prefs)
         {
             const string sql = @"MERGE dbo.Preferencias AS Target
 USING (SELECT @Perfil AS ID_Perfil) AS Source
