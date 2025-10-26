@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:viewModel="clr-namespace:C_C_Final.ViewModel"
+        xmlns:viewModel="clr-namespace:C_C_Final.Presentation.ViewModels"
         xmlns:syswin="clr-namespace:System.Windows;assembly=PresentationFramework"
         mc:Ignorable="d"
         Title="C_C - Configuración"
@@ -46,13 +46,9 @@
                         <ControlTemplate TargetType="Button">
                             <Border Background="{TemplateBinding Background}"
                                     CornerRadius="18">
-                                <Path Width="12"
-                                      Height="18"
-                                      Fill="White"
-                                      Stretch="Uniform"
-                                      Data="M12,0 L0,9 12,18 12,12 6,9 12,6z"
-                                      HorizontalAlignment="Center"
-                                      VerticalAlignment="Center" />
+                                <Image Source="/Resources/Images/Flechita_icon.png"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
                             </Border>
                         </ControlTemplate>
                     </Button.Template>
@@ -69,13 +65,12 @@
                     </Button.Style>
                 </Button>
 
-                <TextBlock Grid.Column="1"
-                           Text="C_C"
-                           FontSize="28"
-                           FontWeight="Bold"
-                           Foreground="#9AD0FF"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center" />
+                <Image Grid.Column="1"
+                       Source="/Resources/Images/C_C_LOGO.png"
+                       Height="50"
+                       Stretch="Uniform"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"/>
 
                 <Button Grid.Column="2"
                         Width="24"

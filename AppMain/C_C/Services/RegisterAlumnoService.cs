@@ -26,11 +26,11 @@ namespace C_C_Final.Services
 
     public sealed class RegisterAlumnoService
     {
-        private readonly ICuentaRepository _cuentaRepository;
-        private readonly IPerfilRepository _perfilRepository;
+        private readonly CuentaRepository _cuentaRepository;
+        private readonly PerfilRepository _perfilRepository;
         private readonly SqlConnectionFactory _connectionFactory;
 
-        public RegisterAlumnoService(ICuentaRepository cuentaRepository, IPerfilRepository perfilRepository, SqlConnectionFactory connectionFactory)
+        public RegisterAlumnoService(CuentaRepository cuentaRepository, PerfilRepository perfilRepository, SqlConnectionFactory connectionFactory)
         {
             _cuentaRepository = cuentaRepository;
             _perfilRepository = perfilRepository;
@@ -95,7 +95,7 @@ namespace C_C_Final.Services
                 };
                 var alumnoId = _cuentaRepository.CreateAlumno(unitOfWork.Connection, unitOfWork.Transaction, alumno);
 
-                if (alumnoId <= 0)
+                if (alumnoId < 0)
                 {
                     throw new InvalidOperationException("No se pudo registrar la información del alumno.");
                 }

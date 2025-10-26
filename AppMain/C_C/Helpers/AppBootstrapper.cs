@@ -9,9 +9,9 @@ namespace C_C_Final.Helpers
     {
         private static bool _initialized;
         private static SqlConnectionFactory _connectionFactory = null!;
-        private static ICuentaRepository _cuentaRepository = null!;
-        private static IPerfilRepository _perfilRepository = null!;
-        private static IMatchRepository _matchRepository = null!;
+        private static CuentaRepository _cuentaRepository = null!;
+        private static PerfilRepository _perfilRepository = null!;
+        private static MatchRepository _matchRepository = null!;
         private static RegisterAlumnoService _registerAlumnoService = null!;
         private static MatchService _matchService = null!;
 

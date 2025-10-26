@@ -1,8 +1,9 @@
 using System;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using C_C_Final.Helpers;
-using C_C_Final.ViewModel;
+using C_C_Final.Presentation.Helpers;
+using C_C_Final.Presentation.ViewModels;
 
 namespace C_C_Final.View
 {
@@ -13,7 +14,7 @@ namespace C_C_Final.View
             InitializeComponent();
             var viewModel = AppBootstrapper.CreateInboxViewModel();
             DataContext = viewModel;
-            Loaded += (_, _) => Load(viewModel);
+            Loaded += async (_, _) => await LoadAsync(viewModel).ConfigureAwait(false);
         }
 
         private void btnMinimize_Click(object sender, RoutedEventArgs e)
@@ -36,11 +37,11 @@ namespace C_C_Final.View
             }
         }
 
-        private static void Load(InboxViewModel viewModel)
+        private static async Task LoadAsync(InboxViewModel viewModel)
         {
             try
             {
-                viewModel.Load(0);
+                await viewModel.LoadAsync(0).ConfigureAwait(false);
             }
             catch (Exception)
             {
