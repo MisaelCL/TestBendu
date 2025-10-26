@@ -62,32 +62,60 @@ namespace C_C_Final.Services
             using var unitOfWork = UnitOfWork.Create(_connectionFactory);
             try
             {
+                var normalizedEmail = request.Email.Trim();
+
+                if (_cuentaRepository.ExistsByEmail(normalizedEmail))
+                {
+                    throw new InvalidOperationException("El correo electrónico ya está registrado.");
+                }
+
                 var passwordHash = HashFunction.ComputeHash(request.Password);
-                var cuentaId = _cuentaRepository.CreateCuenta(unitOfWork.Connection, unitOfWork.Transaction, request.Email, passwordHash, request.EstadoCuenta);
+                var cuentaId = _cuentaRepository.CreateCuenta(unitOfWork.Connection, unitOfWork.Transaction, normalizedEmail, passwordHash, request.EstadoCuenta);
+
+                if (cuentaId <= 0)
+                {
+                    throw new InvalidOperationException("No se pudo crear la cuenta del alumno.");
+                }
+
+                var correoAlumno = string.IsNullOrWhiteSpace(request.CorreoAlumno)
+                    ? normalizedEmail
+                    : request.CorreoAlumno.Trim();
 
                 var alumno = new Alumno
                 {
-                    Matricula = request.Matricula,
+                    Matricula = request.Matricula?.Trim() ?? string.Empty,
                     IdCuenta = cuentaId,
-                    Nombre = request.Nombre,
-                    ApellidoPaterno = request.ApellidoPaterno,
-                    ApellidoMaterno = request.ApellidoMaterno,
+                    Nombre = request.Nombre?.Trim() ?? string.Empty,
+                    ApellidoPaterno = request.ApellidoPaterno?.Trim() ?? string.Empty,
+                    ApellidoMaterno = request.ApellidoMaterno?.Trim() ?? string.Empty,
                     FechaNacimiento = request.FechaNacimiento,
                     Genero = request.Genero,
-                    Correo = request.CorreoAlumno,
-                    Carrera = request.Carrera
+                    Correo = correoAlumno,
+                    Carrera = request.Carrera?.Trim() ?? string.Empty
                 };
-                _cuentaRepository.CreateAlumno(unitOfWork.Connection, unitOfWork.Transaction, alumno);
+                var alumnoId = _cuentaRepository.CreateAlumno(unitOfWork.Connection, unitOfWork.Transaction, alumno);
+
+                if (alumnoId <= 0)
+                {
+                    throw new InvalidOperationException("No se pudo registrar la información del alumno.");
+                }
 
                 var perfil = new Perfil
                 {
                     IdCuenta = cuentaId,
-                    Nikname = string.IsNullOrWhiteSpace(request.Nikname) ? GenerateNikname(request.Nombre, request.ApellidoPaterno) : request.Nikname!,
+                    Nikname = string.IsNullOrWhiteSpace(request.Nikname)
+                        ? GenerateNikname(alumno.Nombre, alumno.ApellidoPaterno)
+                        : request.Nikname!.Trim(),
                     Biografia = request.Biografia ?? string.Empty,
                     FotoPerfil = request.FotoPerfil,
                     FechaCreacion = DateTime.UtcNow
                 };
                 var perfilId = _perfilRepository.CreatePerfil(unitOfWork.Connection, unitOfWork.Transaction, perfil);
+
+                if (perfilId <= 0)
+                {
+                    throw new InvalidOperationException("No se pudo crear el perfil del alumno.");
+                }
 
                 var preferencias = new Preferencias
                 {
@@ -98,7 +126,12 @@ namespace C_C_Final.Services
                     PreferenciaCarrera = string.Empty,
                     Intereses = string.Empty
                 };
-                _perfilRepository.UpsertPreferencias(unitOfWork.Connection, unitOfWork.Transaction, preferencias);
+                var preferenciasId = _perfilRepository.UpsertPreferencias(unitOfWork.Connection, unitOfWork.Transaction, preferencias);
+
+                if (preferenciasId <= 0)
+                {
+                    throw new InvalidOperationException("No se pudieron guardar las preferencias del perfil.");
+                }
 
                 unitOfWork.Commit();
                 return cuentaId;
