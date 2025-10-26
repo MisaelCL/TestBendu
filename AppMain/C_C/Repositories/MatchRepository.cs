@@ -226,8 +226,8 @@ VALUES (@Chat, @Remitente, @Contenido, @Fecha, @Confirmado, 0, NULL, 0);";
                 IdMatch = reader.GetInt32(0),
                 PerfilEmisor = reader.GetInt32(1),
                 PerfilReceptor = reader.GetInt32(2),
-                Estado = reader.GetString(3),
-                FechaMatch = reader.GetDateTime(4)
+                Estado = reader.IsDBNull(3) ? string.Empty : reader.GetString(3),
+                FechaMatch = reader.IsDBNull(4) ? DateTime.MinValue : reader.GetDateTime(4)
             };
         }
 
@@ -237,7 +237,7 @@ VALUES (@Chat, @Remitente, @Contenido, @Fecha, @Confirmado, 0, NULL, 0);";
             {
                 IdChat = reader.GetInt32(0),
                 IdMatch = reader.GetInt32(1),
-                FechaCreacion = reader.GetDateTime(2),
+                FechaCreacion = reader.IsDBNull(2) ? DateTime.MinValue : reader.GetDateTime(2),
                 LastMessageAtUtc = reader.IsDBNull(3) ? (DateTime?)null : reader.GetDateTime(3),
                 LastMessageId = reader.IsDBNull(4) ? (long?)null : reader.GetInt64(4)
             };
@@ -250,12 +250,12 @@ VALUES (@Chat, @Remitente, @Contenido, @Fecha, @Confirmado, 0, NULL, 0);";
                 IdMensaje = reader.GetInt64(0),
                 IdChat = reader.GetInt32(1),
                 IdRemitentePerfil = reader.GetInt32(2),
-                Contenido = reader.GetString(3),
-                FechaEnvio = reader.GetDateTime(4),
-                ConfirmacionLectura = reader.GetBoolean(5),
-                IsEdited = reader.GetBoolean(6),
+                Contenido = reader.IsDBNull(3) ? string.Empty : reader.GetString(3),
+                FechaEnvio = reader.IsDBNull(4) ? DateTime.MinValue : reader.GetDateTime(4),
+                ConfirmacionLectura = reader.IsDBNull(5) ? false : reader.GetBoolean(5),
+                IsEdited = reader.IsDBNull(6) ? false : reader.GetBoolean(6),
                 EditedAtUtc = reader.IsDBNull(7) ? (DateTime?)null : reader.GetDateTime(7),
-                IsDeleted = reader.GetBoolean(8)
+                IsDeleted = reader.IsDBNull(8) ? false : reader.GetBoolean(8)
             };
         }
     }

@@ -115,7 +115,8 @@ VALUES (@Email, @Hash, @Estado, @Fecha);";
         public int CreateAlumno(SqlConnection connection, SqlTransaction tx, Alumno alumno)
         {
             const string sql = @"INSERT INTO dbo.Alumno (Matricula, ID_Cuenta, Nombre, Apaterno, Amaterno, F_Nac, Genero, Correo, Carrera)
-VALUES (@Matricula, @Cuenta, @Nombre, @Apaterno, @Amaterno, @Nacimiento, @Genero, @Correo, @Carrera);";
+VALUES (@Matricula, @Cuenta, @Nombre, @Apaterno, @Amaterno, @Nacimiento, @Genero, @Correo, @Carrera);
+SELECT CAST(SCOPE_IDENTITY() AS INT);";
             using var command = CreateCommand(connection, sql, CommandType.Text, tx);
             AddParameter(command, "@Matricula", alumno.Matricula, SqlDbType.NVarChar, 50);
             AddParameter(command, "@Cuenta", alumno.IdCuenta, SqlDbType.Int);
@@ -127,8 +128,8 @@ VALUES (@Matricula, @Cuenta, @Nombre, @Apaterno, @Amaterno, @Nacimiento, @Genero
             AddParameter(command, "@Correo", alumno.Correo, SqlDbType.NVarChar, 260);
             AddParameter(command, "@Carrera", alumno.Carrera, SqlDbType.NVarChar, 100);
 
-            command.ExecuteNonQuery();
-            return alumno.IdCuenta;
+            var result = command.ExecuteScalar();
+            return Convert.ToInt32(result);
         }
 
         private static Cuenta MapCuenta(SqlDataReader reader)
@@ -136,10 +137,10 @@ VALUES (@Matricula, @Cuenta, @Nombre, @Apaterno, @Amaterno, @Nacimiento, @Genero
             return new Cuenta
             {
                 IdCuenta = reader.GetInt32(0),
-                Email = reader.GetString(1),
-                HashContrasena = reader.GetString(2),
-                EstadoCuenta = reader.GetByte(3),
-                FechaRegistro = reader.GetDateTime(4)
+                Email = reader.IsDBNull(1) ? string.Empty : reader.GetString(1),
+                HashContrasena = reader.IsDBNull(2) ? string.Empty : reader.GetString(2),
+                EstadoCuenta = reader.IsDBNull(3) ? (byte)0 : reader.GetByte(3),
+                FechaRegistro = reader.IsDBNull(4) ? DateTime.MinValue : reader.GetDateTime(4)
             };
         }
     }

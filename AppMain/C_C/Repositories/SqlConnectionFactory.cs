@@ -11,24 +11,39 @@ namespace C_C_Final.Repositories
         public SqlConnectionFactory()
         {
             var connection = ConfigurationManager.ConnectionStrings["DefaultConnection"]?.ConnectionString;
-            if (string.IsNullOrWhiteSpace(connection))
-            {
-                throw new InvalidOperationException("No se encontró la cadena de conexión 'DefaultConnection' en App.config.");
-            }
-
-            _connectionString = connection;
+            _connectionString = NormalizeConnectionString(connection, "DefaultConnection");
         }
 
         public SqlConnectionFactory(string connectionString)
         {
-            if (string.IsNullOrWhiteSpace(connectionString))
-            {
-                throw new ArgumentException("La cadena de conexión no puede ser nula o vacía.", nameof(connectionString));
-            }
-
-            _connectionString = connectionString;
+            _connectionString = NormalizeConnectionString(connectionString, "proporcionada");
         }
 
         public SqlConnection CreateConnection() => new SqlConnection(_connectionString);
+
+        private static string NormalizeConnectionString(string connectionString, string sourceName)
+        {
+            if (string.IsNullOrWhiteSpace(connectionString))
+            {
+                throw new InvalidOperationException($"No se encontró la cadena de conexión '{sourceName}'.");
+            }
+
+            SqlConnectionStringBuilder builder;
+            try
+            {
+                builder = new SqlConnectionStringBuilder(connectionString);
+            }
+            catch (ArgumentException ex)
+            {
+                throw new InvalidOperationException($"La cadena de conexión '{sourceName}' no es válida.", ex);
+            }
+
+            if (string.IsNullOrWhiteSpace(builder.InitialCatalog))
+            {
+                throw new InvalidOperationException($"La cadena de conexión '{sourceName}' debe especificar la base de datos mediante 'Initial Catalog'.");
+            }
+
+            return builder.ConnectionString;
+        }
     }
 }
