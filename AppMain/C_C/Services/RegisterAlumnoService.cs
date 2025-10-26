@@ -95,7 +95,7 @@ namespace C_C_Final.Services
                 };
                 var alumnoId = _cuentaRepository.CreateAlumno(unitOfWork.Connection, unitOfWork.Transaction, alumno);
 
-                if (alumnoId < 0)
+                if (alumnoId <= 0)
                 {
                     throw new InvalidOperationException("No se pudo registrar la información del alumno.");
                 }
@@ -112,7 +112,7 @@ namespace C_C_Final.Services
                 };
                 var perfilId = _perfilRepository.CreatePerfil(unitOfWork.Connection, unitOfWork.Transaction, perfil);
 
-                if (perfilId < 0)
+                if (perfilId <= 0)
                 {
                     throw new InvalidOperationException("No se pudo crear el perfil del alumno.");
                 }

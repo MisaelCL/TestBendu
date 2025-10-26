@@ -16,7 +16,9 @@ namespace C_C_Final.Repositories
         {
             return WithConnection(connection =>
             {
-                const string sql = "SELECT ID_Match, Perfil_Emisor, Perfil_Receptor, Estado, Fecha_Match FROM dbo.Match WHERE ID_Match = @Id";
+                var fechaColumn = ResolveMatchFechaColumn(connection, null);
+                var selectColumns = BuildMatchSelectColumns(fechaColumn);
+                var sql = $"SELECT {selectColumns} FROM dbo.Match WHERE ID_Match = @Id";
                 using var command = CreateCommand(connection, sql);
                 AddParameter(command, "@Id", idMatch, SqlDbType.Int);
 
@@ -52,10 +54,16 @@ namespace C_C_Final.Repositories
         {
             return WithConnection(connection =>
             {
-                const string sql = @"SELECT ID_Match, Perfil_Emisor, Perfil_Receptor, Estado, Fecha_Match
+                var fechaColumn = ResolveMatchFechaColumn(connection, null);
+                var selectColumns = BuildMatchSelectColumns(fechaColumn);
+                var orderBy = !string.IsNullOrEmpty(fechaColumn)
+                    ? $"ORDER BY {WrapColumn(fechaColumn)} DESC"
+                    : "ORDER BY ID_Match DESC";
+
+                var sql = $@"SELECT {selectColumns}
 FROM dbo.Match
 WHERE Perfil_Emisor = @Perfil OR Perfil_Receptor = @Perfil
-ORDER BY Fecha_Match DESC
+{orderBy}
 OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
                 using var command = CreateCommand(connection, sql);
                 AddParameter(command, "@Perfil", idPerfil, SqlDbType.Int);
@@ -114,7 +122,9 @@ OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
         {
             return WithConnection(connection =>
             {
-                const string sql = "SELECT ID_Chat, ID_Match, Fecha_Creacion, LastMessageAtUtc, LastMessageId FROM dbo.Chat WHERE ID_Match = @Match";
+                var fechaColumn = ResolveChatFechaColumn(connection, null);
+                var selectColumns = BuildChatSelectColumns(fechaColumn);
+                var sql = $"SELECT {selectColumns} FROM dbo.Chat WHERE ID_Match = @Match";
                 using var command = CreateCommand(connection, sql);
                 AddParameter(command, "@Match", idMatch, SqlDbType.Int);
 
@@ -160,9 +170,30 @@ OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
 
         public int CreateMatch(SqlConnection connection, SqlTransaction tx, int idPerfilEmisor, int idPerfilReceptor, string estado)
         {
-            const string sql = @"INSERT INTO dbo.Match (Perfil_Emisor, Perfil_Receptor, Estado, Fecha_Match)
+            var fechaColumn = ResolveMatchFechaColumn(connection, tx);
+            var insertColumns = new List<string>
+            {
+                "Perfil_Emisor",
+                "Perfil_Receptor",
+                "Estado"
+            };
+
+            var insertValues = new List<string>
+            {
+                "@Emisor",
+                "@Receptor",
+                "@Estado"
+            };
+
+            if (!string.IsNullOrEmpty(fechaColumn))
+            {
+                insertColumns.Add(WrapColumn(fechaColumn));
+                insertValues.Add("SYSUTCDATETIME()");
+            }
+
+            var sql = $@"INSERT INTO dbo.Match ({string.Join(", ", insertColumns)})
 OUTPUT INSERTED.ID_Match
-VALUES (@Emisor, @Receptor, @Estado, SYSUTCDATETIME());";
+VALUES ({string.Join(", ", insertValues)});";
             using var command = CreateCommand(connection, sql, CommandType.Text, tx);
             AddParameter(command, "@Emisor", idPerfilEmisor, SqlDbType.Int);
             AddParameter(command, "@Receptor", idPerfilReceptor, SqlDbType.Int);
@@ -174,7 +205,22 @@ VALUES (@Emisor, @Receptor, @Estado, SYSUTCDATETIME());";
 
         public int EnsureChatForMatch(SqlConnection connection, SqlTransaction tx, int idMatch)
         {
-            const string sql = @"DECLARE @Existing INT;
+            var fechaColumn = ResolveChatFechaColumn(connection, tx);
+            var insertColumns = new List<string> { "ID_Match" };
+            var insertValues = new List<string> { "@Match" };
+
+            if (!string.IsNullOrEmpty(fechaColumn))
+            {
+                insertColumns.Add(WrapColumn(fechaColumn));
+                insertValues.Add("SYSUTCDATETIME()");
+            }
+
+            insertColumns.Add("LastMessageAtUtc");
+            insertColumns.Add("LastMessageId");
+            insertValues.Add("NULL");
+            insertValues.Add("NULL");
+
+            var sql = $@"DECLARE @Existing INT;
 SELECT @Existing = ID_Chat FROM dbo.Chat WITH (UPDLOCK, HOLDLOCK) WHERE ID_Match = @Match;
 IF @Existing IS NOT NULL
 BEGIN
@@ -182,9 +228,9 @@ BEGIN
 END
 ELSE
 BEGIN
-    INSERT INTO dbo.Chat (ID_Match, Fecha_Creacion, LastMessageAtUtc, LastMessageId)
+    INSERT INTO dbo.Chat ({string.Join(", ", insertColumns)})
     OUTPUT INSERTED.ID_Chat
-    VALUES (@Match, SYSUTCDATETIME(), NULL, NULL);
+    VALUES ({string.Join(", ", insertValues)});
 END";
             using var command = CreateCommand(connection, sql, CommandType.Text, tx);
             AddParameter(command, "@Match", idMatch, SqlDbType.Int);
@@ -219,27 +265,103 @@ VALUES (@Chat, @Remitente, @Contenido, @Fecha, @Confirmado, 0, NULL, 0);";
             return mensajeId;
         }
 
+        private string ResolveMatchFechaColumn(SqlConnection connection, SqlTransaction tx)
+        {
+            if (ColumnExists(connection, tx, "Match", "Fecha_Match"))
+            {
+                return "Fecha_Match";
+            }
+
+            if (ColumnExists(connection, tx, "Match", "FechaMatch"))
+            {
+                return "FechaMatch";
+            }
+
+            return null;
+        }
+
+        private string ResolveChatFechaColumn(SqlConnection connection, SqlTransaction tx)
+        {
+            if (ColumnExists(connection, tx, "Chat", "Fecha_Creacion"))
+            {
+                return "Fecha_Creacion";
+            }
+
+            if (ColumnExists(connection, tx, "Chat", "FechaCreacion"))
+            {
+                return "FechaCreacion";
+            }
+
+            return null;
+        }
+
+        private static string BuildMatchSelectColumns(string fechaColumn)
+        {
+            var columns = new List<string>
+            {
+                "ID_Match",
+                "Perfil_Emisor",
+                "Perfil_Receptor",
+                "Estado"
+            };
+
+            columns.Add(!string.IsNullOrEmpty(fechaColumn)
+                ? $"{WrapColumn(fechaColumn)} AS FechaMatch"
+                : "CAST('1900-01-01T00:00:00' AS datetime2(0)) AS FechaMatch");
+
+            return string.Join(", ", columns);
+        }
+
+        private static string BuildChatSelectColumns(string fechaColumn)
+        {
+            var columns = new List<string>
+            {
+                "ID_Chat",
+                "ID_Match"
+            };
+
+            columns.Add(!string.IsNullOrEmpty(fechaColumn)
+                ? $"{WrapColumn(fechaColumn)} AS FechaCreacion"
+                : "CAST('1900-01-01T00:00:00' AS datetime2(0)) AS FechaCreacion");
+            columns.Add("LastMessageAtUtc");
+            columns.Add("LastMessageId");
+
+            return string.Join(", ", columns);
+        }
+
         private static Match MapMatch(SqlDataReader reader)
         {
+            var idMatchIndex = reader.GetOrdinal("ID_Match");
+            var perfilEmisorIndex = reader.GetOrdinal("Perfil_Emisor");
+            var perfilReceptorIndex = reader.GetOrdinal("Perfil_Receptor");
+            var estadoIndex = reader.GetOrdinal("Estado");
+            var fechaIndex = reader.GetOrdinal("FechaMatch");
+
             return new Match
             {
-                IdMatch = reader.IsDBNull(0) ? 0 : reader.GetInt32(0),
-                PerfilEmisor = reader.IsDBNull(1) ? 0 : reader.GetInt32(1),
-                PerfilReceptor = reader.IsDBNull(2) ? 0 : reader.GetInt32(2),
-                Estado = reader.IsDBNull(3) ? string.Empty : reader.GetString(3),
-                FechaMatch = reader.IsDBNull(4) ? DateTime.MinValue : reader.GetDateTime(4)
+                IdMatch = reader.IsDBNull(idMatchIndex) ? 0 : reader.GetInt32(idMatchIndex),
+                PerfilEmisor = reader.IsDBNull(perfilEmisorIndex) ? 0 : reader.GetInt32(perfilEmisorIndex),
+                PerfilReceptor = reader.IsDBNull(perfilReceptorIndex) ? 0 : reader.GetInt32(perfilReceptorIndex),
+                Estado = reader.IsDBNull(estadoIndex) ? string.Empty : reader.GetString(estadoIndex),
+                FechaMatch = reader.IsDBNull(fechaIndex) ? DateTime.MinValue : reader.GetDateTime(fechaIndex)
             };
         }
 
         private static Chat MapChat(SqlDataReader reader)
         {
+            var idChatIndex = reader.GetOrdinal("ID_Chat");
+            var idMatchIndex = reader.GetOrdinal("ID_Match");
+            var fechaIndex = reader.GetOrdinal("FechaCreacion");
+            var lastMessageAtIndex = reader.GetOrdinal("LastMessageAtUtc");
+            var lastMessageIdIndex = reader.GetOrdinal("LastMessageId");
+
             return new Chat
             {
-                IdChat = reader.IsDBNull(0) ? 0 : reader.GetInt32(0),
-                IdMatch = reader.IsDBNull(1) ? 0 : reader.GetInt32(1),
-                FechaCreacion = reader.IsDBNull(2) ? DateTime.MinValue : reader.GetDateTime(2),
-                LastMessageAtUtc = reader.IsDBNull(3) ? (DateTime?)null : reader.GetDateTime(3),
-                LastMessageId = reader.IsDBNull(4) ? (long?)null : reader.GetInt64(4)
+                IdChat = reader.IsDBNull(idChatIndex) ? 0 : reader.GetInt32(idChatIndex),
+                IdMatch = reader.IsDBNull(idMatchIndex) ? 0 : reader.GetInt32(idMatchIndex),
+                FechaCreacion = reader.IsDBNull(fechaIndex) ? DateTime.MinValue : reader.GetDateTime(fechaIndex),
+                LastMessageAtUtc = reader.IsDBNull(lastMessageAtIndex) ? (DateTime?)null : reader.GetDateTime(lastMessageAtIndex),
+                LastMessageId = reader.IsDBNull(lastMessageIdIndex) ? (long?)null : reader.GetInt64(lastMessageIdIndex)
             };
         }
 

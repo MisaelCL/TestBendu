@@ -43,6 +43,29 @@ namespace C_C_Final.Repositories
             }
         }
 
+        protected bool ColumnExists(SqlConnection connection, SqlTransaction transaction, string tableName, string columnName)
+        {
+            const string sql = @"SELECT 1
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_SCHEMA = 'dbo'
+  AND TABLE_NAME = @Table
+  AND COLUMN_NAME = @Column";
+
+            using var command = CreateCommand(connection, sql, CommandType.Text, transaction);
+            AddParameter(command, "@Table", tableName, SqlDbType.NVarChar, 128);
+            AddParameter(command, "@Column", columnName, SqlDbType.NVarChar, 128);
+
+            using var reader = command.ExecuteReader();
+            return reader.Read();
+        }
+
+        protected static string WrapColumn(string columnName)
+        {
+            return string.IsNullOrWhiteSpace(columnName) || columnName.Contains("[", StringComparison.Ordinal)
+                ? columnName
+                : $"[{columnName}]";
+        }
+
         protected static int SafeToInt32(object result)
         {
             return result == null || result == DBNull.Value ? 0 : Convert.ToInt32(result);

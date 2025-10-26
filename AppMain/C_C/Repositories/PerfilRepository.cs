@@ -16,7 +16,9 @@ namespace C_C_Final.Repositories
         {
             return WithConnection(connection =>
             {
-                const string sql = "SELECT ID_Perfil, ID_Cuenta, Nikname, Biografia, Foto_Perfil, Fecha_Creacion FROM dbo.Perfil WHERE ID_Perfil = @Id";
+                var fechaColumn = ResolvePerfilFechaColumn(connection, null);
+                var selectColumns = BuildPerfilSelectColumns(fechaColumn);
+                var sql = $"SELECT {selectColumns} FROM dbo.Perfil WHERE ID_Perfil = @Id";
                 using var command = CreateCommand(connection, sql);
                 AddParameter(command, "@Id", idPerfil, SqlDbType.Int);
 
@@ -34,7 +36,9 @@ namespace C_C_Final.Repositories
         {
             return WithConnection(connection =>
             {
-                const string sql = "SELECT ID_Perfil, ID_Cuenta, Nikname, Biografia, Foto_Perfil, Fecha_Creacion FROM dbo.Perfil WHERE ID_Cuenta = @Cuenta";
+                var fechaColumn = ResolvePerfilFechaColumn(connection, null);
+                var selectColumns = BuildPerfilSelectColumns(fechaColumn);
+                var sql = $"SELECT {selectColumns} FROM dbo.Perfil WHERE ID_Cuenta = @Cuenta";
                 using var command = CreateCommand(connection, sql);
                 AddParameter(command, "@Cuenta", idCuenta, SqlDbType.Int);
 
@@ -52,8 +56,8 @@ namespace C_C_Final.Repositories
         {
             return WithConnection(connection =>
             {
-                var hasCarreraColumn = PreferenciasColumnExists(connection, null, "Preferencia_Carrera");
-                var hasInteresesColumn = PreferenciasColumnExists(connection, null, "Intereses");
+                var hasCarreraColumn = ColumnExists(connection, null, "Preferencias", "Preferencia_Carrera");
+                var hasInteresesColumn = ColumnExists(connection, null, "Preferencias", "Intereses");
 
                 var selectColumns = new List<string>
                 {
@@ -93,18 +97,30 @@ namespace C_C_Final.Repositories
         {
             return WithConnection(connection =>
             {
-                const string sql = @"UPDATE dbo.Perfil
-SET Nikname = @Nikname,
-    Biografia = @Biografia,
-    Foto_Perfil = @Foto,
-    Fecha_Creacion = @Fecha
-WHERE ID_Perfil = @Id";
+                var fechaColumn = ResolvePerfilFechaColumn(connection, null);
+                var assignments = new List<string>
+                {
+                    "Nikname = @Nikname",
+                    "Biografia = @Biografia",
+                    "Foto_Perfil = @Foto"
+                };
+
+                if (!string.IsNullOrEmpty(fechaColumn))
+                {
+                    assignments.Add($"{WrapColumn(fechaColumn)} = @Fecha");
+                }
+
+                var sql = $"UPDATE dbo.Perfil SET {string.Join(", ", assignments)} WHERE ID_Perfil = @Id";
                 using var command = CreateCommand(connection, sql);
                 AddParameter(command, "@Nikname", perfil.Nikname ?? string.Empty, SqlDbType.NVarChar, 50);
                 AddParameter(command, "@Biografia", perfil.Biografia ?? string.Empty, SqlDbType.NVarChar, -1);
                 AddParameter(command, "@Foto", perfil.FotoPerfil, SqlDbType.VarBinary);
-                AddParameter(command, "@Fecha", perfil.FechaCreacion, SqlDbType.DateTime2);
                 AddParameter(command, "@Id", perfil.IdPerfil, SqlDbType.Int);
+
+                if (!string.IsNullOrEmpty(fechaColumn))
+                {
+                    AddParameter(command, "@Fecha", perfil.FechaCreacion, SqlDbType.DateTime2);
+                }
 
                 var rows = command.ExecuteNonQuery();
                 return rows > 0;
@@ -131,15 +147,42 @@ WHERE ID_Perfil = @Id";
 
         public int CreatePerfil(SqlConnection connection, SqlTransaction tx, Perfil perfil)
         {
-            const string sql = @"INSERT INTO dbo.Perfil (ID_Cuenta, Nikname, Biografia, Foto_Perfil, Fecha_Creacion)
+            var fechaColumn = ResolvePerfilFechaColumn(connection, tx);
+            var insertColumns = new List<string>
+            {
+                "ID_Cuenta",
+                "Nikname",
+                "Biografia",
+                "Foto_Perfil"
+            };
+
+            var insertValues = new List<string>
+            {
+                "@Cuenta",
+                "@Nikname",
+                "@Biografia",
+                "@Foto"
+            };
+
+            if (!string.IsNullOrEmpty(fechaColumn))
+            {
+                insertColumns.Add(WrapColumn(fechaColumn));
+                insertValues.Add("@Fecha");
+            }
+
+            var sql = $@"INSERT INTO dbo.Perfil ({string.Join(", ", insertColumns)})
 OUTPUT INSERTED.ID_Perfil
-VALUES (@Cuenta, @Nikname, @Biografia, @Foto, @Fecha);";
+VALUES ({string.Join(", ", insertValues)});";
             using var command = CreateCommand(connection, sql, CommandType.Text, tx);
             AddParameter(command, "@Cuenta", perfil.IdCuenta, SqlDbType.Int);
             AddParameter(command, "@Nikname", perfil.Nikname ?? string.Empty, SqlDbType.NVarChar, 50);
             AddParameter(command, "@Biografia", perfil.Biografia ?? string.Empty, SqlDbType.NVarChar, -1);
             AddParameter(command, "@Foto", perfil.FotoPerfil, SqlDbType.VarBinary);
-            AddParameter(command, "@Fecha", perfil.FechaCreacion, SqlDbType.DateTime2);
+
+            if (!string.IsNullOrEmpty(fechaColumn))
+            {
+                AddParameter(command, "@Fecha", perfil.FechaCreacion, SqlDbType.DateTime2);
+            }
 
             var result = command.ExecuteScalar();
             return SafeToInt32(result);
@@ -147,8 +190,8 @@ VALUES (@Cuenta, @Nikname, @Biografia, @Foto, @Fecha);";
 
         public int UpsertPreferencias(SqlConnection connection, SqlTransaction tx, Preferencias prefs)
         {
-            var hasCarreraColumn = PreferenciasColumnExists(connection, tx, "Preferencia_Carrera");
-            var hasInteresesColumn = PreferenciasColumnExists(connection, tx, "Intereses");
+            var hasCarreraColumn = ColumnExists(connection, tx, "Preferencias", "Preferencia_Carrera");
+            var hasInteresesColumn = ColumnExists(connection, tx, "Preferencias", "Intereses");
 
             var updateAssignments = new List<string>
             {
@@ -219,14 +262,21 @@ OUTPUT inserted.ID_Preferencias;";
 
         private static Perfil MapPerfil(SqlDataReader reader)
         {
+            var idPerfilIndex = reader.GetOrdinal("ID_Perfil");
+            var idCuentaIndex = reader.GetOrdinal("ID_Cuenta");
+            var niknameIndex = reader.GetOrdinal("Nikname");
+            var biografiaIndex = reader.GetOrdinal("Biografia");
+            var fotoPerfilIndex = reader.GetOrdinal("Foto_Perfil");
+            var fechaIndex = reader.GetOrdinal("FechaCreacion");
+
             return new Perfil
             {
-                IdPerfil = reader.IsDBNull(0) ? 0 : reader.GetInt32(0),
-                IdCuenta = reader.IsDBNull(1) ? 0 : reader.GetInt32(1),
-                Nikname = reader.IsDBNull(2) ? string.Empty : reader.GetString(2),
-                Biografia = reader.IsDBNull(3) ? string.Empty : reader.GetString(3),
-                FotoPerfil = reader.IsDBNull(4) ? null : (byte[])reader[4],
-                FechaCreacion = reader.IsDBNull(5) ? DateTime.MinValue : reader.GetDateTime(5)
+                IdPerfil = reader.IsDBNull(idPerfilIndex) ? 0 : reader.GetInt32(idPerfilIndex),
+                IdCuenta = reader.IsDBNull(idCuentaIndex) ? 0 : reader.GetInt32(idCuentaIndex),
+                Nikname = reader.IsDBNull(niknameIndex) ? string.Empty : reader.GetString(niknameIndex),
+                Biografia = reader.IsDBNull(biografiaIndex) ? string.Empty : reader.GetString(biografiaIndex),
+                FotoPerfil = reader.IsDBNull(fotoPerfilIndex) ? null : (byte[])reader[fotoPerfilIndex],
+                FechaCreacion = reader.IsDBNull(fechaIndex) ? DateTime.MinValue : reader.GetDateTime(fechaIndex)
             };
         }
 
@@ -244,19 +294,38 @@ OUTPUT inserted.ID_Preferencias;";
             };
         }
 
-        private bool PreferenciasColumnExists(SqlConnection connection, SqlTransaction tx, string columnName)
+        private string ResolvePerfilFechaColumn(SqlConnection connection, SqlTransaction tx)
         {
-            const string sql = @"SELECT 1
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_SCHEMA = 'dbo'
-  AND TABLE_NAME = 'Preferencias'
-  AND COLUMN_NAME = @Column";
+            if (ColumnExists(connection, tx, "Perfil", "Fecha_Creacion"))
+            {
+                return "Fecha_Creacion";
+            }
 
-            using var command = CreateCommand(connection, sql, CommandType.Text, tx);
-            AddParameter(command, "@Column", columnName, SqlDbType.NVarChar, 128);
+            if (ColumnExists(connection, tx, "Perfil", "FechaCreacion"))
+            {
+                return "FechaCreacion";
+            }
 
-            using var reader = command.ExecuteReader();
-            return reader.Read();
+            return null;
         }
+
+        private static string BuildPerfilSelectColumns(string fechaColumn)
+        {
+            var columns = new List<string>
+            {
+                "ID_Perfil",
+                "ID_Cuenta",
+                "Nikname",
+                "Biografia",
+                "Foto_Perfil"
+            };
+
+            columns.Add(!string.IsNullOrEmpty(fechaColumn)
+                ? $"{WrapColumn(fechaColumn)} AS FechaCreacion"
+                : "CAST('1900-01-01T00:00:00' AS datetime2(0)) AS FechaCreacion");
+
+            return string.Join(", ", columns);
+        }
+
     }
 }
