@@ -12,7 +12,7 @@
         WindowStyle="None"
         AllowsTransparency="True"
         Background="Transparent"
-        d:DataContext="{d:DesignInstance viewModel:LoginViewModel}">
+        d:DataContext="{d:DesignInstance Type=viewModel:LoginViewModel, IsDesignTimeCreatable=False}">
 
     <!-- Sombra y fondo -->
     <Border Background="#55000000" CornerRadius="16" Padding="1">

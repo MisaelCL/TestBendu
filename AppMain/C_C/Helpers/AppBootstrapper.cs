@@ -31,6 +31,12 @@ namespace C_C_Final.Helpers
             _initialized = true;
         }
 
+        public static LoginViewModel CreateLoginViewModel()
+        {
+            Initialize();
+            return new LoginViewModel(_cuentaRepository, _perfilRepository);
+        }
+
         public static RegistroViewModel CreateRegistroViewModel()
         {
             Initialize();
