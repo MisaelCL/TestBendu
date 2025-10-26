@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Data.SqlClient;
 
 namespace C_C_Final.Model
@@ -7,6 +8,7 @@ namespace C_C_Final.Model
         Perfil GetById(int idPerfil);
         Perfil GetByCuentaId(int idCuenta);
         Preferencias GetPreferenciasByPerfil(int idPerfil);
+        IReadOnlyList<Perfil> ListAll();
 
         int CreatePerfil(Perfil perfil);
         bool UpdatePerfil(Perfil perfil);

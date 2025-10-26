@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -75,11 +76,18 @@ namespace C_C_Final.ViewModel
             _currentIndex = 0;
 
             var matches = _matchRepository.ListByPerfil(perfilId, 0, _pageSize);
+            var perfilesAgregados = new HashSet<int>();
+
             foreach (var match in matches.OrderByDescending(m => m.FechaMatch))
             {
                 var otherPerfilId = match.PerfilEmisor == perfilId ? match.PerfilReceptor : match.PerfilEmisor;
                 var perfil = _perfilRepository.GetById(otherPerfilId);
                 if (perfil == null)
+                {
+                    continue;
+                }
+
+                if (!perfilesAgregados.Add(otherPerfilId))
                 {
                     continue;
                 }
@@ -90,13 +98,78 @@ namespace C_C_Final.ViewModel
                     PerfilId = otherPerfilId,
                     NombreEdad = perfil.Nikname,
                     CarreraTexto = match.Estado,
-                    FotoUrl = ConvertToImage(perfil.FotoPerfil)
+                    FotoUrl = ConvertToImage(perfil.FotoPerfil),
+                    EsPerfilRegistrado = false
                 };
                 _sugerencias.Add(sugerencia);
             }
 
+            var perfilesRegistrados = _perfilRepository.ListAll();
+            foreach (var perfil in perfilesRegistrados.Where(p => p.IdPerfil != perfilId))
+            {
+                if (!perfilesAgregados.Add(perfil.IdPerfil))
+                {
+                    continue;
+                }
+
+                var descripcion = string.IsNullOrWhiteSpace(perfil.Biografia)
+                    ? "Este perfil aún no tiene biografía."
+                    : perfil.Biografia;
+
+                var sugerencia = new SugerenciaItemViewModel
+                {
+                    MatchId = 0,
+                    PerfilId = perfil.IdPerfil,
+                    NombreEdad = perfil.Nikname,
+                    CarreraTexto = descripcion,
+                    FotoUrl = ConvertToImage(perfil.FotoPerfil),
+                    EsPerfilRegistrado = true
+                };
+
+                _sugerencias.Add(sugerencia);
+            }
+
             PerfilActual = _sugerencias.FirstOrDefault();
-            EstadoMensaje = _sugerencias.Count == 0 ? "No hay chats disponibles" : "Selecciona un perfil para interactuar.";
+
+            if (_sugerencias.Count == 0)
+            {
+                EstadoMensaje = "No hay perfiles registrados.";
+            }
+            else if (matches.Count > 0)
+            {
+                EstadoMensaje = "Selecciona un perfil para interactuar.";
+            }
+            else
+            {
+                EstadoMensaje = "Explora los perfiles registrados.";
+            }
+        }
+
+        private void AbrirMiPerfil()
+        {
+            if (_perfilId == 0)
+            {
+                EstadoMensaje = "No se ha cargado tu perfil.";
+                return;
+            }
+
+            try
+            {
+                var perfil = _perfilRepository.GetById(_perfilId);
+                if (perfil == null)
+                {
+                    EstadoMensaje = "No se encontró tu perfil.";
+                    return;
+                }
+
+                IsSettingsMenuOpen = false;
+                EstadoMensaje = "Mostrando tu perfil.";
+                MiPerfilRequested?.Invoke(perfil.IdCuenta);
+            }
+            catch (Exception)
+            {
+                EstadoMensaje = "Ocurrió un error al abrir tu perfil.";
+            }
         }
 
         private void AbrirMiPerfil()
@@ -133,6 +206,12 @@ namespace C_C_Final.ViewModel
                 return;
             }
 
+            if (PerfilActual.EsPerfilRegistrado && PerfilActual.MatchId == 0)
+            {
+                EstadoMensaje = "Este perfil es solo informativo. Para interactuar crea un match.";
+                return;
+            }
+
             _matchRepository.UpdateEstado(PerfilActual.MatchId, "aceptado");
             _matchService.EnsureChatForMatch(PerfilActual.MatchId);
             EstadoMensaje = $"Has aceptado a {PerfilActual.NombreEdad}";
@@ -142,6 +221,12 @@ namespace C_C_Final.ViewModel
         {
             if (PerfilActual == null)
             {
+                return;
+            }
+
+            if (PerfilActual.EsPerfilRegistrado && PerfilActual.MatchId == 0)
+            {
+                EstadoMensaje = "No puedes rechazar un perfil informativo.";
                 return;
             }
 
@@ -156,9 +241,25 @@ namespace C_C_Final.ViewModel
                 return;
             }
 
+            if (PerfilActual.EsPerfilRegistrado && PerfilActual.MatchId == 0)
+            {
+                EstadoMensaje = "No puedes bloquear un perfil informativo.";
+                return;
+            }
+
             _matchRepository.DeleteMatch(PerfilActual.MatchId);
             _sugerencias.Remove(PerfilActual);
             PerfilActual = _sugerencias.Count > 0 ? _sugerencias[Math.Min(_currentIndex, _sugerencias.Count - 1)] : null;
+
+            if (PerfilActual == null)
+            {
+                _currentIndex = 0;
+            }
+            else
+            {
+                _currentIndex = _sugerencias.IndexOf(PerfilActual);
+            }
+
             EstadoMensaje = "El perfil se eliminó de tu bandeja.";
         }
 
@@ -209,5 +310,6 @@ namespace C_C_Final.ViewModel
         public string NombreEdad { get; set; } = string.Empty;
         public string CarreraTexto { get; set; } = string.Empty;
         public ImageSource FotoUrl { get; set; }
+        public bool EsPerfilRegistrado { get; set; }
     }
 }
