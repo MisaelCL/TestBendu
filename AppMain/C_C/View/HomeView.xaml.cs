@@ -20,7 +20,9 @@ namespace C_C_Final.View
             InitializeComponent();
             var viewModel = AppBootstrapper.CreateInboxViewModel();
             DataContext = viewModel;
+            viewModel.MiPerfilRequested += OnMiPerfilRequested;
             Loaded += (_, _) => Load(viewModel, _perfilId);
+            Closed += (_, _) => viewModel.MiPerfilRequested -= OnMiPerfilRequested;
         }
 
         private void btnMinimize_Click(object sender, RoutedEventArgs e)
@@ -53,6 +55,12 @@ namespace C_C_Final.View
             {
                 // Ignora errores de carga inicial para permitir que la vista se muestre.
             }
+        }
+
+        private static void OnMiPerfilRequested(int cuentaId)
+        {
+            var perfilView = new PerfilView(cuentaId);
+            perfilView.Show();
         }
     }
 }

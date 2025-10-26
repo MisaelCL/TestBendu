@@ -30,7 +30,7 @@ namespace C_C_Final.ViewModel
             _matchService = matchService;
 
             OpenSettingsCommand = new RelayCommand(_ => IsSettingsMenuOpen = !IsSettingsMenuOpen);
-            GoMiPerfilCommand = new RelayCommand(_ => EstadoMensaje = "Abre tu perfil para editar tu información");
+            GoMiPerfilCommand = new RelayCommand(_ => AbrirMiPerfil());
             BloquearPerfilCommand = new RelayCommand(_ => BloquearActual());
             PrevCommand = new RelayCommand(_ => MoverAnterior());
             NextCommand = new RelayCommand(_ => MoverSiguiente());
@@ -57,6 +57,8 @@ namespace C_C_Final.ViewModel
             get => _estadoMensaje;
             private set => SetProperty(ref _estadoMensaje, value);
         }
+
+        public event Action<int> MiPerfilRequested;
 
         public ICommand OpenSettingsCommand { get; }
         public ICommand GoMiPerfilCommand { get; }
@@ -95,6 +97,33 @@ namespace C_C_Final.ViewModel
 
             PerfilActual = _sugerencias.FirstOrDefault();
             EstadoMensaje = _sugerencias.Count == 0 ? "No hay chats disponibles" : "Selecciona un perfil para interactuar.";
+        }
+
+        private void AbrirMiPerfil()
+        {
+            if (_perfilId == 0)
+            {
+                EstadoMensaje = "No se ha cargado tu perfil.";
+                return;
+            }
+
+            try
+            {
+                var perfil = _perfilRepository.GetById(_perfilId);
+                if (perfil == null)
+                {
+                    EstadoMensaje = "No se encontró tu perfil.";
+                    return;
+                }
+
+                IsSettingsMenuOpen = false;
+                EstadoMensaje = "Mostrando tu perfil.";
+                MiPerfilRequested?.Invoke(perfil.IdCuenta);
+            }
+            catch (Exception)
+            {
+                EstadoMensaje = "Ocurrió un error al abrir tu perfil.";
+            }
         }
 
         private void AceptarActual()
