@@ -236,9 +236,9 @@ OUTPUT inserted.ID_Preferencias;";
             {
                 IdPreferencias = reader.GetInt32(0),
                 IdPerfil = reader.GetInt32(1),
-                PreferenciaGenero = reader.GetByte(2),
-                EdadMinima = reader.GetInt32(3),
-                EdadMaxima = reader.GetInt32(4),
+                PreferenciaGenero = reader.IsDBNull(2) ? (byte)0 : reader.GetByte(2),
+                EdadMinima = reader.IsDBNull(3) ? 0 : reader.GetInt32(3),
+                EdadMaxima = reader.IsDBNull(4) ? 0 : reader.GetInt32(4),
                 PreferenciaCarrera = reader.IsDBNull(5) ? string.Empty : reader.GetString(5),
                 Intereses = reader.IsDBNull(6) ? string.Empty : reader.GetString(6)
             };

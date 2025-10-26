@@ -137,10 +137,10 @@ SELECT CAST(SCOPE_IDENTITY() AS INT);";
             return new Cuenta
             {
                 IdCuenta = reader.GetInt32(0),
-                Email = reader.GetString(1),
-                HashContrasena = reader.GetString(2),
-                EstadoCuenta = reader.GetByte(3),
-                FechaRegistro = reader.GetDateTime(4)
+                Email = reader.IsDBNull(1) ? string.Empty : reader.GetString(1),
+                HashContrasena = reader.IsDBNull(2) ? string.Empty : reader.GetString(2),
+                EstadoCuenta = reader.IsDBNull(3) ? (byte)0 : reader.GetByte(3),
+                FechaRegistro = reader.IsDBNull(4) ? DateTime.MinValue : reader.GetDateTime(4)
             };
         }
     }
