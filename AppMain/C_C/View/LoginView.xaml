@@ -16,32 +16,6 @@
 
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
-
-        <Style TargetType="{x:Type customcontrols:BindablePasswordBox}">
-            <Setter Property="Background" Value="White" />
-            <Setter Property="BorderBrush" Value="#0494A8" />
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="Foreground" Value="#0B2340" />
-            <Setter Property="Padding" Value="10" />
-            <Setter Property="FontSize" Value="14" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type customcontrols:BindablePasswordBox}">
-                        <Border Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="4">
-                            <PasswordBox x:Name="PART_PasswordBox"
-                                         Background="Transparent"
-                                         BorderThickness="0"
-                                         Foreground="{TemplateBinding Foreground}"
-                                         FontSize="{TemplateBinding FontSize}"
-                                         Padding="{TemplateBinding Padding}" />
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
     </Window.Resources>
 
     <Window.Visibility>
