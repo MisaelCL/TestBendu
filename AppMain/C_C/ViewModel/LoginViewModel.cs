@@ -2,21 +2,29 @@ using System;
 using System.Windows;
 using System.Windows.Input;
 using C_C_Final.Helpers;
+using C_C_Final.Model;
+using C_C_Final.Resources.Utils;
 using C_C_Final.View;
 
 namespace C_C_Final.ViewModel
 {
     public sealed class LoginViewModel : BaseViewModel
     {
+        private readonly ICuentaRepository _cuentaRepository;
+        private readonly IPerfilRepository _perfilRepository;
         private string _username = string.Empty;
         private string _password = string.Empty;
         private string _errorMessage;
         private bool _isViewVisible = true;
+        private bool _isBusy;
 
-        public LoginViewModel()
+        public LoginViewModel(ICuentaRepository cuentaRepository, IPerfilRepository perfilRepository)
         {
-            LoginCommand = new RelayCommand(_ => Login());
-            OpenRegistroCommand = new RelayCommand(_ => AbrirRegistro());
+            _cuentaRepository = cuentaRepository ?? throw new ArgumentNullException(nameof(cuentaRepository));
+            _perfilRepository = perfilRepository ?? throw new ArgumentNullException(nameof(perfilRepository));
+
+            LoginCommand = new RelayCommand(_ => Login(), _ => !IsBusy);
+            OpenRegistroCommand = new RelayCommand(_ => AbrirRegistro(), _ => !IsBusy);
         }
 
         public string Username
@@ -43,25 +51,85 @@ namespace C_C_Final.ViewModel
             set => SetProperty(ref _isViewVisible, value);
         }
 
+        public bool IsBusy
+        {
+            get => _isBusy;
+            private set
+            {
+                if (SetProperty(ref _isBusy, value))
+                {
+                    (LoginCommand as RelayCommand)?.RaiseCanExecuteChanged();
+                    (OpenRegistroCommand as RelayCommand)?.RaiseCanExecuteChanged();
+                }
+            }
+        }
+
         public ICommand LoginCommand { get; }
         public ICommand OpenRegistroCommand { get; }
 
         private void Login()
         {
+            if (IsBusy)
+            {
+                return;
+            }
+
             try
             {
+                IsBusy = true;
                 ErrorMessage = null;
-                if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Password))
+
+                var email = Username?.Trim();
+                var password = Password ?? string.Empty;
+
+                if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
                 {
                     ErrorMessage = "Ingresa tu usuario y contraseña";
                     return;
                 }
 
-                MessageBox.Show("Autenticación simulada. Implementa la verificación real contra la BD.", "Login", MessageBoxButton.OK, MessageBoxImage.Information);
+                var cuenta = _cuentaRepository.GetByEmail(email);
+                if (cuenta == null)
+                {
+                    ErrorMessage = "Usuario o contraseña incorrectos.";
+                    return;
+                }
+
+                var passwordHash = HashFunction.ComputeHash(password);
+                if (!string.Equals(cuenta.HashContrasena, passwordHash, StringComparison.Ordinal))
+                {
+                    ErrorMessage = "Usuario o contraseña incorrectos.";
+                    return;
+                }
+
+                if (cuenta.EstadoCuenta == 0)
+                {
+                    ErrorMessage = "Tu cuenta está inactiva. Contacta al administrador.";
+                    return;
+                }
+
+                var perfil = _perfilRepository.GetByCuentaId(cuenta.IdCuenta);
+                if (perfil == null)
+                {
+                    ErrorMessage = "No se encontró un perfil asociado a la cuenta.";
+                    return;
+                }
+
+                Username = email;
+                Password = string.Empty;
+                ErrorMessage = null;
+                IsViewVisible = false;
+
+                AbrirHome(perfil.IdPerfil);
+                CerrarVentanaAsociada();
             }
             catch (Exception ex)
             {
                 ErrorMessage = ex.Message;
+            }
+            finally
+            {
+                IsBusy = false;
             }
         }
 
@@ -72,6 +140,30 @@ namespace C_C_Final.ViewModel
                 DataContext = AppBootstrapper.CreateRegistroViewModel()
             };
             registro.Show();
+        }
+
+        private static void AbrirHome(int perfilId)
+        {
+            var home = new HomeView(perfilId);
+            home.Show();
+        }
+
+        private void CerrarVentanaAsociada()
+        {
+            var app = Application.Current;
+            if (app == null)
+            {
+                return;
+            }
+
+            foreach (Window window in app.Windows)
+            {
+                if (Equals(window.DataContext, this))
+                {
+                    window.Close();
+                    break;
+                }
+            }
         }
     }
 }

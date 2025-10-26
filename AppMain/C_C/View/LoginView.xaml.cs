@@ -1,6 +1,8 @@
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using C_C_Final.Helpers;
 using C_C_Final.ViewModel;
 
 namespace C_C_Final.View
@@ -11,13 +13,12 @@ namespace C_C_Final.View
         {
             InitializeComponent();
 
-            // Si aún no hay VM, crea uno mínimo (opcional). Puedes quitar este bloque si inyectas el VM.
-            if (DataContext == null)
+            if (!DesignerProperties.GetIsInDesignMode(this))
             {
-                try { DataContext = new LoginViewModel(); } catch { /* ignora si aún no existe */ }
+                DataContext ??= AppBootstrapper.CreateLoginViewModel();
             }
 
-            // Arrastre de ventana desde cualquier zona vacía
+            // Arrastre de ventana desde cualquier zona vacÃ­a
             this.MouseLeftButtonDown += (_, e) =>
             {
                 if (e.ButtonState == MouseButtonState.Pressed)

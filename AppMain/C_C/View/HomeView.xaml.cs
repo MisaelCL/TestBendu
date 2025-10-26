@@ -8,12 +8,19 @@ namespace C_C_Final.View
 {
     public partial class HomeView : Window
     {
-        public HomeView()
+        private readonly int _perfilId;
+
+        public HomeView() : this(0)
         {
+        }
+
+        public HomeView(int perfilId)
+        {
+            _perfilId = perfilId;
             InitializeComponent();
             var viewModel = AppBootstrapper.CreateInboxViewModel();
             DataContext = viewModel;
-            Loaded += (_, _) => Load(viewModel);
+            Loaded += (_, _) => Load(viewModel, _perfilId);
         }
 
         private void btnMinimize_Click(object sender, RoutedEventArgs e)
@@ -36,11 +43,11 @@ namespace C_C_Final.View
             }
         }
 
-        private static void Load(InboxViewModel viewModel)
+        private static void Load(InboxViewModel viewModel, int perfilId)
         {
             try
             {
-                viewModel.Load(0);
+                viewModel.Load(perfilId);
             }
             catch (Exception)
             {
