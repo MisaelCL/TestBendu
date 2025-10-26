@@ -1,9 +1,8 @@
 using System;
 using System.Globalization;
-using System.Security.Cryptography;
-using System.Text;
 using C_C_Final.Model;
 using C_C_Final.Repositories;
+using C_C_Final.Resources.Utils;
 
 namespace C_C_Final.Services
 {
@@ -63,7 +62,7 @@ namespace C_C_Final.Services
             using var unitOfWork = UnitOfWork.Create(_connectionFactory);
             try
             {
-                var passwordHash = ComputeHash(request.Password);
+                var passwordHash = HashFunction.ComputeHash(request.Password);
                 var cuentaId = _cuentaRepository.CreateCuenta(unitOfWork.Connection, unitOfWork.Transaction, request.Email, passwordHash, request.EstadoCuenta);
 
                 var alumno = new Alumno
@@ -109,14 +108,6 @@ namespace C_C_Final.Services
                 unitOfWork.Rollback();
                 throw;
             }
-        }
-
-        private static string ComputeHash(string value)
-        {
-            using var sha = SHA256.Create();
-            var bytes = Encoding.UTF8.GetBytes(value);
-            var hash = sha.ComputeHash(bytes);
-            return Convert.ToBase64String(hash);
         }
 
         private static string GenerateNikname(string nombre, string apellidoPaterno)
