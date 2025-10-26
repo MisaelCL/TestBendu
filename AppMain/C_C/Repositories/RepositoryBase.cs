@@ -43,6 +43,16 @@ namespace C_C_Final.Repositories
             }
         }
 
+        protected static int SafeToInt32(object result)
+        {
+            return result == null || result == DBNull.Value ? 0 : Convert.ToInt32(result);
+        }
+
+        protected static long SafeToInt64(object result)
+        {
+            return result == null || result == DBNull.Value ? 0L : Convert.ToInt64(result);
+        }
+
         protected SqlConnection OpenConnection()
         {
             var connection = ConnectionFactory.CreateConnection();
