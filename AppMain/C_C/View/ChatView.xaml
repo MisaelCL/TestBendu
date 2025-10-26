@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:viewModel="clr-namespace:C_C_Final.ViewModel"
+        xmlns:viewModel="clr-namespace:C_C_Final.Presentation.ViewModels"
         mc:Ignorable="d"
         Title="C_C - Chat"
         Width="520"
@@ -66,7 +66,7 @@
 
     <Border CornerRadius="18"
             BorderThickness="1"
-            BorderBrush="#2AAFD0">
+            BorderBrush="#c2f6ff">
         <Border.Background>
             <StaticResource ResourceKey="AppBackgroundBrush" />
         </Border.Background>
@@ -93,11 +93,9 @@
                     <Button x:Name="BackButton"
                             Style="{StaticResource IconButtonStyle}"
                             Command="{Binding GoBackCommand}">
-                        <Path Width="14"
-                              Height="22"
-                              Fill="#2B5F7F"
-                              Stretch="Uniform"
-                              Data="M14,0 L0,11 14,22 14,15 6,11 14,7z" />
+                        <Image Source="/Resources/Images/Flechita_icon.png"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
                     </Button>
 
                     <Grid Grid.Column="1"
@@ -108,19 +106,19 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock Text="C&amp;C"
-                                   FontSize="22"
-                                   FontWeight="Bold"
-                                   Foreground="#2B5F7F"
-                                   VerticalAlignment="Center"
-                                   Margin="0,0,8,0" />
+                        <Image Grid.Column="0"
+                               Source="/Resources/Images/C_C_LOGO2.png"
+                               Height="25"
+                               Stretch="Uniform"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
 
-                        <TextBlock Grid.Column="1"
-                                   Text="CHAT"
-                                   FontSize="22"
-                                   FontWeight="Bold"
-                                   Foreground="#1A86A5"
-                                   VerticalAlignment="Center" />
+                        <Image Grid.Column="1"
+                               Source="/Resources/Images/Chat.png"
+                               Height="25"
+                               Stretch="Uniform"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
 
                         <Border Grid.Column="2"
                                 Width="32"
@@ -140,9 +138,11 @@
                             Grid.Column="2"
                             Style="{StaticResource IconButtonStyle}"
                             Command="{Binding OpenMenuCommand}">
-                        <Image Source="/C_C_Final;component/Images/Ajustes_Icon.png"
-                               Width="22"
-                               Height="22" />
+                        <Image Source="/Resources/Images/Ajustes_Icon.png"
+                               Width="40"
+                               Height="40"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
                     </Button>
                 </Grid>
             </Border>
@@ -276,9 +276,9 @@
                                     CornerRadius="28"
                                     HorizontalAlignment="Stretch"
                                     VerticalAlignment="Stretch">
-                                <Image Source="/C_C_Final;component/Images/SendArow.png"
-                                       Width="24"
-                                       Height="24"
+                                <Image Source="/Resources/Images/Send arrow.png"
+                                       Width="45"
+                                       Height="45"
                                        HorizontalAlignment="Center"
                                        VerticalAlignment="Center" />
                             </Border>

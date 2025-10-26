@@ -95,7 +95,7 @@ namespace C_C_Final.Services
                 };
                 var alumnoId = _cuentaRepository.CreateAlumno(unitOfWork.Connection, unitOfWork.Transaction, alumno);
 
-                if (alumnoId <= 0)
+                if (alumnoId < 0)
                 {
                     throw new InvalidOperationException("No se pudo registrar la información del alumno.");
                 }

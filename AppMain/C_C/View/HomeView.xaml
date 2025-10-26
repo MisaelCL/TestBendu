@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:viewModel="clr-namespace:C_C_Final.ViewModel"
+        xmlns:viewModel="clr-namespace:C_C_Final.Presentation.ViewModels"
         mc:Ignorable="d"
         Title="C_C"
         Width="520"
@@ -68,13 +68,12 @@
                     </Button.Style>
                 </Button>
 
-                <TextBlock Grid.Column="1"
-                           Text="C&amp;C"
-                           FontSize="28"
-                           FontWeight="Bold"
-                           Foreground="#9AD0FF"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center" />
+                <Image Grid.Column="1"
+                       Source="/Resources/Images/C_C_LOGO.png"
+                       Height="50"
+                       Stretch="Uniform"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"/>
 
                 <Button x:Name="RightSettingsButton"
                         Grid.Column="2"
@@ -89,9 +88,9 @@
                         <ControlTemplate TargetType="Button">
                             <Border Background="{TemplateBinding Background}"
                                     CornerRadius="18">
-                                <Image Source="/C_C_Final;component/Images/Ajustes_Icon.png"
-                                       Width="18"
-                                       Height="18"
+                                <Image Source="/Resources/Images/Ajustes_Icon.png"
+                                       Width="30"
+                                       Height="30"
                                        HorizontalAlignment="Center"
                                        VerticalAlignment="Center" />
                             </Border>

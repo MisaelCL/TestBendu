@@ -1,6 +1,6 @@
 using System.Windows;
 using System.Windows.Input;
-using C_C_Final.ViewModel;
+using C_C_Final.Presentation.ViewModels;
 
 namespace C_C_Final.View
 {

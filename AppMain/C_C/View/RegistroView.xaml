@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:viewModel="clr-namespace:C_C_Final.ViewModel"
+        xmlns:viewModel="clr-namespace:C_C_Final.Presentation.ViewModels"
         xmlns:System="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         Title="C_C - Registro"
@@ -120,17 +120,18 @@
                                 Width="340"
                                 Margin="0,0,0,16">
                         <StackPanel Margin="0,0,0,16">
-                            <Image Source="/C_C_Final;component/Images/C_C_LOGO.png"
-                                   Width="140"
-                                   Height="140"
+                            <Image Source="/Resources/Images/C_C_LOGO.png"
+                                   Width="250"
+                                   Height="100"
                                    HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
                                    Stretch="Uniform" />
-                            <Image Source="/C_C_Final;component/Images/Clase_Cita.png"
-                                   Width="200"
-                                   Height="60"
+                            <Image Source="/Resources/Images/Clase_Cita.png"
+                                   Width="140"
+                                   Height="50"
                                    HorizontalAlignment="Center"
-                                   Stretch="Uniform"
-                                   Margin="0,8,0,0" />
+                                   VerticalAlignment="Center"
+                                   Stretch="Uniform" />
                         </StackPanel>
 
                         <Border Background="#E6E9ED"
