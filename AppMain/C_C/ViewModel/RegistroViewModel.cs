@@ -157,7 +157,13 @@ namespace C_C_Final.ViewModel
                     Biografia = string.Empty
                 };
 
-                _registerAlumnoService.Register(request);
+                var cuentaId = _registerAlumnoService.Register(request);
+
+                if (cuentaId <= 0)
+                {
+                    ErrorMessage = "No se pudo completar el registro.";
+                    return;
+                }
 
                 Password = string.Empty;
                 ConfirmPassword = string.Empty;

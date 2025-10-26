@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using C_C_Final.Model;
@@ -51,7 +52,25 @@ namespace C_C_Final.Repositories
         {
             return WithConnection(connection =>
             {
-                const string sql = "SELECT ID_Preferencias, ID_Perfil, Preferencia_Genero, Edad_Minima, Edad_Maxima, Preferencia_Carrera, Intereses FROM dbo.Preferencias WHERE ID_Perfil = @Perfil";
+                var hasCarreraColumn = PreferenciasColumnExists(connection, null, "Preferencia_Carrera");
+                var hasInteresesColumn = PreferenciasColumnExists(connection, null, "Intereses");
+
+                var selectColumns = new List<string>
+                {
+                    "ID_Preferencias",
+                    "ID_Perfil",
+                    "Preferencia_Genero",
+                    "Edad_Minima",
+                    "Edad_Maxima",
+                    hasCarreraColumn
+                        ? "Preferencia_Carrera"
+                        : "CAST('' AS nvarchar(50)) AS Preferencia_Carrera",
+                    hasInteresesColumn
+                        ? "Intereses"
+                        : "CAST('' AS nvarchar(max)) AS Intereses"
+                };
+
+                var sql = $"SELECT {string.Join(", ", selectColumns)} FROM dbo.Preferencias WHERE ID_Perfil = @Perfil";
                 using var command = CreateCommand(connection, sql);
                 AddParameter(command, "@Perfil", idPerfil, SqlDbType.Int);
 
@@ -128,26 +147,71 @@ VALUES (@Cuenta, @Nikname, @Biografia, @Foto, @Fecha);";
 
         public int UpsertPreferencias(SqlConnection connection, SqlTransaction tx, Preferencias prefs)
         {
-            const string sql = @"MERGE dbo.Preferencias AS Target
+            var hasCarreraColumn = PreferenciasColumnExists(connection, tx, "Preferencia_Carrera");
+            var hasInteresesColumn = PreferenciasColumnExists(connection, tx, "Intereses");
+
+            var updateAssignments = new List<string>
+            {
+                "Preferencia_Genero = @Genero",
+                "Edad_Minima = @MinEdad",
+                "Edad_Maxima = @MaxEdad"
+            };
+
+            var insertColumns = new List<string>
+            {
+                "ID_Perfil",
+                "Preferencia_Genero",
+                "Edad_Minima",
+                "Edad_Maxima"
+            };
+
+            var insertValues = new List<string>
+            {
+                "@Perfil",
+                "@Genero",
+                "@MinEdad",
+                "@MaxEdad"
+            };
+
+            if (hasCarreraColumn)
+            {
+                updateAssignments.Add("Preferencia_Carrera = @Carrera");
+                insertColumns.Add("Preferencia_Carrera");
+                insertValues.Add("@Carrera");
+            }
+
+            if (hasInteresesColumn)
+            {
+                updateAssignments.Add("Intereses = @Intereses");
+                insertColumns.Add("Intereses");
+                insertValues.Add("@Intereses");
+            }
+
+            var sql = $@"MERGE dbo.Preferencias AS Target
 USING (SELECT @Perfil AS ID_Perfil) AS Source
 ON Target.ID_Perfil = Source.ID_Perfil
 WHEN MATCHED THEN
-    UPDATE SET Preferencia_Genero = @Genero,
-               Edad_Minima = @MinEdad,
-               Edad_Maxima = @MaxEdad,
-               Preferencia_Carrera = @Carrera,
-               Intereses = @Intereses
+    UPDATE SET {string.Join(", ", updateAssignments)}
 WHEN NOT MATCHED THEN
-    INSERT (ID_Perfil, Preferencia_Genero, Edad_Minima, Edad_Maxima, Preferencia_Carrera, Intereses)
-    VALUES (@Perfil, @Genero, @MinEdad, @MaxEdad, @Carrera, @Intereses)
+    INSERT ({string.Join(", ", insertColumns)})
+    VALUES ({string.Join(", ", insertValues)})
 OUTPUT inserted.ID_Preferencias;";
+
             using var command = CreateCommand(connection, sql, CommandType.Text, tx);
             AddParameter(command, "@Perfil", prefs.IdPerfil, SqlDbType.Int);
             AddParameter(command, "@Genero", prefs.PreferenciaGenero, SqlDbType.TinyInt);
             AddParameter(command, "@MinEdad", prefs.EdadMinima, SqlDbType.Int);
             AddParameter(command, "@MaxEdad", prefs.EdadMaxima, SqlDbType.Int);
-            AddParameter(command, "@Carrera", prefs.PreferenciaCarrera ?? string.Empty, SqlDbType.NVarChar, 50);
-            AddParameter(command, "@Intereses", prefs.Intereses ?? string.Empty, SqlDbType.NVarChar, -1);
+
+            if (hasCarreraColumn)
+            {
+                AddParameter(command, "@Carrera", prefs.PreferenciaCarrera ?? string.Empty, SqlDbType.NVarChar, 50);
+            }
+
+            if (hasInteresesColumn)
+            {
+                AddParameter(command, "@Intereses", prefs.Intereses ?? string.Empty, SqlDbType.NVarChar, -1);
+            }
 
             var result = command.ExecuteScalar();
             return Convert.ToInt32(result);
@@ -175,9 +239,24 @@ OUTPUT inserted.ID_Preferencias;";
                 PreferenciaGenero = reader.GetByte(2),
                 EdadMinima = reader.GetInt32(3),
                 EdadMaxima = reader.GetInt32(4),
-                PreferenciaCarrera = reader.GetString(5),
-                Intereses = reader.GetString(6)
+                PreferenciaCarrera = reader.IsDBNull(5) ? string.Empty : reader.GetString(5),
+                Intereses = reader.IsDBNull(6) ? string.Empty : reader.GetString(6)
             };
+        }
+
+        private bool PreferenciasColumnExists(SqlConnection connection, SqlTransaction tx, string columnName)
+        {
+            const string sql = @"SELECT 1
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_SCHEMA = 'dbo'
+  AND TABLE_NAME = 'Preferencias'
+  AND COLUMN_NAME = @Column";
+
+            using var command = CreateCommand(connection, sql, CommandType.Text, tx);
+            AddParameter(command, "@Column", columnName, SqlDbType.NVarChar, 128);
+
+            using var reader = command.ExecuteReader();
+            return reader.Read();
         }
     }
 }
