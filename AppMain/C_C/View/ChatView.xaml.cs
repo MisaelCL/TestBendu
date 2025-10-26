@@ -1,8 +1,8 @@
 using System;
 using System.Threading.Tasks;
 using System.Windows;
-using C_C_Final.Presentation.Helpers;
-using C_C_Final.Presentation.ViewModels;
+using C_C_Final.Helpers;
+using C_C_Final.ViewModel;
 
 namespace C_C_Final.View
 {

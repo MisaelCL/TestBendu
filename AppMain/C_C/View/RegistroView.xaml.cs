@@ -2,8 +2,8 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using C_C_Final.Presentation.Helpers;
-using C_C_Final.Presentation.ViewModels;
+using C_C_Final.Helpers;
+using C_C_Final.ViewModel;
 
 namespace C_C_Final.View
 {
