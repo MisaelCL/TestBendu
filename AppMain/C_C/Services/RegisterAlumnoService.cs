@@ -95,7 +95,7 @@ namespace C_C_Final.Services
                 };
                 var alumnoId = _cuentaRepository.CreateAlumno(unitOfWork.Connection, unitOfWork.Transaction, alumno);
 
-                if (alumnoId <= 0)
+                if (alumnoId < 0)
                 {
                     throw new InvalidOperationException("No se pudo registrar la información del alumno.");
                 }
@@ -128,7 +128,7 @@ namespace C_C_Final.Services
                 };
                 var preferenciasId = _perfilRepository.UpsertPreferencias(unitOfWork.Connection, unitOfWork.Transaction, preferencias);
 
-                if (preferenciasId <= 0)
+                if (preferenciasId < 0)
                 {
                     throw new InvalidOperationException("No se pudieron guardar las preferencias del perfil.");
                 }

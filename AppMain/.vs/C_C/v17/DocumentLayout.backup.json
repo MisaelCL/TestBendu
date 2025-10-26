@@ -3,12 +3,12 @@
   "WorkspaceRootPath": "C:\\Users\\jmanu\\Desktop\\C_C_Final-main\\TestBendu\\AppMain\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|c:\\users\\jmanu\\desktop\\c_c_final-main\\testbendu\\appmain\\c_c\\helpers\\appbootstrapper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|solutionrelative:c_c\\helpers\\appbootstrapper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|c:\\users\\jmanu\\desktop\\c_c_final-main\\testbendu\\appmain\\c_c\\services\\registeralumnoservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|solutionrelative:c_c\\services\\registeralumnoservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|c:\\users\\jmanu\\desktop\\c_c_final-main\\testbendu\\appmain\\c_c\\helpers\\appbootstrapper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|solutionrelative:c_c\\helpers\\appbootstrapper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|c:\\users\\jmanu\\desktop\\c_c_final-main\\testbendu\\appmain\\c_c\\repositories\\cuentarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -30,17 +30,17 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "AppBootstrapper.cs",
               "DocumentMoniker": "C:\\Users\\jmanu\\Desktop\\C_C_Final-main\\TestBendu\\AppMain\\C_C\\Helpers\\AppBootstrapper.cs",
               "RelativeDocumentMoniker": "C_C\\Helpers\\AppBootstrapper.cs",
               "ToolTip": "C:\\Users\\jmanu\\Desktop\\C_C_Final-main\\TestBendu\\AppMain\\C_C\\Helpers\\AppBootstrapper.cs",
               "RelativeToolTip": "C_C\\Helpers\\AppBootstrapper.cs",
-              "ViewState": "AgIAAAgAAAAAAAAAAAAkwCIAAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAABUAAAAAAAAAAAAYwBEAAAAnAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-10-26T04:25:48.869Z",
               "EditorCaption": ""
@@ -55,18 +55,17 @@
               "RelativeToolTip": "C_C\\Repositories\\CuentaRepository.cs",
               "ViewState": "AgIAAHAAAAAAAAAAAAAYwH0AAAAbAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-26T04:20:44.98Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-26T04:20:44.98Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "RegisterAlumnoService.cs",
               "DocumentMoniker": "C:\\Users\\jmanu\\Desktop\\C_C_Final-main\\TestBendu\\AppMain\\C_C\\Services\\RegisterAlumnoService.cs",
               "RelativeDocumentMoniker": "C_C\\Services\\RegisterAlumnoService.cs",
               "ToolTip": "C:\\Users\\jmanu\\Desktop\\C_C_Final-main\\TestBendu\\AppMain\\C_C\\Services\\RegisterAlumnoService.cs",
               "RelativeToolTip": "C_C\\Services\\RegisterAlumnoService.cs",
-              "ViewState": "AgIAABQAAAAAAAAAAAAqwCAAAAA8AAAAAAAAAA==",
+              "ViewState": "AgIAAF4AAAAAAAAAAAAkwGEAAAAeAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-10-26T04:15:56.808Z",
               "EditorCaption": ""
@@ -81,8 +80,7 @@
               "RelativeToolTip": "C_C\\ViewModel\\RegistroViewModel.cs",
               "ViewState": "AgIAAJoAAAAAAAAAAAAUwJ8AAAA+AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-26T04:14:49.894Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-26T04:14:49.894Z"
             },
             {
               "$type": "Document",
@@ -94,8 +92,7 @@
               "RelativeToolTip": "C_C\\Repositories\\PerfilRepository.cs",
               "ViewState": "AgIAAFgAAAAAAAAAAAAcwGoAAABCAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-26T03:31:36.243Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-26T03:31:36.243Z"
             }
           ]
         }
