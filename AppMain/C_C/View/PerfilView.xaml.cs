@@ -8,12 +8,19 @@ namespace C_C_Final.View
 {
     public partial class PerfilView : Window
     {
-        public PerfilView()
+        private readonly int _cuentaId;
+
+        public PerfilView() : this(0)
         {
+        }
+
+        public PerfilView(int cuentaId)
+        {
+            _cuentaId = cuentaId;
             InitializeComponent();
             var viewModel = AppBootstrapper.CreatePerfilViewModel();
             DataContext = viewModel;
-            Loaded += (_, _) => Load(viewModel);
+            Loaded += (_, _) => Load(viewModel, _cuentaId);
         }
 
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
@@ -25,11 +32,11 @@ namespace C_C_Final.View
             }
         }
 
-        private static void Load(PerfilViewModel viewModel)
+        private static void Load(PerfilViewModel viewModel, int cuentaId)
         {
             try
             {
-                viewModel.Load(0);
+                viewModel.Load(cuentaId);
             }
             catch (Exception)
             {

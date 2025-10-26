@@ -88,6 +88,27 @@ namespace C_C_Final.Repositories
             });
         }
 
+        public IReadOnlyList<Perfil> ListAll()
+        {
+            return WithConnection(connection =>
+            {
+                var fechaColumn = ResolvePerfilFechaColumn(connection, null);
+                var selectColumns = BuildPerfilSelectColumns(fechaColumn);
+                var sql = $"SELECT {selectColumns} FROM dbo.Perfil ORDER BY ID_Perfil DESC";
+
+                using var command = CreateCommand(connection, sql);
+                using var reader = command.ExecuteReader();
+
+                var perfiles = new List<Perfil>();
+                while (reader.Read())
+                {
+                    perfiles.Add(MapPerfil(reader));
+                }
+
+                return perfiles;
+            });
+        }
+
         public int CreatePerfil(Perfil perfil)
         {
             return WithConnection(connection => CreatePerfil(connection, null, perfil));
