@@ -8,7 +8,7 @@ namespace C_C_Final.Repositories
 {
     public sealed class PerfilRepository : RepositoryBase, IPerfilRepository
     {
-        public PerfilRepository(SqlConnectionFactory connectionFactory) : base(connectionFactory)
+        public PerfilRepository(string connectionString = null) : base(connectionString)
         {
         }
 

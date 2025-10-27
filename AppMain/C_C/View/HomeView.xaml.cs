@@ -1,7 +1,6 @@
 using System;
 using System.Windows;
 using System.Windows.Input;
-using C_C_Final.Helpers;
 using C_C_Final.ViewModel;
 
 namespace C_C_Final.View
@@ -18,11 +17,15 @@ namespace C_C_Final.View
         {
             _perfilId = perfilId;
             InitializeComponent();
-            var viewModel = AppBootstrapper.CreateInboxViewModel();
-            DataContext = viewModel;
-            viewModel.MiPerfilRequested += OnMiPerfilRequested;
-            Loaded += (_, _) => Load(viewModel, _perfilId);
-            Closed += (_, _) => viewModel.MiPerfilRequested -= OnMiPerfilRequested;
+            var app = App.Current;
+            if (app != null)
+            {
+                var viewModel = new InboxViewModel(app.MatchRepository, app.PerfilRepository, app.MatchService);
+                DataContext = viewModel;
+                viewModel.MiPerfilRequested += OnMiPerfilRequested;
+                Loaded += (_, _) => Load(viewModel, _perfilId);
+                Closed += (_, _) => viewModel.MiPerfilRequested -= OnMiPerfilRequested;
+            }
         }
 
         private void btnMinimize_Click(object sender, RoutedEventArgs e)

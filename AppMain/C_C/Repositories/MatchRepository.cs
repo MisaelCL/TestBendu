@@ -8,7 +8,7 @@ namespace C_C_Final.Repositories
 {
     public sealed class MatchRepository : RepositoryBase, IMatchRepository
     {
-        public MatchRepository(SqlConnectionFactory connectionFactory) : base(connectionFactory)
+        public MatchRepository(string connectionString = null) : base(connectionString)
         {
         }
 

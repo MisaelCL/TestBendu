@@ -1,4 +1,5 @@
 using System;
+using System.Data.SqlClient;
 using System.Globalization;
 using C_C_Final.Model;
 using C_C_Final.Repositories;
@@ -28,13 +29,13 @@ namespace C_C_Final.Services
     {
         private readonly CuentaRepository _cuentaRepository;
         private readonly PerfilRepository _perfilRepository;
-        private readonly SqlConnectionFactory _connectionFactory;
+        private readonly string _connectionString;
 
-        public RegisterAlumnoService(CuentaRepository cuentaRepository, PerfilRepository perfilRepository, SqlConnectionFactory connectionFactory)
+        public RegisterAlumnoService(CuentaRepository cuentaRepository, PerfilRepository perfilRepository, string connectionString = null)
         {
             _cuentaRepository = cuentaRepository;
             _perfilRepository = perfilRepository;
-            _connectionFactory = connectionFactory;
+            _connectionString = RepositoryBase.ResolveConnectionString(connectionString);
         }
 
         public int Register(RegisterAlumnoRequest request)
@@ -59,7 +60,9 @@ namespace C_C_Final.Services
                 throw new ArgumentException("El género debe ser 'M' o 'F'", nameof(request));
             }
 
-            using var unitOfWork = UnitOfWork.Create(_connectionFactory);
+            using var connection = new SqlConnection(_connectionString);
+            connection.Open();
+            using var transaction = connection.BeginTransaction();
             try
             {
                 var normalizedEmail = request.Email.Trim();
@@ -70,7 +73,7 @@ namespace C_C_Final.Services
                 }
 
                 var passwordHash = HashFunction.ComputeHash(request.Password);
-                var cuentaId = _cuentaRepository.CreateCuenta(unitOfWork.Connection, unitOfWork.Transaction, normalizedEmail, passwordHash, request.EstadoCuenta);
+                var cuentaId = _cuentaRepository.CreateCuenta(connection, transaction, normalizedEmail, passwordHash, request.EstadoCuenta);
 
                 if (cuentaId <= 0)
                 {
@@ -93,7 +96,7 @@ namespace C_C_Final.Services
                     Correo = correoAlumno,
                     Carrera = request.Carrera?.Trim() ?? string.Empty
                 };
-                var alumnoId = _cuentaRepository.CreateAlumno(unitOfWork.Connection, unitOfWork.Transaction, alumno);
+                var alumnoId = _cuentaRepository.CreateAlumno(connection, transaction, alumno);
 
                 if (alumnoId < 0)
                 {
@@ -110,7 +113,7 @@ namespace C_C_Final.Services
                     FotoPerfil = request.FotoPerfil,
                     FechaCreacion = DateTime.UtcNow
                 };
-                var perfilId = _perfilRepository.CreatePerfil(unitOfWork.Connection, unitOfWork.Transaction, perfil);
+                var perfilId = _perfilRepository.CreatePerfil(connection, transaction, perfil);
 
                 if (perfilId <= 0)
                 {
@@ -126,19 +129,19 @@ namespace C_C_Final.Services
                     PreferenciaCarrera = string.Empty,
                     Intereses = string.Empty
                 };
-                var preferenciasId = _perfilRepository.UpsertPreferencias(unitOfWork.Connection, unitOfWork.Transaction, preferencias);
+                var preferenciasId = _perfilRepository.UpsertPreferencias(connection, transaction, preferencias);
 
                 if (preferenciasId < 0)
                 {
                     throw new InvalidOperationException("No se pudieron guardar las preferencias del perfil.");
                 }
 
-                unitOfWork.Commit();
+                transaction.Commit();
                 return cuentaId;
             }
             catch
             {
-                unitOfWork.Rollback();
+                transaction.Rollback();
                 throw;
             }
         }

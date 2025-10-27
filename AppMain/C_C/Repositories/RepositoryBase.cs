@@ -1,6 +1,8 @@
 using System;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.Threading;
 
 namespace C_C_Final.Repositories
 {
@@ -8,12 +10,27 @@ namespace C_C_Final.Repositories
     {
         protected const int DefaultCommandTimeout = 30;
 
-        protected RepositoryBase(SqlConnectionFactory connectionFactory)
+        private readonly string _connectionString;
+        private static readonly Lazy<string> CachedConnectionString = new Lazy<string>(
+            () => NormalizeConnectionString(
+                ConfigurationManager.ConnectionStrings["DefaultConnection"]?.ConnectionString,
+                "DefaultConnection"),
+            LazyThreadSafetyMode.ExecutionAndPublication);
+
+        protected RepositoryBase(string connectionString = null)
         {
-            ConnectionFactory = connectionFactory;
+            _connectionString = ResolveConnectionString(connectionString);
         }
 
-        protected SqlConnectionFactory ConnectionFactory { get; }
+        internal static string ResolveConnectionString(string connectionString)
+        {
+            if (!string.IsNullOrWhiteSpace(connectionString))
+            {
+                return NormalizeConnectionString(connectionString, "proporcionada");
+            }
+
+            return CachedConnectionString.Value;
+        }
 
         protected SqlCommand CreateCommand(SqlConnection connection, string sql, CommandType commandType = CommandType.Text, SqlTransaction transaction = null)
         {
@@ -78,7 +95,7 @@ WHERE TABLE_SCHEMA = 'dbo'
 
         protected SqlConnection OpenConnection()
         {
-            var connection = ConnectionFactory.CreateConnection();
+            var connection = new SqlConnection(_connectionString);
             connection.Open();
             return connection;
         }
@@ -93,6 +110,31 @@ WHERE TABLE_SCHEMA = 'dbo'
         {
             using var connection = OpenConnection();
             action(connection);
+        }
+
+        private static string NormalizeConnectionString(string connectionString, string sourceName)
+        {
+            if (string.IsNullOrWhiteSpace(connectionString))
+            {
+                throw new InvalidOperationException($"No se encontró la cadena de conexión '{sourceName}'.");
+            }
+
+            SqlConnectionStringBuilder builder;
+            try
+            {
+                builder = new SqlConnectionStringBuilder(connectionString);
+            }
+            catch (ArgumentException ex)
+            {
+                throw new InvalidOperationException($"La cadena de conexión '{sourceName}' no es válida.", ex);
+            }
+
+            if (string.IsNullOrWhiteSpace(builder.InitialCatalog))
+            {
+                throw new InvalidOperationException($"La cadena de conexión '{sourceName}' debe especificar la base de datos mediante 'Initial Catalog'.");
+            }
+
+            return builder.ConnectionString;
         }
     }
 }

@@ -1,7 +1,6 @@
 using System;
 using System.Windows;
 using System.Windows.Input;
-using C_C_Final.Helpers;
 using C_C_Final.Model;
 using C_C_Final.Resources.Utils;
 using C_C_Final.View;
@@ -135,9 +134,15 @@ namespace C_C_Final.ViewModel
 
         private void AbrirRegistro()
         {
+            var app = App.Current;
+            if (app == null)
+            {
+                return;
+            }
+
             var registro = new RegistroView
             {
-                DataContext = AppBootstrapper.CreateRegistroViewModel()
+                DataContext = new RegistroViewModel(app.RegisterAlumnoService)
             };
             registro.Show();
         }

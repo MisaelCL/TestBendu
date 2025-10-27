@@ -7,7 +7,7 @@ namespace C_C_Final.Repositories
 {
     public sealed class CuentaRepository : RepositoryBase, ICuentaRepository
     {
-        public CuentaRepository(SqlConnectionFactory connectionFactory) : base(connectionFactory)
+        public CuentaRepository(string connectionString = null) : base(connectionString)
         {
         }
 
