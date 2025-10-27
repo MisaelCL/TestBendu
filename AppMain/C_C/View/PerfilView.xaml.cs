@@ -1,7 +1,6 @@
 using System;
 using System.Windows;
 using System.Windows.Input;
-using C_C_Final.Helpers;
 using C_C_Final.ViewModel;
 
 namespace C_C_Final.View
@@ -18,9 +17,13 @@ namespace C_C_Final.View
         {
             _cuentaId = cuentaId;
             InitializeComponent();
-            var viewModel = AppBootstrapper.CreatePerfilViewModel();
-            DataContext = viewModel;
-            Loaded += (_, _) => Load(viewModel, _cuentaId);
+            var app = App.Current;
+            if (app != null)
+            {
+                var viewModel = new PerfilViewModel(app.PerfilRepository);
+                DataContext = viewModel;
+                Loaded += (_, _) => Load(viewModel, _cuentaId);
+            }
         }
 
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)

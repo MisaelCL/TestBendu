@@ -1,6 +1,5 @@
 using System;
 using System.Windows;
-using C_C_Final.Helpers;
 using C_C_Final.ViewModel;
 
 namespace C_C_Final.View
@@ -10,9 +9,13 @@ namespace C_C_Final.View
         public ConfiguracionView()
         {
             InitializeComponent();
-            var viewModel = AppBootstrapper.CreatePreferenciasViewModel();
-            DataContext = viewModel;
-            Loaded += (_, _) => Load(viewModel);
+            var app = App.Current;
+            if (app != null)
+            {
+                var viewModel = new PreferenciasViewModel(app.PerfilRepository);
+                DataContext = viewModel;
+                Loaded += (_, _) => Load(viewModel);
+            }
         }
 
         private static void Load(PreferenciasViewModel viewModel)

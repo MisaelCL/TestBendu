@@ -2,7 +2,6 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using C_C_Final.Helpers;
 using C_C_Final.ViewModel;
 
 namespace C_C_Final.View
@@ -15,7 +14,11 @@ namespace C_C_Final.View
 
             if (!DesignerProperties.GetIsInDesignMode(this))
             {
-                DataContext ??= AppBootstrapper.CreateLoginViewModel();
+                var app = App.Current;
+                if (app != null)
+                {
+                    DataContext ??= new LoginViewModel(app.CuentaRepository, app.PerfilRepository);
+                }
             }
 
             // Arrastre de ventana desde cualquier zona vacía
