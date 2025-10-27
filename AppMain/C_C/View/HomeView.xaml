@@ -27,69 +27,33 @@
             <!-- Barra superior con accesos de ajustes -->
             <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="40" />
+                    <ColumnDefinition Width="0" />
                     <ColumnDefinition />
-                    <ColumnDefinition Width="40" />
+                    <ColumnDefinition Width="37" />
                     <ColumnDefinition Width="28" />
                     <ColumnDefinition Width="28" />
                 </Grid.ColumnDefinitions>
-
-                <Button x:Name="LeftSettingsButton"
-                        Grid.Column="0"
-                        Width="36"
-                        Height="36"
-                        Command="{Binding OpenSettingsCommand}"
-                        Background="#05AFC6"
-                        BorderThickness="0"
-                        Cursor="Hand"
-                        ToolTip="Ajustes">
-                    <Button.Template>
-                        <ControlTemplate TargetType="Button">
-                            <Border Background="{TemplateBinding Background}"
-                                    CornerRadius="18">
-                                <Image Source="/C_C_Final;component/Images/Ajustes_Icon.png"
-                                       Width="18"
-                                       Height="18"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center" />
-                            </Border>
-                        </ControlTemplate>
-                    </Button.Template>
-                    <Button.Style>
-                        <Style TargetType="Button">
-                            <Setter Property="Background" Value="#05AFC6" />
-                            <Setter Property="Foreground" Value="White" />
-                            <Style.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Background" Value="#0494A8" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                </Button>
 
                 <TextBlock Grid.Column="1"
                            Text="C&amp;C"
                            FontSize="28"
                            FontWeight="Bold"
                            Foreground="#9AD0FF"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center" />
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Center" Height="37" Width="58" Margin="191,0,0,0" />
 
-                <Button x:Name="RightSettingsButton"
-                        Grid.Column="2"
-                        Width="36"
-                        Height="36"
+                <Button x:Name="SettingsButton"
+                        Grid.Column="1"
                         Command="{Binding OpenSettingsCommand}"
                         Background="#05AFC6"
                         BorderThickness="0"
                         Cursor="Hand"
-                        ToolTip="Ajustes">
+                        ToolTip="Ajustes" Margin="10,0,336,1" Click="SettingsButton_Click">
                     <Button.Template>
                         <ControlTemplate TargetType="Button">
                             <Border Background="{TemplateBinding Background}"
                                     CornerRadius="18">
-                                <Image Source="/C_C_Final;component/Images/Ajustes_Icon.png"
+                                <Image Source="/Resources/Images/Ajustes_Icon.png"
                                        Width="18"
                                        Height="18"
                                        HorizontalAlignment="Center"
@@ -112,9 +76,7 @@
 
                 <Button x:Name="btnMinimize"
                         Grid.Column="3"
-                        Width="24"
-                        Height="24"
-                        Margin="0,0,4,0"
+                        Margin="0,7,4,6"
                         Background="#05AFC6"
                         BorderThickness="0"
                         Cursor="Hand"
@@ -145,12 +107,10 @@
 
                 <Button x:Name="btnClose"
                         Grid.Column="4"
-                        Width="24"
-                        Height="24"
                         Background="#D7596D"
                         BorderThickness="0"
                         Cursor="Hand"
-                        Click="btnClose_Click">
+                        Click="btnClose_Click" Margin="2,7,2,6">
                     <Button.Template>
                         <ControlTemplate TargetType="Button">
                             <Border Background="{TemplateBinding Background}"

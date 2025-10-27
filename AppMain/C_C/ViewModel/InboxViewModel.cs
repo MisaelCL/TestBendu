@@ -172,33 +172,6 @@ namespace C_C_Final.ViewModel
             }
         }
 
-        private void AbrirMiPerfil()
-        {
-            if (_perfilId == 0)
-            {
-                EstadoMensaje = "No se ha cargado tu perfil.";
-                return;
-            }
-
-            try
-            {
-                var perfil = _perfilRepository.GetById(_perfilId);
-                if (perfil == null)
-                {
-                    EstadoMensaje = "No se encontró tu perfil.";
-                    return;
-                }
-
-                IsSettingsMenuOpen = false;
-                EstadoMensaje = "Mostrando tu perfil.";
-                MiPerfilRequested?.Invoke(perfil.IdCuenta);
-            }
-            catch (Exception)
-            {
-                EstadoMensaje = "Ocurrió un error al abrir tu perfil.";
-            }
-        }
-
         private void AceptarActual()
         {
             if (PerfilActual == null)

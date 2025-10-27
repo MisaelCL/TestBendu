@@ -62,5 +62,10 @@ namespace C_C_Final.View
             var perfilView = new PerfilView(cuentaId);
             perfilView.Show();
         }
+
+        private void SettingsButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
