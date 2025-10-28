@@ -68,14 +68,8 @@ namespace C_C_Final.ViewModel
 
         private void Login()
         {
-            if (IsBusy)
-            {
-                return;
-            }
-
             try
             {
-                IsBusy = true;
                 ErrorMessage = null;
 
                 var email = Username?.Trim();
@@ -90,14 +84,14 @@ namespace C_C_Final.ViewModel
                 var cuenta = _cuentaRepository.GetByEmail(email);
                 if (cuenta == null)
                 {
-                    ErrorMessage = "Usuario o contraseña incorrectos.";
+                    ErrorMessage = "El usuario no existe.";
                     return;
                 }
 
                 var passwordHash = HashFunction.ComputeHash(password);
-                if (!string.Equals(cuenta.HashContrasena, passwordHash, StringComparison.Ordinal))
+                if (cuenta.HashContrasena != passwordHash)
                 {
-                    ErrorMessage = "Usuario o contraseña incorrectos.";
+                    ErrorMessage = "Contraseña incorrecta.";
                     return;
                 }
 
@@ -125,10 +119,6 @@ namespace C_C_Final.ViewModel
             catch (Exception ex)
             {
                 ErrorMessage = ex.Message;
-            }
-            finally
-            {
-                IsBusy = false;
             }
         }
 

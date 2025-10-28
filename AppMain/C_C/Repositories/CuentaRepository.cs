@@ -54,16 +54,16 @@ namespace C_C_Final.Repositories
             return SafeToInt32(result) == 1;
         }
 
-        public int CreateCuenta(string email, string passwordHash, byte estadoCuenta)
+        public void CreateCuenta(string email, string passwordHash, byte estadoCuenta)
         {
             using var connection = OpenConnection();
-            return CreateCuenta(connection, null, email, passwordHash, estadoCuenta);
+            CreateCuenta(connection, null, email, passwordHash, estadoCuenta);
         }
 
-        public int CreateAlumno(Alumno alumno)
+        public void CreateAlumno(Alumno alumno)
         {
             using var connection = OpenConnection();
-            return CreateAlumno(connection, null, alumno);
+            CreateAlumno(connection, null, alumno);
         }
 
         public bool UpdatePassword(int idCuenta, string newPasswordHash)

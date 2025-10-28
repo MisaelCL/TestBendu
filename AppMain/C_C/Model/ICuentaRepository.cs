@@ -8,8 +8,8 @@ namespace C_C_Final.Model
         Cuenta GetByEmail(string email);
         bool ExistsByEmail(string email);
 
-        int CreateCuenta(string email, string passwordHash, byte estadoCuenta);
-        int CreateAlumno(Alumno alumno);
+        void CreateCuenta(string email, string passwordHash, byte estadoCuenta);
+        void CreateAlumno(Alumno alumno);
         bool UpdatePassword(int idCuenta, string newPasswordHash);
         bool DeleteCuenta(int idCuenta);
 

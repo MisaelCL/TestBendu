@@ -15,9 +15,7 @@ namespace C_C_Final.Repositories
         public Perfil GetById(int idPerfil)
         {
             using var connection = OpenConnection();
-            const string sql = @"SELECT ID_Perfil, ID_Cuenta, Nikname, Biografia, Foto_Perfil, Fecha_Creacion AS FechaCreacion
-FROM dbo.Perfil
-WHERE ID_Perfil = @Id";
+            const string sql = @"SELECT ID_Perfil, ID_Cuenta, Nikname, Biografia, Foto_Perfil, FROM dbo.Perfil WHERE ID_Perfil = @Id";
             using var command = CreateCommand(connection, sql);
             AddParameter(command, "@Id", idPerfil, SqlDbType.Int);
 
@@ -33,9 +31,7 @@ WHERE ID_Perfil = @Id";
         public Perfil GetByCuentaId(int idCuenta)
         {
             using var connection = OpenConnection();
-            const string sql = @"SELECT ID_Perfil, ID_Cuenta, Nikname, Biografia, Foto_Perfil, Fecha_Creacion AS FechaCreacion
-FROM dbo.Perfil
-WHERE ID_Cuenta = @Cuenta";
+            const string sql = @"SELECT ID_Perfil, ID_Cuenta, Nikname, Biografia, Foto_Perfil FROM dbo.Perfil WHERE ID_Cuenta = @Cuenta";
             using var command = CreateCommand(connection, sql);
             AddParameter(command, "@Cuenta", idCuenta, SqlDbType.Int);
 
@@ -69,9 +65,7 @@ WHERE ID_Perfil = @Perfil";
         public IReadOnlyList<Perfil> ListAll()
         {
             using var connection = OpenConnection();
-            const string sql = @"SELECT ID_Perfil, ID_Cuenta, Nikname, Biografia, Foto_Perfil, Fecha_Creacion AS FechaCreacion
-FROM dbo.Perfil
-ORDER BY ID_Perfil DESC";
+            const string sql = @"SELECT ID_Perfil, ID_Cuenta, Nikname, Biografia, Foto_Perfil, FROM dbo.Perfil ORDER BY ID_Perfil DESC";
             using var command = CreateCommand(connection, sql);
 
             var perfiles = new List<Perfil>();
@@ -93,17 +87,11 @@ ORDER BY ID_Perfil DESC";
         public bool UpdatePerfil(Perfil perfil)
         {
             using var connection = OpenConnection();
-            const string sql = @"UPDATE dbo.Perfil
-SET Nikname = @Nikname,
-    Biografia = @Biografia,
-    Foto_Perfil = @Foto,
-    Fecha_Creacion = @Fecha
-WHERE ID_Perfil = @Id";
+            const string sql = @"UPDATE dbo.Perfil SET Nikname = @Nikname, Biografia = @Biografia, Foto_Perfil = @Foto, WHERE ID_Perfil = @Id";
             using var command = CreateCommand(connection, sql);
             AddParameter(command, "@Nikname", perfil.Nikname ?? string.Empty, SqlDbType.NVarChar, 50);
             AddParameter(command, "@Biografia", perfil.Biografia ?? string.Empty, SqlDbType.NVarChar, -1);
             AddParameter(command, "@Foto", perfil.FotoPerfil, SqlDbType.VarBinary);
-            AddParameter(command, "@Fecha", perfil.FechaCreacion, SqlDbType.DateTime2);
             AddParameter(command, "@Id", perfil.IdPerfil, SqlDbType.Int);
 
             var rows = command.ExecuteNonQuery();
@@ -129,15 +117,12 @@ WHERE ID_Perfil = @Id";
 
         public int CreatePerfil(SqlConnection connection, SqlTransaction tx, Perfil perfil)
         {
-            const string sql = @"INSERT INTO dbo.Perfil (ID_Cuenta, Nikname, Biografia, Foto_Perfil, Fecha_Creacion)
-OUTPUT INSERTED.ID_Perfil
-VALUES (@Cuenta, @Nikname, @Biografia, @Foto, @Fecha);";
+            const string sql = @"INSERT INTO dbo.Perfil (ID_Cuenta, Nikname, Biografia, Foto_Perfil) OUTPUT INSERTED.ID_Perfil VALUES (@Cuenta, @Nikname, @Biografia, @Foto);";
             using var command = CreateCommand(connection, sql, CommandType.Text, tx);
             AddParameter(command, "@Cuenta", perfil.IdCuenta, SqlDbType.Int);
             AddParameter(command, "@Nikname", perfil.Nikname ?? string.Empty, SqlDbType.NVarChar, 50);
             AddParameter(command, "@Biografia", perfil.Biografia ?? string.Empty, SqlDbType.NVarChar, -1);
             AddParameter(command, "@Foto", perfil.FotoPerfil, SqlDbType.VarBinary);
-            AddParameter(command, "@Fecha", perfil.FechaCreacion, SqlDbType.DateTime2);
 
             var result = command.ExecuteScalar();
             return SafeToInt32(result);
@@ -145,19 +130,15 @@ VALUES (@Cuenta, @Nikname, @Biografia, @Foto, @Fecha);";
 
         public int UpsertPreferencias(SqlConnection connection, SqlTransaction tx, Preferencias prefs)
         {
-            const string sql = @"MERGE dbo.Preferencias AS Target
-USING (SELECT @Perfil AS ID_Perfil) AS Source
-ON Target.ID_Perfil = Source.ID_Perfil
-WHEN MATCHED THEN
-    UPDATE SET Preferencia_Genero = @Genero,
+            const string sql = @"MERGE dbo.Preferencias AS Target USING (SELECT @Perfil AS ID_Perfil) AS Source ON Target.ID_Perfil = Source.ID_Perfil WHEN MATCHED THEN UPDATE SET Preferencia_Genero = @Genero,
                Edad_Minima = @MinEdad,
                Edad_Maxima = @MaxEdad,
                Preferencia_Carrera = @Carrera,
                Intereses = @Intereses
-WHEN NOT MATCHED THEN
-    INSERT (ID_Perfil, Preferencia_Genero, Edad_Minima, Edad_Maxima, Preferencia_Carrera, Intereses)
-    VALUES (@Perfil, @Genero, @MinEdad, @MaxEdad, @Carrera, @Intereses)
-OUTPUT inserted.ID_Preferencias;";
+               WHEN NOT MATCHED THE
+               INSERT (ID_Perfil, Preferencia_Genero, Edad_Minima, Edad_Maxima, Preferencia_Carrera, Intereses)
+               VALUES (@Perfil, @Genero, @MinEdad, @MaxEdad, @Carrera, @Intereses)
+               OUTPUT inserted.ID_Preferencias;";
             using var command = CreateCommand(connection, sql, CommandType.Text, tx);
             AddParameter(command, "@Perfil", prefs.IdPerfil, SqlDbType.Int);
             AddParameter(command, "@Genero", prefs.PreferenciaGenero, SqlDbType.TinyInt);
@@ -177,7 +158,6 @@ OUTPUT inserted.ID_Preferencias;";
             var niknameIndex = reader.GetOrdinal("Nikname");
             var biografiaIndex = reader.GetOrdinal("Biografia");
             var fotoPerfilIndex = reader.GetOrdinal("Foto_Perfil");
-            var fechaIndex = reader.GetOrdinal("FechaCreacion");
 
             return new Perfil
             {
@@ -186,7 +166,6 @@ OUTPUT inserted.ID_Preferencias;";
                 Nikname = reader.IsDBNull(niknameIndex) ? string.Empty : reader.GetString(niknameIndex),
                 Biografia = reader.IsDBNull(biografiaIndex) ? string.Empty : reader.GetString(biografiaIndex),
                 FotoPerfil = reader.IsDBNull(fotoPerfilIndex) ? null : (byte[])reader[fotoPerfilIndex],
-                FechaCreacion = reader.IsDBNull(fechaIndex) ? DateTime.MinValue : reader.GetDateTime(fechaIndex)
             };
         }
 

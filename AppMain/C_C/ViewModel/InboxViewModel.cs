@@ -7,14 +7,15 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using C_C_Final.Model;
+using C_C_Final.Repositories;
 using C_C_Final.Services;
 
 namespace C_C_Final.ViewModel
 {
     public sealed class InboxViewModel : BaseViewModel
     {
-        private readonly IMatchRepository _matchRepository;
-        private readonly IPerfilRepository _perfilRepository;
+        private readonly MatchRepository _matchRepository;
+        private readonly PerfilRepository _perfilRepository;
         private readonly MatchService _matchService;
         private readonly ObservableCollection<SugerenciaItemViewModel> _sugerencias = new ObservableCollection<SugerenciaItemViewModel>();
         private SugerenciaItemViewModel _perfilActual;
@@ -24,7 +25,7 @@ namespace C_C_Final.ViewModel
         private int _currentIndex;
         private readonly int _pageSize = 20;
 
-        public InboxViewModel(IMatchRepository matchRepository, IPerfilRepository perfilRepository, MatchService matchService)
+        public InboxViewModel(MatchRepository matchRepository, PerfilRepository perfilRepository, MatchService matchService)
         {
             _matchRepository = matchRepository;
             _perfilRepository = perfilRepository;
@@ -174,17 +175,6 @@ namespace C_C_Final.ViewModel
 
         private void AceptarActual()
         {
-            if (PerfilActual == null)
-            {
-                return;
-            }
-
-            if (PerfilActual.EsPerfilRegistrado && PerfilActual.MatchId == 0)
-            {
-                EstadoMensaje = "Este perfil es solo informativo. Para interactuar crea un match.";
-                return;
-            }
-
             _matchRepository.UpdateEstado(PerfilActual.MatchId, "aceptado");
             _matchService.EnsureChatForMatch(PerfilActual.MatchId);
             EstadoMensaje = $"Has aceptado a {PerfilActual.NombreEdad}";
@@ -192,34 +182,12 @@ namespace C_C_Final.ViewModel
 
         private void RechazarActual()
         {
-            if (PerfilActual == null)
-            {
-                return;
-            }
-
-            if (PerfilActual.EsPerfilRegistrado && PerfilActual.MatchId == 0)
-            {
-                EstadoMensaje = "No puedes rechazar un perfil informativo.";
-                return;
-            }
-
             _matchRepository.UpdateEstado(PerfilActual.MatchId, "rechazado");
             EstadoMensaje = $"Has rechazado a {PerfilActual.NombreEdad}";
         }
 
         private void BloquearActual()
         {
-            if (PerfilActual == null)
-            {
-                return;
-            }
-
-            if (PerfilActual.EsPerfilRegistrado && PerfilActual.MatchId == 0)
-            {
-                EstadoMensaje = "No puedes bloquear un perfil informativo.";
-                return;
-            }
-
             _matchRepository.DeleteMatch(PerfilActual.MatchId);
             _sugerencias.Remove(PerfilActual);
             PerfilActual = _sugerencias.Count > 0 ? _sugerencias[Math.Min(_currentIndex, _sugerencias.Count - 1)] : null;

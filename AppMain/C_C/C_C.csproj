@@ -17,6 +17,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Resources\DataBase\**" />
+    <EmbeddedResource Remove="Resources\DataBase\**" />
+    <None Remove="Resources\DataBase\**" />
+    <Page Remove="Resources\DataBase\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="App.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

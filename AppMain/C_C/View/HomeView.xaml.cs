@@ -9,10 +9,6 @@ namespace C_C_Final.View
     {
         private readonly int _perfilId;
 
-        public HomeView() : this(0)
-        {
-        }
-
         public HomeView(int perfilId)
         {
             _perfilId = perfilId;
