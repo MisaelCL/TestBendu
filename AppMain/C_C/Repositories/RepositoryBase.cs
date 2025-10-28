@@ -2,7 +2,6 @@ using System;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using System.Threading;
 
 namespace C_C_Final.Repositories
 {
@@ -11,11 +10,7 @@ namespace C_C_Final.Repositories
         protected const int DefaultCommandTimeout = 30;
 
         private readonly string _connectionString;
-        private static readonly Lazy<string> CachedConnectionString = new Lazy<string>(
-            () => NormalizeConnectionString(
-                ConfigurationManager.ConnectionStrings["DefaultConnection"]?.ConnectionString,
-                "DefaultConnection"),
-            LazyThreadSafetyMode.ExecutionAndPublication);
+        private static string _cachedConnectionString;
 
         protected RepositoryBase(string connectionString = null)
         {
@@ -29,7 +24,14 @@ namespace C_C_Final.Repositories
                 return NormalizeConnectionString(connectionString, "proporcionada");
             }
 
-            return CachedConnectionString.Value;
+            if (!string.IsNullOrEmpty(_cachedConnectionString))
+            {
+                return _cachedConnectionString;
+            }
+
+            var configured = ConfigurationManager.ConnectionStrings["DefaultConnection"]?.ConnectionString;
+            _cachedConnectionString = NormalizeConnectionString(configured, "DefaultConnection");
+            return _cachedConnectionString;
         }
 
         protected SqlCommand CreateCommand(SqlConnection connection, string sql, CommandType commandType = CommandType.Text, SqlTransaction transaction = null)
@@ -60,29 +62,6 @@ namespace C_C_Final.Repositories
             }
         }
 
-        protected bool ColumnExists(SqlConnection connection, SqlTransaction transaction, string tableName, string columnName)
-        {
-            const string sql = @"SELECT 1
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_SCHEMA = 'dbo'
-  AND TABLE_NAME = @Table
-  AND COLUMN_NAME = @Column";
-
-            using var command = CreateCommand(connection, sql, CommandType.Text, transaction);
-            AddParameter(command, "@Table", tableName, SqlDbType.NVarChar, 128);
-            AddParameter(command, "@Column", columnName, SqlDbType.NVarChar, 128);
-
-            using var reader = command.ExecuteReader();
-            return reader.Read();
-        }
-
-        protected static string WrapColumn(string columnName)
-        {
-            return string.IsNullOrWhiteSpace(columnName) || columnName.Contains("[", StringComparison.Ordinal)
-                ? columnName
-                : $"[{columnName}]";
-        }
-
         protected static int SafeToInt32(object result)
         {
             return result == null || result == DBNull.Value ? 0 : Convert.ToInt32(result);
@@ -98,18 +77,6 @@ WHERE TABLE_SCHEMA = 'dbo'
             var connection = new SqlConnection(_connectionString);
             connection.Open();
             return connection;
-        }
-
-        protected T WithConnection<T>(Func<SqlConnection, T> action)
-        {
-            using var connection = OpenConnection();
-            return action(connection);
-        }
-
-        protected void WithConnection(Action<SqlConnection> action)
-        {
-            using var connection = OpenConnection();
-            action(connection);
         }
 
         private static string NormalizeConnectionString(string connectionString, string sourceName)
