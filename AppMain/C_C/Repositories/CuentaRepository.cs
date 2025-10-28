@@ -13,88 +13,80 @@ namespace C_C_Final.Repositories
 
         public Cuenta GetById(int idCuenta)
         {
-            return WithConnection(connection =>
+            using var connection = OpenConnection();
+            const string sql = "SELECT ID_Cuenta, Email, Hash_Contrasena, Estado_Cuenta, Fecha_Registro FROM dbo.Cuenta WHERE ID_Cuenta = @Id";
+            using var command = CreateCommand(connection, sql);
+            AddParameter(command, "@Id", idCuenta, SqlDbType.Int);
+
+            using var reader = command.ExecuteReader();
+            if (!reader.Read())
             {
-                const string sql = "SELECT ID_Cuenta, Email, Hash_Contrasena, Estado_Cuenta, Fecha_Registro FROM dbo.Cuenta WHERE ID_Cuenta = @Id";
-                using var command = CreateCommand(connection, sql);
-                AddParameter(command, "@Id", idCuenta, SqlDbType.Int);
+                return null;
+            }
 
-                using var reader = command.ExecuteReader();
-                if (!reader.Read())
-                {
-                    return null;
-                }
-
-                return MapCuenta(reader);
-            });
+            return MapCuenta(reader);
         }
 
         public Cuenta GetByEmail(string email)
         {
-            return WithConnection(connection =>
+            using var connection = OpenConnection();
+            const string sql = "SELECT ID_Cuenta, Email, Hash_Contrasena, Estado_Cuenta, Fecha_Registro FROM dbo.Cuenta WHERE Email = @Email";
+            using var command = CreateCommand(connection, sql);
+            AddParameter(command, "@Email", email, SqlDbType.NVarChar, 260);
+
+            using var reader = command.ExecuteReader();
+            if (!reader.Read())
             {
-                const string sql = "SELECT ID_Cuenta, Email, Hash_Contrasena, Estado_Cuenta, Fecha_Registro FROM dbo.Cuenta WHERE Email = @Email";
-                using var command = CreateCommand(connection, sql);
-                AddParameter(command, "@Email", email, SqlDbType.NVarChar, 260);
+                return null;
+            }
 
-                using var reader = command.ExecuteReader();
-                if (!reader.Read())
-                {
-                    return null;
-                }
-
-                return MapCuenta(reader);
-            });
+            return MapCuenta(reader);
         }
 
         public bool ExistsByEmail(string email)
         {
-            return WithConnection(connection =>
-            {
-                const string sql = "SELECT CASE WHEN EXISTS (SELECT 1 FROM dbo.Cuenta WHERE Email = @Email) THEN 1 ELSE 0 END";
-                using var command = CreateCommand(connection, sql);
-                AddParameter(command, "@Email", email, SqlDbType.NVarChar, 260);
+            using var connection = OpenConnection();
+            const string sql = "SELECT CASE WHEN EXISTS (SELECT 1 FROM dbo.Cuenta WHERE Email = @Email) THEN 1 ELSE 0 END";
+            using var command = CreateCommand(connection, sql);
+            AddParameter(command, "@Email", email, SqlDbType.NVarChar, 260);
 
-                var result = command.ExecuteScalar();
-                return SafeToInt32(result) == 1;
-            });
+            var result = command.ExecuteScalar();
+            return SafeToInt32(result) == 1;
         }
 
         public int CreateCuenta(string email, string passwordHash, byte estadoCuenta)
         {
-            return WithConnection(connection => CreateCuenta(connection, null, email, passwordHash, estadoCuenta));
+            using var connection = OpenConnection();
+            return CreateCuenta(connection, null, email, passwordHash, estadoCuenta);
         }
 
         public int CreateAlumno(Alumno alumno)
         {
-            return WithConnection(connection => CreateAlumno(connection, null, alumno));
+            using var connection = OpenConnection();
+            return CreateAlumno(connection, null, alumno);
         }
 
         public bool UpdatePassword(int idCuenta, string newPasswordHash)
         {
-            return WithConnection(connection =>
-            {
-                const string sql = "UPDATE dbo.Cuenta SET Hash_Contrasena = @Hash WHERE ID_Cuenta = @Id";
-                using var command = CreateCommand(connection, sql);
-                AddParameter(command, "@Hash", newPasswordHash, SqlDbType.NVarChar, -1);
-                AddParameter(command, "@Id", idCuenta, SqlDbType.Int);
+            using var connection = OpenConnection();
+            const string sql = "UPDATE dbo.Cuenta SET Hash_Contrasena = @Hash WHERE ID_Cuenta = @Id";
+            using var command = CreateCommand(connection, sql);
+            AddParameter(command, "@Hash", newPasswordHash, SqlDbType.NVarChar, -1);
+            AddParameter(command, "@Id", idCuenta, SqlDbType.Int);
 
-                var rows = command.ExecuteNonQuery();
-                return rows > 0;
-            });
+            var rows = command.ExecuteNonQuery();
+            return rows > 0;
         }
 
         public bool DeleteCuenta(int idCuenta)
         {
-            return WithConnection(connection =>
-            {
-                const string sql = "DELETE FROM dbo.Cuenta WHERE ID_Cuenta = @Id";
-                using var command = CreateCommand(connection, sql);
-                AddParameter(command, "@Id", idCuenta, SqlDbType.Int);
+            using var connection = OpenConnection();
+            const string sql = "DELETE FROM dbo.Cuenta WHERE ID_Cuenta = @Id";
+            using var command = CreateCommand(connection, sql);
+            AddParameter(command, "@Id", idCuenta, SqlDbType.Int);
 
-                var rows = command.ExecuteNonQuery();
-                return rows > 0;
-            });
+            var rows = command.ExecuteNonQuery();
+            return rows > 0;
         }
 
         public int CreateCuenta(SqlConnection connection, SqlTransaction tx, string email, string passwordHash, byte estadoCuenta)
