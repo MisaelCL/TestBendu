@@ -6,7 +6,6 @@ using System.Linq;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using C_C_Final.Model;
 using C_C_Final.Repositories;
 using C_C_Final.Services;
 
@@ -148,11 +147,7 @@ namespace C_C_Final.ViewModel
 
         private void AbrirMiPerfil()
         {
-            if (_perfilId == 0)
-            {
-                EstadoMensaje = "No se ha cargado tu perfil.";
-                return;
-            }
+
 
             try
             {
@@ -165,7 +160,7 @@ namespace C_C_Final.ViewModel
 
                 IsSettingsMenuOpen = false;
                 EstadoMensaje = "Mostrando tu perfil.";
-                MiPerfilRequested?.Invoke(perfil.IdCuenta);
+                MiPerfilRequested.Invoke(perfil.IdCuenta);
             }
             catch (Exception)
             {
@@ -244,7 +239,7 @@ namespace C_C_Final.ViewModel
         }
     }
 
-    public sealed class SugerenciaItemViewModel : BaseViewModel
+    public class SugerenciaItemViewModel : BaseViewModel
     {
         public int MatchId { get; set; }
         public int PerfilId { get; set; }

@@ -130,15 +130,8 @@ WHERE ID_Perfil = @Perfil";
 
         public int UpsertPreferencias(SqlConnection connection, SqlTransaction tx, Preferencias prefs)
         {
-            const string sql = @"MERGE dbo.Preferencias AS Target USING (SELECT @Perfil AS ID_Perfil) AS Source ON Target.ID_Perfil = Source.ID_Perfil WHEN MATCHED THEN UPDATE SET Preferencia_Genero = @Genero,
-               Edad_Minima = @MinEdad,
-               Edad_Maxima = @MaxEdad,
-               Preferencia_Carrera = @Carrera,
-               Intereses = @Intereses
-               WHEN NOT MATCHED THE
-               INSERT (ID_Perfil, Preferencia_Genero, Edad_Minima, Edad_Maxima, Preferencia_Carrera, Intereses)
-               VALUES (@Perfil, @Genero, @MinEdad, @MaxEdad, @Carrera, @Intereses)
-               OUTPUT inserted.ID_Preferencias;";
+            const string sql = @"MERGE dbo.Preferencias WITH (HOLDLOCK) AS Target USING (VALUES (@Perfil)) AS Source(ID_Perfil) ON Target.ID_Perfil = Source.ID_Perfil WHEN MATCHED THEN UPDATE SET Preferencia_Genero = @Genero, Edad_Minima = @MinEdad, Edad_Maxima = @MaxEdad, Preferencia_Carrera = @Carrera, Intereses = @Intereses WHEN NOT MATCHED BY TARGET THEN INSERT (ID_Perfil, Preferencia_Genero, Edad_Minima, Edad_Maxima, Preferencia_Carrera, Intereses) VALUES (Source.ID_Perfil, @Genero, @MinEdad, @MaxEdad, @Carrera, @Intereses) OUTPUT inserted.ID_Preferencias;"
+;
             using var command = CreateCommand(connection, sql, CommandType.Text, tx);
             AddParameter(command, "@Perfil", prefs.IdPerfil, SqlDbType.Int);
             AddParameter(command, "@Genero", prefs.PreferenciaGenero, SqlDbType.TinyInt);
