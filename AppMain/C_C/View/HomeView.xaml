@@ -44,7 +44,7 @@
 
                 <Button x:Name="SettingsButton"
                         Grid.Column="1"
-                        Command="{Binding OpenSettingsCommand}"
+                        Command="{Binding ComandoAlternarConfiguracion}"
                         Background="#05AFC6"
                         BorderThickness="0"
                         Cursor="Hand"
@@ -150,7 +150,7 @@
                         Padding="12">
                     <StackPanel>
                         <Button Content="Mi Perfil"
-                                Command="{Binding GoMiPerfilCommand}"
+                                Command="{Binding ComandoIrAMiPerfil}"
                                 Background="Transparent"
                                 Foreground="White"
                                 BorderThickness="0"
@@ -159,7 +159,7 @@
                                 Cursor="Hand" />
                         <Separator Margin="0,4" />
                         <Button Content="Bloquear Perfil"
-                                Command="{Binding BloquearPerfilCommand}"
+                                Command="{Binding ComandoBloquearPerfil}"
                                 Background="Transparent"
                                 Foreground="White"
                                 BorderThickness="0"
@@ -237,7 +237,7 @@
                                                             Background="#80000000"
                                                             BorderThickness="0"
                                                             Cursor="Hand"
-                                                            Command="{Binding DataContext.PrevCommand, RelativeSource={RelativeSource AncestorType=Window}}" />
+                                                            Command="{Binding DataContext.ComandoAnterior, RelativeSource={RelativeSource AncestorType=Window}}" />
 
                                                     <Button Grid.Column="2"
                                                             Width="42"
@@ -248,7 +248,7 @@
                                                             Background="#80000000"
                                                             BorderThickness="0"
                                                             Cursor="Hand"
-                                                            Command="{Binding DataContext.NextCommand, RelativeSource={RelativeSource AncestorType=Window}}" />
+                                                            Command="{Binding DataContext.ComandoSiguiente, RelativeSource={RelativeSource AncestorType=Window}}" />
                                                 </Grid>
                                             </Grid>
                                         </DataTemplate>
@@ -299,7 +299,7 @@
                                 Background="#E53935"
                                 BorderThickness="0"
                                 Cursor="Hand"
-                                Command="{Binding DislikeCommand}" />
+                                Command="{Binding ComandoRechazar}" />
 
                         <Button Grid.Column="2"
                                 Width="56"
@@ -311,7 +311,7 @@
                                 Background="#1DB954"
                                 BorderThickness="0"
                                 Cursor="Hand"
-                                Command="{Binding LikeCommand}" />
+                                Command="{Binding ComandoAceptar}" />
                     </Grid>
                 </Grid>
             </Border>

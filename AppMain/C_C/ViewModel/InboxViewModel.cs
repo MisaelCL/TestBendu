@@ -11,6 +11,9 @@ using C_C_Final.Services;
 
 namespace C_C_Final.ViewModel
 {
+    /// <summary>
+    /// Administra la bandeja de coincidencias y sugerencias del usuario.
+    /// </summary>
     public sealed class InboxViewModel : BaseViewModel
     {
         private readonly MatchRepository _matchRepository;
@@ -30,13 +33,13 @@ namespace C_C_Final.ViewModel
             _perfilRepository = perfilRepository;
             _matchService = matchService;
 
-            OpenSettingsCommand = new RelayCommand(_ => IsSettingsMenuOpen = !IsSettingsMenuOpen);
-            GoMiPerfilCommand = new RelayCommand(_ => AbrirMiPerfil());
-            BloquearPerfilCommand = new RelayCommand(_ => BloquearActual());
-            PrevCommand = new RelayCommand(_ => MoverAnterior());
-            NextCommand = new RelayCommand(_ => MoverSiguiente());
-            LikeCommand = new RelayCommand(_ => AceptarActual());
-            DislikeCommand = new RelayCommand(_ => RechazarActual());
+            ComandoAlternarConfiguracion = new RelayCommand(_ => IsSettingsMenuOpen = !IsSettingsMenuOpen);
+            ComandoIrAMiPerfil = new RelayCommand(_ => AbrirMiPerfil());
+            ComandoBloquearPerfil = new RelayCommand(_ => BloquearActual());
+            ComandoAnterior = new RelayCommand(_ => MoverAnterior());
+            ComandoSiguiente = new RelayCommand(_ => MoverSiguiente());
+            ComandoAceptar = new RelayCommand(_ => AceptarActual());
+            ComandoRechazar = new RelayCommand(_ => RechazarActual());
         }
 
         public ObservableCollection<SugerenciaItemViewModel> Sugerencias => _sugerencias;
@@ -44,44 +47,47 @@ namespace C_C_Final.ViewModel
         public SugerenciaItemViewModel PerfilActual
         {
             get => _perfilActual;
-            private set => SetProperty(ref _perfilActual, value);
+            private set => EstablecerPropiedad(ref _perfilActual, value);
         }
 
         public bool IsSettingsMenuOpen
         {
             get => _isSettingsMenuOpen;
-            set => SetProperty(ref _isSettingsMenuOpen, value);
+            set => EstablecerPropiedad(ref _isSettingsMenuOpen, value);
         }
 
         public string EstadoMensaje
         {
             get => _estadoMensaje;
-            private set => SetProperty(ref _estadoMensaje, value);
+            private set => EstablecerPropiedad(ref _estadoMensaje, value);
         }
 
         public event Action<int> MiPerfilRequested;
 
-        public ICommand OpenSettingsCommand { get; }
-        public ICommand GoMiPerfilCommand { get; }
-        public ICommand BloquearPerfilCommand { get; }
-        public ICommand PrevCommand { get; }
-        public ICommand NextCommand { get; }
-        public ICommand LikeCommand { get; }
-        public ICommand DislikeCommand { get; }
+        public ICommand ComandoAlternarConfiguracion { get; }
+        public ICommand ComandoIrAMiPerfil { get; }
+        public ICommand ComandoBloquearPerfil { get; }
+        public ICommand ComandoAnterior { get; }
+        public ICommand ComandoSiguiente { get; }
+        public ICommand ComandoAceptar { get; }
+        public ICommand ComandoRechazar { get; }
 
-        public void Load(int perfilId)
+        /// <summary>
+        /// Carga los perfiles sugeridos y coincidencias para el usuario indicado.
+        /// </summary>
+        public void Cargar(int perfilId)
         {
             _perfilId = perfilId;
             _sugerencias.Clear();
             _currentIndex = 0;
 
-            var matches = _matchRepository.ListByPerfil(perfilId, 0, _pageSize);
+            var matches = _matchRepository.ListarPorPerfil(perfilId, 0, _pageSize);
             var perfilesAgregados = new HashSet<int>();
 
             foreach (var match in matches.OrderByDescending(m => m.FechaMatch))
             {
                 var otherPerfilId = match.PerfilEmisor == perfilId ? match.PerfilReceptor : match.PerfilEmisor;
-                var perfil = _perfilRepository.GetById(otherPerfilId);
+                var perfil = _perfilRepository.ObtenerPorId(otherPerfilId);
                 if (perfil == null)
                 {
                     continue;
@@ -98,13 +104,13 @@ namespace C_C_Final.ViewModel
                     PerfilId = otherPerfilId,
                     NombreEdad = perfil.Nikname,
                     CarreraTexto = match.Estado,
-                    FotoUrl = ConvertToImage(perfil.FotoPerfil),
+                    FotoUrl = ConvertirAImagen(perfil.FotoPerfil),
                     EsPerfilRegistrado = false
                 };
                 _sugerencias.Add(sugerencia);
             }
 
-            var perfilesRegistrados = _perfilRepository.ListAll();
+            var perfilesRegistrados = _perfilRepository.ListarTodos();
             foreach (var perfil in perfilesRegistrados.Where(p => p.IdPerfil != perfilId))
             {
                 if (!perfilesAgregados.Add(perfil.IdPerfil))
@@ -122,7 +128,7 @@ namespace C_C_Final.ViewModel
                     PerfilId = perfil.IdPerfil,
                     NombreEdad = perfil.Nikname,
                     CarreraTexto = descripcion,
-                    FotoUrl = ConvertToImage(perfil.FotoPerfil),
+                    FotoUrl = ConvertirAImagen(perfil.FotoPerfil),
                     EsPerfilRegistrado = true
                 };
 
@@ -151,7 +157,7 @@ namespace C_C_Final.ViewModel
 
             try
             {
-                var perfil = _perfilRepository.GetById(_perfilId);
+                var perfil = _perfilRepository.ObtenerPorId(_perfilId);
                 if (perfil == null)
                 {
                     EstadoMensaje = "No se encontró tu perfil.";
@@ -170,20 +176,20 @@ namespace C_C_Final.ViewModel
 
         private void AceptarActual()
         {
-            _matchRepository.UpdateEstado(PerfilActual.MatchId, "aceptado");
-            _matchService.EnsureChatForMatch(PerfilActual.MatchId);
+            _matchRepository.ActualizarEstado(PerfilActual.MatchId, "aceptado");
+            _matchService.AsegurarChatParaMatch(PerfilActual.MatchId);
             EstadoMensaje = $"Has aceptado a {PerfilActual.NombreEdad}";
         }
 
         private void RechazarActual()
         {
-            _matchRepository.UpdateEstado(PerfilActual.MatchId, "rechazado");
+            _matchRepository.ActualizarEstado(PerfilActual.MatchId, "rechazado");
             EstadoMensaje = $"Has rechazado a {PerfilActual.NombreEdad}";
         }
 
         private void BloquearActual()
         {
-            _matchRepository.DeleteMatch(PerfilActual.MatchId);
+            _matchRepository.EliminarMatch(PerfilActual.MatchId);
             _sugerencias.Remove(PerfilActual);
             PerfilActual = _sugerencias.Count > 0 ? _sugerencias[Math.Min(_currentIndex, _sugerencias.Count - 1)] : null;
 
@@ -221,7 +227,10 @@ namespace C_C_Final.ViewModel
             PerfilActual = _sugerencias[_currentIndex];
         }
 
-        private static ImageSource ConvertToImage(byte[] bytes)
+        /// <summary>
+        /// Convierte la imagen binaria de un perfil a un recurso visual.
+        /// </summary>
+        private static ImageSource ConvertirAImagen(byte[] bytes)
         {
             if (bytes == null || bytes.Length == 0)
             {

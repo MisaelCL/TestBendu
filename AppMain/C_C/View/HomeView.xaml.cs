@@ -19,7 +19,7 @@ namespace C_C_Final.View
                 var viewModel = new InboxViewModel(app.MatchRepository, app.PerfilRepository, app.MatchService);
                 DataContext = viewModel;
                 viewModel.MiPerfilRequested += OnMiPerfilRequested;
-                Loaded += (_, _) => Load(viewModel, _perfilId);
+                Loaded += (_, _) => CargarVista(viewModel, _perfilId);
                 Closed += (_, _) => viewModel.MiPerfilRequested -= OnMiPerfilRequested;
             }
         }
@@ -44,11 +44,11 @@ namespace C_C_Final.View
             }
         }
 
-        private static void Load(InboxViewModel viewModel, int perfilId)
+        private static void CargarVista(InboxViewModel viewModel, int perfilId)
         {
             try
             {
-                viewModel.Load(perfilId);
+                viewModel.Cargar(perfilId);
             }
             catch (Exception)
             {

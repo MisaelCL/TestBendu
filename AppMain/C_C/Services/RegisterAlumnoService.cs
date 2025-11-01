@@ -25,6 +25,9 @@ namespace C_C_Final.Services
         public byte[] FotoPerfil { get; set; }
     }
 
+    /// <summary>
+    /// Orquesta la creación de cuentas, perfiles y preferencias para nuevos alumnos.
+    /// </summary>
     public sealed class RegisterAlumnoService
     {
         private readonly CuentaRepository _cuentaRepository;
@@ -35,10 +38,15 @@ namespace C_C_Final.Services
         {
             _cuentaRepository = cuentaRepository;
             _perfilRepository = perfilRepository;
-            _connectionString = RepositoryBase.ResolveConnectionString(connectionString);
+            _connectionString = RepositoryBase.ResolverCadenaConexion(connectionString);
         }
 
-        public int Register(RegisterAlumnoRequest request)
+        /// <summary>
+        /// Registra un alumno nuevo junto con su cuenta, perfil y preferencias iniciales.
+        /// </summary>
+        /// <param name="request">Datos necesarios para el registro.</param>
+        /// <returns>Identificador de la cuenta creada.</returns>
+        public int Registrar(RegisterAlumnoRequest request)
         {
             if (request is null)
             {
@@ -67,13 +75,13 @@ namespace C_C_Final.Services
             {
                 var normalizedEmail = request.Email.Trim();
 
-                if (_cuentaRepository.ExistsByEmail(normalizedEmail))
+                if (_cuentaRepository.ExistePorCorreo(normalizedEmail))
                 {
                     throw new InvalidOperationException("El correo electrónico ya está registrado.");
                 }
 
                 var passwordHash = HashFunction.ComputeHash(request.Password);
-                var cuentaId = _cuentaRepository.CreateCuenta(connection, transaction, normalizedEmail, passwordHash, request.EstadoCuenta);
+                var cuentaId = _cuentaRepository.CrearCuenta(connection, transaction, normalizedEmail, passwordHash, request.EstadoCuenta);
 
                 if (cuentaId <= 0)
                 {
@@ -96,7 +104,7 @@ namespace C_C_Final.Services
                     Correo = correoAlumno,
                     Carrera = request.Carrera?.Trim() ?? string.Empty
                 };
-                var alumnoId = _cuentaRepository.CreateAlumno(connection, transaction, alumno);
+                var alumnoId = _cuentaRepository.CrearAlumno(connection, transaction, alumno);
 
                 if (alumnoId < 0)
                 {
@@ -107,13 +115,13 @@ namespace C_C_Final.Services
                 {
                     IdCuenta = cuentaId,
                     Nikname = string.IsNullOrWhiteSpace(request.Nikname)
-                        ? GenerateNikname(alumno.Nombre, alumno.ApellidoPaterno)
+                        ? GenerarApodo(alumno.Nombre, alumno.ApellidoPaterno)
                         : request.Nikname!.Trim(),
                     Biografia = request.Biografia ?? string.Empty,
                     FotoPerfil = request.FotoPerfil,
                     FechaCreacion = DateTime.UtcNow
                 };
-                var perfilId = _perfilRepository.CreatePerfil(connection, transaction, perfil);
+                var perfilId = _perfilRepository.CrearPerfil(connection, transaction, perfil);
 
                 if (perfilId <= 0)
                 {
@@ -129,7 +137,7 @@ namespace C_C_Final.Services
                     PreferenciaCarrera = string.Empty,
                     Intereses = string.Empty
                 };
-                var preferenciasId = _perfilRepository.UpsertPreferencias(connection, transaction, preferencias);
+                var preferenciasId = _perfilRepository.InsertarOActualizarPreferencias(connection, transaction, preferencias);
 
                 if (preferenciasId < 0)
                 {
@@ -146,7 +154,13 @@ namespace C_C_Final.Services
             }
         }
 
-        private static string GenerateNikname(string nombre, string apellidoPaterno)
+        /// <summary>
+        /// Genera un apodo legible basado en el nombre y apellido del alumno.
+        /// </summary>
+        /// <param name="nombre">Nombre del alumno.</param>
+        /// <param name="apellidoPaterno">Apellido paterno del alumno.</param>
+        /// <returns>Apodo sugerido.</returns>
+        private static string GenerarApodo(string nombre, string apellidoPaterno)
         {
             var safeNombre = string.IsNullOrWhiteSpace(nombre) ? "user" : nombre;
             var safeApellido = string.IsNullOrWhiteSpace(apellidoPaterno) ? "cc" : apellidoPaterno;

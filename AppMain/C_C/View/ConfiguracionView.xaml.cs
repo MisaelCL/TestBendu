@@ -14,15 +14,15 @@ namespace C_C_Final.View
             {
                 var viewModel = new PreferenciasViewModel(app.PerfilRepository);
                 DataContext = viewModel;
-                Loaded += (_, _) => Load(viewModel);
+                Loaded += (_, _) => CargarVista(viewModel);
             }
         }
 
-        private static void Load(PreferenciasViewModel viewModel)
+        private static void CargarVista(PreferenciasViewModel viewModel)
         {
             try
             {
-                viewModel.Load(0);
+                viewModel.Cargar(0);
             }
             catch (Exception)
             {

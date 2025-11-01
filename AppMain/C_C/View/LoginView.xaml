@@ -163,10 +163,10 @@
                         </StackPanel>
                     </Border>
 
-                    <!-- Link de registro (mapea IrARegistroCommand -> OpenRegistroCommand) -->
+                    <!-- Link de registro (mapea IrARegistroCommand -> ComandoAbrirRegistro) -->
                     <TextBlock Margin="0,14,0,0" HorizontalAlignment="Center">
                         <Hyperlink Foreground="{StaticResource AcentoPrincipal}" TextDecorations="None"
-                                   Command="{Binding OpenRegistroCommand}">
+                                   Command="{Binding ComandoAbrirRegistro}">
                             <Run Text="¿Aún no tienes cuenta? Regístrate"/>
                         </Hyperlink>
                     </TextBlock>
@@ -183,7 +183,7 @@
                 </Grid.ColumnDefinitions>
 
                 <Button Grid.Column="0" Content="Iniciar sesión"
-                        Command="{Binding LoginCommand}"
+                        Command="{Binding ComandoIniciarSesion}"
                         Style="{StaticResource BtnPrimario}"/>
 
                 <Button Grid.Column="2" Content="Cancelar"

@@ -92,7 +92,7 @@
 
                     <Button x:Name="BackButton"
                             Style="{StaticResource IconButtonStyle}"
-                            Command="{Binding GoBackCommand}">
+                            Command="{Binding ComandoRegresar}">
                         <Path Width="14"
                               Height="22"
                               Fill="#2B5F7F"
@@ -139,7 +139,7 @@
                     <Button x:Name="OptionsButton"
                             Grid.Column="2"
                             Style="{StaticResource IconButtonStyle}"
-                            Command="{Binding OpenMenuCommand}">
+                            Command="{Binding ComandoAlternarMenuChat}">
                         <Image Source="/C_C_Final;component/Images/Ajustes_Icon.png"
                                Width="22"
                                Height="22" />
@@ -181,7 +181,7 @@
                             Style="{StaticResource IconButtonStyle}"
                             Width="32"
                             Height="32"
-                            Command="{Binding OpenThreadMenuCommand}">
+                            Command="{Binding ComandoAlternarMenuConversacion}">
                         <TextBlock Text="⋮"
                                    FontSize="18"
                                    FontWeight="Bold"
@@ -269,7 +269,7 @@
                         Background="{StaticResource WhiteBrush}"
                         BorderThickness="0"
                         Cursor="Hand"
-                        Command="{Binding EnviarMensajeCommand}">
+                        Command="{Binding ComandoEnviarMensaje}">
                     <Button.Template>
                         <ControlTemplate TargetType="Button">
                             <Border Background="{TemplateBinding Background}"
@@ -302,15 +302,15 @@
                     <StackPanel>
                         <Button Content="Ver perfil"
                                 Style="{StaticResource MenuButtonStyle}"
-                                Command="{Binding VerPerfilCommand}" />
+                                Command="{Binding ComandoVerPerfil}" />
                         <Separator Margin="0,4" />
                         <Button Content="Bloquear"
                                 Style="{StaticResource MenuButtonStyle}"
-                                Command="{Binding BloquearContactoCommand}" />
+                                Command="{Binding ComandoBloquearContacto}" />
                         <Separator Margin="0,4" />
                         <Button Content="Eliminar chat"
                                 Style="{StaticResource MenuButtonStyle}"
-                                Command="{Binding EliminarChatCommand}" />
+                                Command="{Binding ComandoEliminarChat}" />
                     </StackPanel>
                 </Border>
             </Popup>
@@ -329,11 +329,11 @@
                     <StackPanel>
                         <Button Content="Silenciar"
                                 Style="{StaticResource MenuButtonStyle}"
-                                Command="{Binding SilenciarChatCommand}" />
+                                Command="{Binding ComandoSilenciarChat}" />
                         <Separator Margin="0,4" />
                         <Button Content="Marcar como no leído"
                                 Style="{StaticResource MenuButtonStyle}"
-                                Command="{Binding MarcarNoLeidoCommand}" />
+                                Command="{Binding ComandoMarcarNoLeido}" />
                     </StackPanel>
                 </Border>
             </Popup>

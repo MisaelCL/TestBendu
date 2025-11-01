@@ -258,7 +258,7 @@
                         </Border>
 
                         <Button Content="REGISTRARSE"
-                                Command="{Binding RegisterCommand}"
+                                Command="{Binding ComandoRegistrar}"
                                 Height="48"
                                 Margin="0,24,0,0"
                                 Background="#05AFC6"
