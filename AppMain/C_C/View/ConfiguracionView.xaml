@@ -41,7 +41,7 @@
                         Background="#05AFC6"
                         BorderThickness="0"
                         Cursor="Hand"
-                        Command="{Binding GoBackCommand}">
+                        Command="{Binding ComandoRegresar}">
                     <Button.Template>
                         <ControlTemplate TargetType="Button">
                             <Border Background="{TemplateBinding Background}"
@@ -418,7 +418,7 @@
                                         Background="#D9D9D9"
                                         Foreground="#0B2340"
                                         BorderThickness="0"
-                                        Command="{Binding LogoutCommand}">
+                                        Command="{Binding CerrarSesionCommand}">
                                     <Button.Template>
                                         <ControlTemplate TargetType="Button">
                                             <Border Background="{TemplateBinding Background}"

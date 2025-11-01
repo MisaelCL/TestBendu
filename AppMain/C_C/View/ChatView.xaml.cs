@@ -14,15 +14,15 @@ namespace C_C_Final.View
             {
                 var viewModel = new ChatViewModel(app.MatchRepository, app.PerfilRepository, app.MatchService);
                 DataContext = viewModel;
-                Loaded += (_, _) => Load(viewModel);
+                Loaded += (_, _) => CargarVista(viewModel);
             }
         }
 
-        private static void Load(ChatViewModel viewModel)
+        private static void CargarVista(ChatViewModel viewModel)
         {
             try
             {
-                viewModel.Load(0, 0);
+                viewModel.Cargar(0, 0);
             }
             catch (Exception)
             {

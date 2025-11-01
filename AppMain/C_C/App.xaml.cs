@@ -20,7 +20,7 @@ namespace C_C_Final
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            ConnectionString = RepositoryBase.ResolveConnectionString(null);
+            ConnectionString = RepositoryBase.ResolverCadenaConexion(null);
             CuentaRepository = new CuentaRepository(ConnectionString);
             PerfilRepository = new PerfilRepository(ConnectionString);
             MatchRepository = new MatchRepository(ConnectionString);

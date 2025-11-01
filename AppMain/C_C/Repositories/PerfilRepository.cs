@@ -6,18 +6,22 @@ using C_C_Final.Model;
 
 namespace C_C_Final.Repositories
 {
+    /// <summary>
+    /// Gestiona las operaciones de datos relacionadas con los perfiles e intereses de los alumnos.
+    /// </summary>
     public sealed class PerfilRepository : RepositoryBase, IPerfilRepository
     {
         public PerfilRepository(string connectionString = null) : base(connectionString)
         {
         }
 
-        public Perfil GetById(int idPerfil)
+        /// <inheritdoc />
+        public Perfil ObtenerPorId(int idPerfil)
         {
-            using var connection = OpenConnection();
+            using var connection = AbrirConexion();
             const string sql = @"SELECT ID_Perfil, ID_Cuenta, Nikname, Biografia, Foto_Perfil, FROM dbo.Perfil WHERE ID_Perfil = @Id";
-            using var command = CreateCommand(connection, sql);
-            AddParameter(command, "@Id", idPerfil, SqlDbType.Int);
+            using var command = CrearComando(connection, sql);
+            AgregarParametro(command, "@Id", idPerfil, SqlDbType.Int);
 
             using var reader = command.ExecuteReader();
             if (!reader.Read())
@@ -25,15 +29,16 @@ namespace C_C_Final.Repositories
                 return null;
             }
 
-            return MapPerfil(reader);
+            return MapearPerfil(reader);
         }
 
-        public Perfil GetByCuentaId(int idCuenta)
+        /// <inheritdoc />
+        public Perfil ObtenerPorCuentaId(int idCuenta)
         {
-            using var connection = OpenConnection();
+            using var connection = AbrirConexion();
             const string sql = @"SELECT ID_Perfil, ID_Cuenta, Nikname, Biografia, Foto_Perfil FROM dbo.Perfil WHERE ID_Cuenta = @Cuenta";
-            using var command = CreateCommand(connection, sql);
-            AddParameter(command, "@Cuenta", idCuenta, SqlDbType.Int);
+            using var command = CrearComando(connection, sql);
+            AgregarParametro(command, "@Cuenta", idCuenta, SqlDbType.Int);
 
             using var reader = command.ExecuteReader();
             if (!reader.Read())
@@ -41,17 +46,18 @@ namespace C_C_Final.Repositories
                 return null;
             }
 
-            return MapPerfil(reader);
+            return MapearPerfil(reader);
         }
 
-        public Preferencias GetPreferenciasByPerfil(int idPerfil)
+        /// <inheritdoc />
+        public Preferencias ObtenerPreferenciasPorPerfil(int idPerfil)
         {
-            using var connection = OpenConnection();
+            using var connection = AbrirConexion();
             const string sql = @"SELECT ID_Preferencias, ID_Perfil, Preferencia_Genero, Edad_Minima, Edad_Maxima, Preferencia_Carrera, Intereses
 FROM dbo.Preferencias
 WHERE ID_Perfil = @Perfil";
-            using var command = CreateCommand(connection, sql);
-            AddParameter(command, "@Perfil", idPerfil, SqlDbType.Int);
+            using var command = CrearComando(connection, sql);
+            AgregarParametro(command, "@Perfil", idPerfil, SqlDbType.Int);
 
             using var reader = command.ExecuteReader();
             if (!reader.Read())
@@ -59,92 +65,104 @@ WHERE ID_Perfil = @Perfil";
                 return null;
             }
 
-            return MapPreferencias(reader);
+            return MapearPreferencias(reader);
         }
 
-        public IReadOnlyList<Perfil> ListAll()
+        /// <inheritdoc />
+        public IReadOnlyList<Perfil> ListarTodos()
         {
-            using var connection = OpenConnection();
+            using var connection = AbrirConexion();
             const string sql = @"SELECT ID_Perfil, ID_Cuenta, Nikname, Biografia, Foto_Perfil, FROM dbo.Perfil ORDER BY ID_Perfil DESC";
-            using var command = CreateCommand(connection, sql);
+            using var command = CrearComando(connection, sql);
 
             var perfiles = new List<Perfil>();
             using var reader = command.ExecuteReader();
             while (reader.Read())
             {
-                perfiles.Add(MapPerfil(reader));
+                perfiles.Add(MapearPerfil(reader));
             }
 
             return perfiles;
         }
 
-        public int CreatePerfil(Perfil perfil)
+        /// <inheritdoc />
+        public int CrearPerfil(Perfil perfil)
         {
-            using var connection = OpenConnection();
-            return CreatePerfil(connection, null, perfil);
+            using var connection = AbrirConexion();
+            return CrearPerfil(connection, null, perfil);
         }
 
-        public bool UpdatePerfil(Perfil perfil)
+        /// <inheritdoc />
+        public bool ActualizarPerfil(Perfil perfil)
         {
-            using var connection = OpenConnection();
+            using var connection = AbrirConexion();
             const string sql = @"UPDATE dbo.Perfil SET Nikname = @Nikname, Biografia = @Biografia, Foto_Perfil = @Foto, WHERE ID_Perfil = @Id";
-            using var command = CreateCommand(connection, sql);
-            AddParameter(command, "@Nikname", perfil.Nikname ?? string.Empty, SqlDbType.NVarChar, 50);
-            AddParameter(command, "@Biografia", perfil.Biografia ?? string.Empty, SqlDbType.NVarChar, -1);
-            AddParameter(command, "@Foto", perfil.FotoPerfil, SqlDbType.VarBinary);
-            AddParameter(command, "@Id", perfil.IdPerfil, SqlDbType.Int);
+            using var command = CrearComando(connection, sql);
+            AgregarParametro(command, "@Nikname", perfil.Nikname ?? string.Empty, SqlDbType.NVarChar, 50);
+            AgregarParametro(command, "@Biografia", perfil.Biografia ?? string.Empty, SqlDbType.NVarChar, -1);
+            AgregarParametro(command, "@Foto", perfil.FotoPerfil, SqlDbType.VarBinary);
+            AgregarParametro(command, "@Id", perfil.IdPerfil, SqlDbType.Int);
 
             var rows = command.ExecuteNonQuery();
             return rows > 0;
         }
 
-        public int UpsertPreferencias(Preferencias prefs)
+        /// <inheritdoc />
+        public int InsertarOActualizarPreferencias(Preferencias prefs)
         {
-            using var connection = OpenConnection();
-            return UpsertPreferencias(connection, null, prefs);
+            using var connection = AbrirConexion();
+            return InsertarOActualizarPreferencias(connection, null, prefs);
         }
 
-        public bool DeletePerfil(int idPerfil)
+        /// <inheritdoc />
+        public bool EliminarPerfil(int idPerfil)
         {
-            using var connection = OpenConnection();
+            using var connection = AbrirConexion();
             const string sql = "DELETE FROM dbo.Perfil WHERE ID_Perfil = @Id";
-            using var command = CreateCommand(connection, sql);
-            AddParameter(command, "@Id", idPerfil, SqlDbType.Int);
+            using var command = CrearComando(connection, sql);
+            AgregarParametro(command, "@Id", idPerfil, SqlDbType.Int);
 
             var rows = command.ExecuteNonQuery();
             return rows > 0;
         }
 
-        public int CreatePerfil(SqlConnection connection, SqlTransaction tx, Perfil perfil)
+        /// <inheritdoc />
+        public int CrearPerfil(SqlConnection connection, SqlTransaction tx, Perfil perfil)
         {
             const string sql = @"INSERT INTO dbo.Perfil (ID_Cuenta, Nikname, Biografia, Foto_Perfil) OUTPUT INSERTED.ID_Perfil VALUES (@Cuenta, @Nikname, @Biografia, @Foto);";
-            using var command = CreateCommand(connection, sql, CommandType.Text, tx);
-            AddParameter(command, "@Cuenta", perfil.IdCuenta, SqlDbType.Int);
-            AddParameter(command, "@Nikname", perfil.Nikname ?? string.Empty, SqlDbType.NVarChar, 50);
-            AddParameter(command, "@Biografia", perfil.Biografia ?? string.Empty, SqlDbType.NVarChar, -1);
-            AddParameter(command, "@Foto", perfil.FotoPerfil, SqlDbType.VarBinary);
+            using var command = CrearComando(connection, sql, CommandType.Text, tx);
+            AgregarParametro(command, "@Cuenta", perfil.IdCuenta, SqlDbType.Int);
+            AgregarParametro(command, "@Nikname", perfil.Nikname ?? string.Empty, SqlDbType.NVarChar, 50);
+            AgregarParametro(command, "@Biografia", perfil.Biografia ?? string.Empty, SqlDbType.NVarChar, -1);
+            AgregarParametro(command, "@Foto", perfil.FotoPerfil, SqlDbType.VarBinary);
 
             var result = command.ExecuteScalar();
-            return SafeToInt32(result);
+            return ConvertirSeguroAInt32(result);
         }
 
-        public int UpsertPreferencias(SqlConnection connection, SqlTransaction tx, Preferencias prefs)
+        /// <inheritdoc />
+        public int InsertarOActualizarPreferencias(SqlConnection connection, SqlTransaction tx, Preferencias prefs)
         {
-            const string sql = @"MERGE dbo.Preferencias WITH (HOLDLOCK) AS Target USING (VALUES (@Perfil)) AS Source(ID_Perfil) ON Target.ID_Perfil = Source.ID_Perfil WHEN MATCHED THEN UPDATE SET Preferencia_Genero = @Genero, Edad_Minima = @MinEdad, Edad_Maxima = @MaxEdad, Preferencia_Carrera = @Carrera, Intereses = @Intereses WHEN NOT MATCHED BY TARGET THEN INSERT (ID_Perfil, Preferencia_Genero, Edad_Minima, Edad_Maxima, Preferencia_Carrera, Intereses) VALUES (Source.ID_Perfil, @Genero, @MinEdad, @MaxEdad, @Carrera, @Intereses) OUTPUT inserted.ID_Preferencias;"
-;
-            using var command = CreateCommand(connection, sql, CommandType.Text, tx);
-            AddParameter(command, "@Perfil", prefs.IdPerfil, SqlDbType.Int);
-            AddParameter(command, "@Genero", prefs.PreferenciaGenero, SqlDbType.TinyInt);
-            AddParameter(command, "@MinEdad", prefs.EdadMinima, SqlDbType.Int);
-            AddParameter(command, "@MaxEdad", prefs.EdadMaxima, SqlDbType.Int);
-            AddParameter(command, "@Carrera", prefs.PreferenciaCarrera ?? string.Empty, SqlDbType.NVarChar, 50);
-            AddParameter(command, "@Intereses", prefs.Intereses ?? string.Empty, SqlDbType.NVarChar, -1);
+            const string sql = @"MERGE dbo.Preferencias WITH (HOLDLOCK) AS Target USING (VALUES (@Perfil)) AS Source(ID_Perfil)
+ON Target.ID_Perfil = Source.ID_Perfil WHEN MATCHED THEN UPDATE SET Preferencia_Genero = @Genero, Edad_Minima = @MinEdad, Edad_Maxima = @MaxEdad, Preferencia_Carrera = @Carrera, Intereses = @Intereses WHEN NOT MATCHED BY TARGET THEN INSERT (ID_Perfil, Preferencia_Genero, Edad_Minima, Edad_Maxima, Preferencia_Carrera, Intereses) VALUES (Source.ID_Perfil, @Genero, @MinEdad, @MaxEdad, @Carrera, @Intereses) OUTPUT inserted.ID_Preferencias;";
+            using var command = CrearComando(connection, sql, CommandType.Text, tx);
+            AgregarParametro(command, "@Perfil", prefs.IdPerfil, SqlDbType.Int);
+            AgregarParametro(command, "@Genero", prefs.PreferenciaGenero, SqlDbType.TinyInt);
+            AgregarParametro(command, "@MinEdad", prefs.EdadMinima, SqlDbType.Int);
+            AgregarParametro(command, "@MaxEdad", prefs.EdadMaxima, SqlDbType.Int);
+            AgregarParametro(command, "@Carrera", prefs.PreferenciaCarrera ?? string.Empty, SqlDbType.NVarChar, 50);
+            AgregarParametro(command, "@Intereses", prefs.Intereses ?? string.Empty, SqlDbType.NVarChar, -1);
 
             var result = command.ExecuteScalar();
-            return SafeToInt32(result);
+            return ConvertirSeguroAInt32(result);
         }
 
-        private static Perfil MapPerfil(SqlDataReader reader)
+        /// <summary>
+        /// Convierte un registro de datos en un objeto de perfil.
+        /// </summary>
+        /// <param name="reader">Lector con los datos del perfil.</param>
+        /// <returns>Perfil construido.</returns>
+        private static Perfil MapearPerfil(SqlDataReader reader)
         {
             var idPerfilIndex = reader.GetOrdinal("ID_Perfil");
             var idCuentaIndex = reader.GetOrdinal("ID_Cuenta");
@@ -162,7 +180,12 @@ WHERE ID_Perfil = @Perfil";
             };
         }
 
-        private static Preferencias MapPreferencias(SqlDataReader reader)
+        /// <summary>
+        /// Convierte un registro de datos en un objeto de preferencias.
+        /// </summary>
+        /// <param name="reader">Lector con los datos de preferencias.</param>
+        /// <returns>Preferencias construidas.</returns>
+        private static Preferencias MapearPreferencias(SqlDataReader reader)
         {
             return new Preferencias
             {

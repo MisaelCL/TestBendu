@@ -6,6 +6,9 @@ using C_C_Final.Services;
 
 namespace C_C_Final.ViewModel
 {
+    /// <summary>
+    /// Gestiona el proceso de registro de nuevos alumnos y valida la información capturada.
+    /// </summary>
     public sealed class RegistroViewModel : BaseViewModel
     {
         private readonly RegisterAlumnoService _registerAlumnoService;
@@ -33,7 +36,7 @@ namespace C_C_Final.ViewModel
         public RegistroViewModel(RegisterAlumnoService registerAlumnoService)
         {
             _registerAlumnoService = registerAlumnoService;
-            RegisterCommand = new RelayCommand(_ => Registrar(), _ => !IsBusy);
+            ComandoRegistrar = new RelayCommand(_ => Registrar(), _ => !IsBusy);
         }
 
         public ObservableCollection<string> Carreras => _carreras;
@@ -41,19 +44,19 @@ namespace C_C_Final.ViewModel
         public string CarreraSeleccionada
         {
             get => _carreraSeleccionada;
-            set => SetProperty(ref _carreraSeleccionada, value);
+            set => EstablecerPropiedad(ref _carreraSeleccionada, value);
         }
 
         public string Matricula
         {
             get => _matricula;
-            set => SetProperty(ref _matricula, value);
+            set => EstablecerPropiedad(ref _matricula, value);
         }
 
         public string NombreCompleto
         {
             get => _nombreCompleto;
-            set => SetProperty(ref _nombreCompleto, value);
+            set => EstablecerPropiedad(ref _nombreCompleto, value);
         }
 
         public ObservableCollection<string> Generos => _generos;
@@ -61,37 +64,37 @@ namespace C_C_Final.ViewModel
         public string GeneroSeleccionado
         {
             get => _generoSeleccionado;
-            set => SetProperty(ref _generoSeleccionado, value);
+            set => EstablecerPropiedad(ref _generoSeleccionado, value);
         }
 
         public DateTime FechaNacimiento
         {
             get => (DateTime)_fechaNacimiento;
-            set => SetProperty(ref _fechaNacimiento, value);
+            set => EstablecerPropiedad(ref _fechaNacimiento, value);
         }
 
         public string Correo
         {
             get => _correo;
-            set => SetProperty(ref _correo, value);
+            set => EstablecerPropiedad(ref _correo, value);
         }
 
         public string Password
         {
             get => _password;
-            set => SetProperty(ref _password, value);
+            set => EstablecerPropiedad(ref _password, value);
         }
 
         public string ConfirmPassword
         {
             get => _confirmPassword;
-            set => SetProperty(ref _confirmPassword, value);
+            set => EstablecerPropiedad(ref _confirmPassword, value);
         }
 
         public string ErrorMessage
         {
             get => _errorMessage;
-            private set => SetProperty(ref _errorMessage, value);
+            private set => EstablecerPropiedad(ref _errorMessage, value);
         }
 
         public bool IsBusy
@@ -99,15 +102,18 @@ namespace C_C_Final.ViewModel
             get => _isBusy;
             private set
             {
-                if (SetProperty(ref _isBusy, value))
+                if (EstablecerPropiedad(ref _isBusy, value))
                 {
-                    (RegisterCommand as RelayCommand)?.RaiseCanExecuteChanged();
+                    (ComandoRegistrar as RelayCommand)?.NotificarCambioPuedeEjecutar();
                 }
             }
         }
 
-        public ICommand RegisterCommand { get; }
+        public ICommand ComandoRegistrar { get; }
 
+        /// <summary>
+        /// Ejecuta el flujo de registro del alumno con validaciones básicas.
+        /// </summary>
         private void Registrar()
         {
             if (IsBusy)
@@ -139,7 +145,7 @@ namespace C_C_Final.ViewModel
                 }
 
                 var genero = GeneroSeleccionado?.StartsWith("M", StringComparison.OrdinalIgnoreCase) == true ? 'M' : 'F';
-                var (nombre, apaterno, amaterno) = ParseNombre(NombreCompleto);
+                var (nombre, apaterno, amaterno) = AnalizarNombreCompleto(NombreCompleto);
 
                 var request = new RegisterAlumnoRequest
                 {
@@ -157,7 +163,7 @@ namespace C_C_Final.ViewModel
                     Biografia = string.Empty
                 };
 
-                var cuentaId = _registerAlumnoService.Register(request);
+                var cuentaId = _registerAlumnoService.Registrar(request);
 
                 if (cuentaId <= 0)
                 {
@@ -179,7 +185,10 @@ namespace C_C_Final.ViewModel
             }
         }
 
-        private static (string Nombre, string Apaterno, string Amaterno) ParseNombre(string nombreCompleto)
+        /// <summary>
+        /// Separa un nombre completo en nombre y apellidos.
+        /// </summary>
+        private static (string Nombre, string Apaterno, string Amaterno) AnalizarNombreCompleto(string nombreCompleto)
         {
             if (string.IsNullOrWhiteSpace(nombreCompleto))
             {

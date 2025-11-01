@@ -9,6 +9,9 @@ using C_C_Final.Model;
 
 namespace C_C_Final.ViewModel
 {
+    /// <summary>
+    /// Permite consultar y actualizar las preferencias del perfil del alumno.
+    /// </summary>
     public sealed class PreferenciasViewModel : BaseViewModel
     {
         private readonly IPerfilRepository _perfilRepository;
@@ -37,9 +40,9 @@ namespace C_C_Final.ViewModel
             });
             EditarFotoCommand = new RelayCommand(_ => EditarFoto());
             EditarNombreCommand = new RelayCommand(_ => { });
-            GuardarPerfilCommand = new RelayCommand(_ => Guardar(), _ => !IsBusy);
+            GuardarPerfilCommand = new RelayCommand(_ => GuardarCambios(), _ => !IsBusy);
             EditarDescripcionCommand = new RelayCommand(_ => { });
-            LogoutCommand = new RelayCommand(_ => MessageBox.Show("Sesión finalizada", "Cuenta", MessageBoxButton.OK, MessageBoxImage.Information));
+            CerrarSesionCommand = new RelayCommand(_ => MessageBox.Show("Sesión finalizada", "Cuenta", MessageBoxButton.OK, MessageBoxImage.Information));
             EliminarCuentaCommand = new RelayCommand(_ => MessageBox.Show("Para eliminar tu cuenta contacta al administrador.", "Cuenta", MessageBoxButton.OK, MessageBoxImage.Information));
         }
 
@@ -48,19 +51,19 @@ namespace C_C_Final.ViewModel
         public string NikName
         {
             get => _nikName;
-            set => SetProperty(ref _nikName, value);
+            set => EstablecerPropiedad(ref _nikName, value);
         }
 
         public string Descripcion
         {
             get => _descripcion;
-            set => SetProperty(ref _descripcion, value);
+            set => EstablecerPropiedad(ref _descripcion, value);
         }
 
         public ImageSource FotoPerfilUrl
         {
             get => _fotoPerfilUrl;
-            private set => SetProperty(ref _fotoPerfilUrl, value);
+            private set => EstablecerPropiedad(ref _fotoPerfilUrl, value);
         }
 
         public int EdadMin
@@ -71,10 +74,10 @@ namespace C_C_Final.ViewModel
                 if (value > _edadMax)
                 {
                     _edadMax = value;
-                    OnPropertyChanged(nameof(EdadMax));
+                    NotificarCambioPropiedad(nameof(EdadMax));
                 }
 
-                SetProperty(ref _edadMin, value);
+                EstablecerPropiedad(ref _edadMin, value);
             }
         }
 
@@ -86,23 +89,23 @@ namespace C_C_Final.ViewModel
                 if (value < _edadMin)
                 {
                     _edadMin = value;
-                    OnPropertyChanged(nameof(EdadMin));
+                    NotificarCambioPropiedad(nameof(EdadMin));
                 }
 
-                SetProperty(ref _edadMax, value);
+                EstablecerPropiedad(ref _edadMax, value);
             }
         }
 
         public string OtroPreferencia
         {
             get => _otroPreferencia;
-            set => SetProperty(ref _otroPreferencia, value);
+            set => EstablecerPropiedad(ref _otroPreferencia, value);
         }
 
         public string GeneroSeleccionado
         {
             get => _generoSeleccionado;
-            set => SetProperty(ref _generoSeleccionado, value);
+            set => EstablecerPropiedad(ref _generoSeleccionado, value);
         }
 
         public bool IsBusy
@@ -110,9 +113,9 @@ namespace C_C_Final.ViewModel
             get => _isBusy;
             private set
             {
-                if (SetProperty(ref _isBusy, value))
+                if (EstablecerPropiedad(ref _isBusy, value))
                 {
-                    (GuardarPerfilCommand as RelayCommand)?.RaiseCanExecuteChanged();
+                    (GuardarPerfilCommand as RelayCommand)?.NotificarCambioPuedeEjecutar();
                 }
             }
         }
@@ -121,13 +124,16 @@ namespace C_C_Final.ViewModel
         public ICommand EditarNombreCommand { get; }
         public ICommand GuardarPerfilCommand { get; }
         public ICommand EditarDescripcionCommand { get; }
-        public ICommand LogoutCommand { get; }
+        public ICommand CerrarSesionCommand { get; }
         public ICommand EliminarCuentaCommand { get; }
 
-        public void Load(int cuentaId)
+        /// <summary>
+        /// Carga las preferencias almacenadas para la cuenta indicada.
+        /// </summary>
+        public void Cargar(int cuentaId)
         {
             _idCuenta = cuentaId;
-            var perfil = _perfilRepository.GetByCuentaId(cuentaId);
+            var perfil = _perfilRepository.ObtenerPorCuentaId(cuentaId);
             if (perfil == null)
             {
                 return;
@@ -138,15 +144,15 @@ namespace C_C_Final.ViewModel
             NikName = perfil.Nikname;
             Descripcion = perfil.Biografia;
             _fotoPerfilBytes = perfil.FotoPerfil ?? Array.Empty<byte>();
-            FotoPerfilUrl = ConvertToImage(_fotoPerfilBytes);
+            FotoPerfilUrl = ConvertirAImagen(_fotoPerfilBytes);
 
-            var preferencias = _perfilRepository.GetPreferenciasByPerfil(_idPerfil);
+            var preferencias = _perfilRepository.ObtenerPreferenciasPorPerfil(_idPerfil);
             if (preferencias != null)
             {
                 EdadMin = preferencias.EdadMinima;
                 EdadMax = preferencias.EdadMaxima;
                 OtroPreferencia = preferencias.PreferenciaCarrera;
-                GeneroSeleccionado = MapGenero(preferencias.PreferenciaGenero);
+                GeneroSeleccionado = MapearGeneroDesdeCodigo(preferencias.PreferenciaGenero);
             }
             else
             {
@@ -154,7 +160,10 @@ namespace C_C_Final.ViewModel
             }
         }
 
-        private void Guardar()
+        /// <summary>
+        /// Persiste los cambios realizados sobre el perfil y sus preferencias.
+        /// </summary>
+        private void GuardarCambios()
         {
             if (_idPerfil == 0)
             {
@@ -175,19 +184,19 @@ namespace C_C_Final.ViewModel
                     FechaCreacion = _fechaCreacion
                 };
 
-                _perfilRepository.UpdatePerfil(perfil);
+                _perfilRepository.ActualizarPerfil(perfil);
 
                 var preferencias = new Preferencias
                 {
                     IdPerfil = _idPerfil,
-                    PreferenciaGenero = MapGenero(GeneroSeleccionado),
+                    PreferenciaGenero = MapearGeneroDesdeTexto(GeneroSeleccionado),
                     EdadMinima = EdadMin,
                     EdadMaxima = EdadMax,
                     PreferenciaCarrera = OtroPreferencia ?? string.Empty,
                     Intereses = string.Empty
                 };
 
-                _perfilRepository.UpsertPreferencias(preferencias);
+                _perfilRepository.InsertarOActualizarPreferencias(preferencias);
                 MessageBox.Show("Preferencias actualizadas", "Preferencias", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
@@ -217,7 +226,7 @@ namespace C_C_Final.ViewModel
             FotoPerfilUrl = new BitmapImage(new Uri(dialog.FileName));
         }
 
-        private static string MapGenero(byte preferencia)
+        private static string MapearGeneroDesdeCodigo(byte preferencia)
         {
             switch (preferencia)
             {
@@ -234,7 +243,7 @@ namespace C_C_Final.ViewModel
             }
         }
 
-        private static byte MapGenero(string preferencia)
+        private static byte MapearGeneroDesdeTexto(string preferencia)
         {
             switch (preferencia)
             {
@@ -249,7 +258,10 @@ namespace C_C_Final.ViewModel
             }
         }
 
-        private static ImageSource ConvertToImage(byte[] bytes)
+        /// <summary>
+        /// Convierte un arreglo de bytes a una imagen compatible con WPF.
+        /// </summary>
+        private static ImageSource ConvertirAImagen(byte[] bytes)
         {
             if (bytes == null || bytes.Length == 0)
             {

@@ -22,7 +22,7 @@ namespace C_C_Final.View
             {
                 var viewModel = new PerfilViewModel(app.PerfilRepository);
                 DataContext = viewModel;
-                Loaded += (_, _) => Load(viewModel, _cuentaId);
+                Loaded += (_, _) => CargarVista(viewModel, _cuentaId);
             }
         }
 
@@ -35,11 +35,11 @@ namespace C_C_Final.View
             }
         }
 
-        private static void Load(PerfilViewModel viewModel, int cuentaId)
+        private static void CargarVista(PerfilViewModel viewModel, int cuentaId)
         {
             try
             {
-                viewModel.Load(cuentaId);
+                viewModel.Cargar(cuentaId);
             }
             catch (Exception)
             {

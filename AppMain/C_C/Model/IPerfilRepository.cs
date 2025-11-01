@@ -3,19 +3,22 @@ using System.Data.SqlClient;
 
 namespace C_C_Final.Model
 {
+    /// <summary>
+    /// Define las operaciones de acceso a datos para los perfiles y sus preferencias.
+    /// </summary>
     public interface IPerfilRepository
     {
-        Perfil GetById(int idPerfil);
-        Perfil GetByCuentaId(int idCuenta);
-        Preferencias GetPreferenciasByPerfil(int idPerfil);
-        IReadOnlyList<Perfil> ListAll();
+        Perfil ObtenerPorId(int idPerfil);
+        Perfil ObtenerPorCuentaId(int idCuenta);
+        Preferencias ObtenerPreferenciasPorPerfil(int idPerfil);
+        IReadOnlyList<Perfil> ListarTodos();
 
-        void CrearPerfil(Perfil perfil);
-        bool UpdatePerfil(Perfil perfil);
-        int UpsertPreferencias(Preferencias prefs);
-        bool DeletePerfil(int idPerfil);
+        int CrearPerfil(Perfil perfil);
+        bool ActualizarPerfil(Perfil perfil);
+        int InsertarOActualizarPreferencias(Preferencias prefs);
+        bool EliminarPerfil(int idPerfil);
 
-        void MapearPerfil(SqlConnection cn, SqlTransaction tx, Perfil perfil);
-        int UpsertPreferencias(SqlConnection cn, SqlTransaction tx, Preferencias prefs);
+        int CrearPerfil(SqlConnection cn, SqlTransaction tx, Perfil perfil);
+        int InsertarOActualizarPreferencias(SqlConnection cn, SqlTransaction tx, Preferencias prefs);
     }
 }

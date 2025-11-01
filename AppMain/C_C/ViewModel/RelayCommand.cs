@@ -3,6 +3,9 @@ using System.Windows.Input;
 
 namespace C_C_Final.ViewModel
 {
+    /// <summary>
+    /// Implementa un comando simple basado en delegados.
+    /// </summary>
     public sealed class RelayCommand : ICommand
     {
         private readonly Func<object, bool> _canExecute;
@@ -31,6 +34,6 @@ namespace C_C_Final.ViewModel
             _execute(parameter);
         }
 
-        public void RaiseCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+        public void NotificarCambioPuedeEjecutar() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
     }
 }

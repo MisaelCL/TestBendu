@@ -6,20 +6,24 @@ using C_C_Final.Model;
 
 namespace C_C_Final.Repositories
 {
+    /// <summary>
+    /// Implementa las operaciones de persistencia para emparejamientos, chats y mensajes.
+    /// </summary>
     public sealed class MatchRepository : RepositoryBase, IMatchRepository
     {
         public MatchRepository(string connectionString = null) : base(connectionString)
         {
         }
 
-        public Match GetById(int idMatch)
+        /// <inheritdoc />
+        public Match ObtenerPorId(int idMatch)
         {
-            using var connection = OpenConnection();
+            using var connection = AbrirConexion();
             const string sql = @"SELECT ID_Match, Perfil_Emisor, Perfil_Receptor, Estado, Fecha_Match AS FechaMatch
 FROM dbo.Match
 WHERE ID_Match = @Id";
-            using var command = CreateCommand(connection, sql);
-            AddParameter(command, "@Id", idMatch, SqlDbType.Int);
+            using var command = CrearComando(connection, sql);
+            AgregarParametro(command, "@Id", idMatch, SqlDbType.Int);
 
             using var reader = command.ExecuteReader();
             if (!reader.Read())
@@ -27,91 +31,98 @@ WHERE ID_Match = @Id";
                 return null;
             }
 
-            return MapMatch(reader);
+            return MapearMatch(reader);
         }
 
-        public bool Exists(int idPerfilA, int idPerfilB)
+        /// <inheritdoc />
+        public bool Existe(int idPerfilA, int idPerfilB)
         {
-            using var connection = OpenConnection();
+            using var connection = AbrirConexion();
             const string sql = @"SELECT CASE WHEN EXISTS (
     SELECT 1 FROM dbo.Match
     WHERE (Perfil_Emisor = @A AND Perfil_Receptor = @B)
        OR (Perfil_Emisor = @B AND Perfil_Receptor = @A)
 ) THEN 1 ELSE 0 END";
-            using var command = CreateCommand(connection, sql);
-            AddParameter(command, "@A", idPerfilA, SqlDbType.Int);
-            AddParameter(command, "@B", idPerfilB, SqlDbType.Int);
+            using var command = CrearComando(connection, sql);
+            AgregarParametro(command, "@A", idPerfilA, SqlDbType.Int);
+            AgregarParametro(command, "@B", idPerfilB, SqlDbType.Int);
 
             var result = command.ExecuteScalar();
-            return SafeToInt32(result) == 1;
+            return ConvertirSeguroAInt32(result) == 1;
         }
 
-        public IReadOnlyList<Match> ListByPerfil(int idPerfil, int page, int pageSize)
+        /// <inheritdoc />
+        public IReadOnlyList<Match> ListarPorPerfil(int idPerfil, int page, int pageSize)
         {
-            using var connection = OpenConnection();
+            using var connection = AbrirConexion();
             const string sql = @"SELECT ID_Match, Perfil_Emisor, Perfil_Receptor, Estado, Fecha_Match AS FechaMatch
 FROM dbo.Match
 WHERE Perfil_Emisor = @Perfil OR Perfil_Receptor = @Perfil
 ORDER BY Fecha_Match DESC, ID_Match DESC
 OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
-            using var command = CreateCommand(connection, sql);
-            AddParameter(command, "@Perfil", idPerfil, SqlDbType.Int);
-            AddParameter(command, "@Offset", Math.Max(page, 0) * pageSize, SqlDbType.Int);
-            AddParameter(command, "@PageSize", pageSize, SqlDbType.Int);
+            using var command = CrearComando(connection, sql);
+            AgregarParametro(command, "@Perfil", idPerfil, SqlDbType.Int);
+            AgregarParametro(command, "@Offset", Math.Max(page, 0) * pageSize, SqlDbType.Int);
+            AgregarParametro(command, "@PageSize", pageSize, SqlDbType.Int);
 
             var list = new List<Match>();
             using var reader = command.ExecuteReader();
             while (reader.Read())
             {
-                list.Add(MapMatch(reader));
+                list.Add(MapearMatch(reader));
             }
 
             return list;
         }
 
-        public int CreateMatch(int idPerfilEmisor, int idPerfilReceptor, string estado)
+        /// <inheritdoc />
+        public int CrearMatch(int idPerfilEmisor, int idPerfilReceptor, string estado)
         {
-            using var connection = OpenConnection();
-            return CreateMatch(connection, null, idPerfilEmisor, idPerfilReceptor, estado);
+            using var connection = AbrirConexion();
+            return CrearMatch(connection, null, idPerfilEmisor, idPerfilReceptor, estado);
         }
 
-        public bool UpdateEstado(int idMatch, string nuevoEstado)
+        /// <inheritdoc />
+        public bool ActualizarEstado(int idMatch, string nuevoEstado)
         {
-            using var connection = OpenConnection();
+            using var connection = AbrirConexion();
             const string sql = "UPDATE dbo.Match SET Estado = @Estado WHERE ID_Match = @Id";
-            using var command = CreateCommand(connection, sql);
-            AddParameter(command, "@Estado", nuevoEstado ?? string.Empty, SqlDbType.Char, 10);
-            AddParameter(command, "@Id", idMatch, SqlDbType.Int);
+            using var command = CrearComando(connection, sql);
+            AgregarParametro(command, "@Estado", nuevoEstado ?? string.Empty, SqlDbType.Char, 10);
+            AgregarParametro(command, "@Id", idMatch, SqlDbType.Int);
 
             var rows = command.ExecuteNonQuery();
             return rows > 0;
         }
 
-        public bool DeleteMatch(int idMatch)
+        /// <inheritdoc />
+        public bool EliminarMatch(int idMatch)
         {
-            using var connection = OpenConnection();
+            using var connection = AbrirConexion();
             const string sql = "DELETE FROM dbo.Match WHERE ID_Match = @Id";
-            using var command = CreateCommand(connection, sql);
-            AddParameter(command, "@Id", idMatch, SqlDbType.Int);
+            using var command = CrearComando(connection, sql);
+            AgregarParametro(command, "@Id", idMatch, SqlDbType.Int);
 
             var rows = command.ExecuteNonQuery();
             return rows > 0;
         }
 
-        public int EnsureChatForMatch(int idMatch)
+        /// <inheritdoc />
+        public int AsegurarChatParaMatch(int idMatch)
         {
-            using var connection = OpenConnection();
-            return EnsureChatForMatch(connection, null, idMatch);
+            using var connection = AbrirConexion();
+            return AsegurarChatParaMatch(connection, null, idMatch);
         }
 
-        public Chat GetChatByMatchId(int idMatch)
+        /// <inheritdoc />
+        public Chat ObtenerChatPorMatchId(int idMatch)
         {
-            using var connection = OpenConnection();
+            using var connection = AbrirConexion();
             const string sql = @"SELECT ID_Chat, ID_Match, Fecha_Creacion AS FechaCreacion, LastMessageAtUtc, LastMessageId
 FROM dbo.Chat
 WHERE ID_Match = @Match";
-            using var command = CreateCommand(connection, sql);
-            AddParameter(command, "@Match", idMatch, SqlDbType.Int);
+            using var command = CrearComando(connection, sql);
+            AgregarParametro(command, "@Match", idMatch, SqlDbType.Int);
 
             using var reader = command.ExecuteReader();
             if (!reader.Read())
@@ -119,53 +130,57 @@ WHERE ID_Match = @Match";
                 return null;
             }
 
-            return MapChat(reader);
+            return MapearChat(reader);
         }
 
-        public long AddMensaje(int idChat, int idRemitentePerfil, string contenido, bool confirmacionLectura)
+        /// <inheritdoc />
+        public long AgregarMensaje(int idChat, int idRemitentePerfil, string contenido, bool confirmacionLectura)
         {
-            using var connection = OpenConnection();
-            return AddMensaje(connection, null, idChat, idRemitentePerfil, contenido, confirmacionLectura);
+            using var connection = AbrirConexion();
+            return AgregarMensaje(connection, null, idChat, idRemitentePerfil, contenido, confirmacionLectura);
         }
 
-        public IReadOnlyList<Mensaje> ListMensajes(int idChat, int page, int pageSize)
+        /// <inheritdoc />
+        public IReadOnlyList<Mensaje> ListarMensajes(int idChat, int page, int pageSize)
         {
-            using var connection = OpenConnection();
+            using var connection = AbrirConexion();
             const string sql = @"SELECT ID_Mensaje, ID_Chat, Remitente, Contenido, Fecha_Envio, Confirmacion_Lectura, IsEdited, EditedAtUtc, IsDeleted
 FROM dbo.Mensaje
 WHERE ID_Chat = @Chat
 ORDER BY Fecha_Envio DESC, ID_Mensaje DESC
 OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
-            using var command = CreateCommand(connection, sql);
-            AddParameter(command, "@Chat", idChat, SqlDbType.Int);
-            AddParameter(command, "@Offset", Math.Max(page, 0) * pageSize, SqlDbType.Int);
-            AddParameter(command, "@PageSize", pageSize, SqlDbType.Int);
+            using var command = CrearComando(connection, sql);
+            AgregarParametro(command, "@Chat", idChat, SqlDbType.Int);
+            AgregarParametro(command, "@Offset", Math.Max(page, 0) * pageSize, SqlDbType.Int);
+            AgregarParametro(command, "@PageSize", pageSize, SqlDbType.Int);
 
             var list = new List<Mensaje>();
             using var reader = command.ExecuteReader();
             while (reader.Read())
             {
-                list.Add(MapMensaje(reader));
+                list.Add(MapearMensaje(reader));
             }
 
             return list;
         }
 
-        public int CreateMatch(SqlConnection connection, SqlTransaction tx, int idPerfilEmisor, int idPerfilReceptor, string estado)
+        /// <inheritdoc />
+        public int CrearMatch(SqlConnection connection, SqlTransaction tx, int idPerfilEmisor, int idPerfilReceptor, string estado)
         {
             const string sql = @"INSERT INTO dbo.Match (Perfil_Emisor, Perfil_Receptor, Estado, Fecha_Match)
 OUTPUT INSERTED.ID_Match
 VALUES (@Emisor, @Receptor, @Estado, SYSUTCDATETIME());";
-            using var command = CreateCommand(connection, sql, CommandType.Text, tx);
-            AddParameter(command, "@Emisor", idPerfilEmisor, SqlDbType.Int);
-            AddParameter(command, "@Receptor", idPerfilReceptor, SqlDbType.Int);
-            AddParameter(command, "@Estado", estado ?? string.Empty, SqlDbType.Char, 10);
+            using var command = CrearComando(connection, sql, CommandType.Text, tx);
+            AgregarParametro(command, "@Emisor", idPerfilEmisor, SqlDbType.Int);
+            AgregarParametro(command, "@Receptor", idPerfilReceptor, SqlDbType.Int);
+            AgregarParametro(command, "@Estado", estado ?? string.Empty, SqlDbType.Char, 10);
 
             var result = command.ExecuteScalar();
-            return SafeToInt32(result);
+            return ConvertirSeguroAInt32(result);
         }
 
-        public int EnsureChatForMatch(SqlConnection connection, SqlTransaction tx, int idMatch)
+        /// <inheritdoc />
+        public int AsegurarChatParaMatch(SqlConnection connection, SqlTransaction tx, int idMatch)
         {
             const string sql = @"DECLARE @Existing INT;
 SELECT @Existing = ID_Chat FROM dbo.Chat WITH (UPDLOCK, HOLDLOCK) WHERE ID_Match = @Match;
@@ -179,40 +194,46 @@ BEGIN
     OUTPUT INSERTED.ID_Chat
     VALUES (@Match, SYSUTCDATETIME(), NULL, NULL);
 END";
-            using var command = CreateCommand(connection, sql, CommandType.Text, tx);
-            AddParameter(command, "@Match", idMatch, SqlDbType.Int);
+            using var command = CrearComando(connection, sql, CommandType.Text, tx);
+            AgregarParametro(command, "@Match", idMatch, SqlDbType.Int);
 
             var result = command.ExecuteScalar();
-            return SafeToInt32(result);
+            return ConvertirSeguroAInt32(result);
         }
 
-        public long AddMensaje(SqlConnection connection, SqlTransaction tx, int idChat, int idRemitentePerfil, string contenido, bool confirmacionLectura)
+        /// <inheritdoc />
+        public long AgregarMensaje(SqlConnection connection, SqlTransaction tx, int idChat, int idRemitentePerfil, string contenido, bool confirmacionLectura)
         {
             var fechaEnvio = DateTime.UtcNow;
             const string insertSql = @"INSERT INTO dbo.Mensaje (ID_Chat, Remitente, Contenido, Fecha_Envio, Confirmacion_Lectura, IsEdited, EditedAtUtc, IsDeleted)
 OUTPUT INSERTED.ID_Mensaje
 VALUES (@Chat, @Remitente, @Contenido, @Fecha, @Confirmado, 0, NULL, 0);";
-            using var insertCommand = CreateCommand(connection, insertSql, CommandType.Text, tx);
-            AddParameter(insertCommand, "@Chat", idChat, SqlDbType.Int);
-            AddParameter(insertCommand, "@Remitente", idRemitentePerfil, SqlDbType.Int);
-            AddParameter(insertCommand, "@Contenido", contenido ?? string.Empty, SqlDbType.NVarChar, -1);
-            AddParameter(insertCommand, "@Fecha", fechaEnvio, SqlDbType.DateTime2);
-            AddParameter(insertCommand, "@Confirmado", confirmacionLectura, SqlDbType.Bit);
+            using var insertCommand = CrearComando(connection, insertSql, CommandType.Text, tx);
+            AgregarParametro(insertCommand, "@Chat", idChat, SqlDbType.Int);
+            AgregarParametro(insertCommand, "@Remitente", idRemitentePerfil, SqlDbType.Int);
+            AgregarParametro(insertCommand, "@Contenido", contenido ?? string.Empty, SqlDbType.NVarChar, -1);
+            AgregarParametro(insertCommand, "@Fecha", fechaEnvio, SqlDbType.DateTime2);
+            AgregarParametro(insertCommand, "@Confirmado", confirmacionLectura, SqlDbType.Bit);
 
             var mensajeIdObj = insertCommand.ExecuteScalar();
-            var mensajeId = SafeToInt64(mensajeIdObj);
+            var mensajeId = ConvertirSeguroAInt64(mensajeIdObj);
 
             const string updateChatSql = "UPDATE dbo.Chat SET LastMessageAtUtc = @Fecha, LastMessageId = @Mensaje WHERE ID_Chat = @Chat";
-            using var updateCommand = CreateCommand(connection, updateChatSql, CommandType.Text, tx);
-            AddParameter(updateCommand, "@Fecha", fechaEnvio, SqlDbType.DateTime2);
-            AddParameter(updateCommand, "@Mensaje", mensajeId, SqlDbType.BigInt);
-            AddParameter(updateCommand, "@Chat", idChat, SqlDbType.Int);
+            using var updateCommand = CrearComando(connection, updateChatSql, CommandType.Text, tx);
+            AgregarParametro(updateCommand, "@Fecha", fechaEnvio, SqlDbType.DateTime2);
+            AgregarParametro(updateCommand, "@Mensaje", mensajeId, SqlDbType.BigInt);
+            AgregarParametro(updateCommand, "@Chat", idChat, SqlDbType.Int);
             updateCommand.ExecuteNonQuery();
 
             return mensajeId;
         }
 
-        private static Match MapMatch(SqlDataReader reader)
+        /// <summary>
+        /// Convierte un registro en una entidad de emparejamiento.
+        /// </summary>
+        /// <param name="reader">Lector con los datos del emparejamiento.</param>
+        /// <returns>Instancia de <see cref="Match"/>.</returns>
+        private static Match MapearMatch(SqlDataReader reader)
         {
             var idMatchIndex = reader.GetOrdinal("ID_Match");
             var perfilEmisorIndex = reader.GetOrdinal("Perfil_Emisor");
@@ -230,7 +251,12 @@ VALUES (@Chat, @Remitente, @Contenido, @Fecha, @Confirmado, 0, NULL, 0);";
             };
         }
 
-        private static Chat MapChat(SqlDataReader reader)
+        /// <summary>
+        /// Convierte un registro en una entidad de chat.
+        /// </summary>
+        /// <param name="reader">Lector con los datos del chat.</param>
+        /// <returns>Instancia de <see cref="Chat"/>.</returns>
+        private static Chat MapearChat(SqlDataReader reader)
         {
             var idChatIndex = reader.GetOrdinal("ID_Chat");
             var idMatchIndex = reader.GetOrdinal("ID_Match");
@@ -248,7 +274,12 @@ VALUES (@Chat, @Remitente, @Contenido, @Fecha, @Confirmado, 0, NULL, 0);";
             };
         }
 
-        private static Mensaje MapMensaje(SqlDataReader reader)
+        /// <summary>
+        /// Convierte un registro en una entidad de mensaje.
+        /// </summary>
+        /// <param name="reader">Lector con los datos del mensaje.</param>
+        /// <returns>Instancia de <see cref="Mensaje"/>.</returns>
+        private static Mensaje MapearMensaje(SqlDataReader reader)
         {
             return new Mensaje
             {

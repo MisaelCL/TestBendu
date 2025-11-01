@@ -7,6 +7,9 @@ using C_C_Final.View;
 
 namespace C_C_Final.ViewModel
 {
+    /// <summary>
+    /// Gestiona el proceso de inicio de sesión y navegación desde la vista de acceso.
+    /// </summary>
     public sealed class LoginViewModel : BaseViewModel
     {
         private readonly ICuentaRepository _cuentaRepository;
@@ -22,32 +25,32 @@ namespace C_C_Final.ViewModel
             _cuentaRepository = cuentaRepository ?? throw new ArgumentNullException(nameof(cuentaRepository));
             _perfilRepository = perfilRepository ?? throw new ArgumentNullException(nameof(perfilRepository));
 
-            LoginCommand = new RelayCommand(_ => Login(), _ => !IsBusy);
-            OpenRegistroCommand = new RelayCommand(_ => AbrirRegistro(), _ => !IsBusy);
+            ComandoIniciarSesion = new RelayCommand(_ => IniciarSesion(), _ => !IsBusy);
+            ComandoAbrirRegistro = new RelayCommand(_ => AbrirRegistro(), _ => !IsBusy);
         }
 
         public string Username
         {
             get => _username;
-            set => SetProperty(ref _username, value);
+            set => EstablecerPropiedad(ref _username, value);
         }
 
         public string Password
         {
             get => _password;
-            set => SetProperty(ref _password, value);
+            set => EstablecerPropiedad(ref _password, value);
         }
 
         public string ErrorMessage
         {
             get => _errorMessage;
-            private set => SetProperty(ref _errorMessage, value);
+            private set => EstablecerPropiedad(ref _errorMessage, value);
         }
 
         public bool IsViewVisible
         {
             get => _isViewVisible;
-            set => SetProperty(ref _isViewVisible, value);
+            set => EstablecerPropiedad(ref _isViewVisible, value);
         }
 
         public bool IsBusy
@@ -55,18 +58,21 @@ namespace C_C_Final.ViewModel
             get => _isBusy;
             private set
             {
-                if (SetProperty(ref _isBusy, value))
+                if (EstablecerPropiedad(ref _isBusy, value))
                 {
-                    (LoginCommand as RelayCommand)?.RaiseCanExecuteChanged();
-                    (OpenRegistroCommand as RelayCommand)?.RaiseCanExecuteChanged();
+                    (ComandoIniciarSesion as RelayCommand)?.NotificarCambioPuedeEjecutar();
+                    (ComandoAbrirRegistro as RelayCommand)?.NotificarCambioPuedeEjecutar();
                 }
             }
         }
 
-        public ICommand LoginCommand { get; }
-        public ICommand OpenRegistroCommand { get; }
+        public ICommand ComandoIniciarSesion { get; }
+        public ICommand ComandoAbrirRegistro { get; }
 
-        private void Login()
+        /// <summary>
+        /// Valida las credenciales proporcionadas e inicia sesión en la aplicación.
+        /// </summary>
+        private void IniciarSesion()
         {
             try
             {
@@ -81,7 +87,7 @@ namespace C_C_Final.ViewModel
                     return;
                 }
 
-                var cuenta = _cuentaRepository.GetByEmail(email);
+                var cuenta = _cuentaRepository.ObtenerPorCorreo(email);
                 if (cuenta == null)
                 {
                     ErrorMessage = "El usuario no existe.";
@@ -101,7 +107,7 @@ namespace C_C_Final.ViewModel
                     return;
                 }
 
-                var perfil = _perfilRepository.GetByCuentaId(cuenta.IdCuenta);
+                var perfil = _perfilRepository.ObtenerPorCuentaId(cuenta.IdCuenta);
                 if (perfil == null)
                 {
                     ErrorMessage = "No se encontró un perfil asociado a la cuenta.";
@@ -122,6 +128,9 @@ namespace C_C_Final.ViewModel
             }
         }
 
+        /// <summary>
+        /// Abre la ventana de registro de nuevos alumnos.
+        /// </summary>
         private void AbrirRegistro()
         {
             var app = App.Current;
@@ -137,12 +146,18 @@ namespace C_C_Final.ViewModel
             registro.Show();
         }
 
+        /// <summary>
+        /// Abre la ventana principal del usuario autenticado.
+        /// </summary>
         private static void AbrirHome(int perfilId)
         {
             var home = new HomeView(perfilId);
             home.Show();
         }
 
+        /// <summary>
+        /// Cierra la ventana asociada a este modelo de vista.
+        /// </summary>
         private void CerrarVentanaAsociada()
         {
             var app = Application.Current;

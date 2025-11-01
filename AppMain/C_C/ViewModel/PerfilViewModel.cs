@@ -9,6 +9,9 @@ using C_C_Final.Model;
 
 namespace C_C_Final.ViewModel
 {
+    /// <summary>
+    /// Administra la información y acciones del perfil del alumno en la interfaz.
+    /// </summary>
     public sealed class PerfilViewModel : BaseViewModel
     {
         private readonly IPerfilRepository _perfilRepository;
@@ -27,49 +30,49 @@ namespace C_C_Final.ViewModel
         {
             _perfilRepository = perfilRepository;
             Publicaciones = new ObservableCollection<PublicacionItemViewModel>();
-            GoBackCommand = new RelayCommand(_ => OnGoBack());
-            OpenMenuCommand = new RelayCommand(_ => { });
-            EditarPerfilCommand = new RelayCommand(_ => { });
-            SubirFotoCommand = new RelayCommand(_ => SubirFoto());
-            GuardarDescripcionCommand = new RelayCommand(_ => Guardar(), _ => !IsBusy);
+            ComandoRegresar = new RelayCommand(_ => Regresar());
+            ComandoAbrirMenu = new RelayCommand(_ => { });
+            ComandoEditarPerfil = new RelayCommand(_ => { });
+            ComandoSubirFoto = new RelayCommand(_ => SubirFoto());
+            ComandoGuardarDescripcion = new RelayCommand(_ => GuardarCambios(), _ => !IsBusy);
         }
 
         public ObservableCollection<PublicacionItemViewModel> Publicaciones { get; }
 
-        public ICommand GoBackCommand { get; }
-        public ICommand OpenMenuCommand { get; }
-        public ICommand EditarPerfilCommand { get; }
-        public ICommand SubirFotoCommand { get; }
-        public ICommand GuardarDescripcionCommand { get; }
+        public ICommand ComandoRegresar { get; }
+        public ICommand ComandoAbrirMenu { get; }
+        public ICommand ComandoEditarPerfil { get; }
+        public ICommand ComandoSubirFoto { get; }
+        public ICommand ComandoGuardarDescripcion { get; }
 
         public string NikName
         {
             get => _nikName;
-            set => SetProperty(ref _nikName, value);
+            set => EstablecerPropiedad(ref _nikName, value);
         }
 
         public string Descripcion
         {
             get => _descripcion;
-            set => SetProperty(ref _descripcion, value);
+            set => EstablecerPropiedad(ref _descripcion, value);
         }
 
         public ImageSource FotoPerfilUrl
         {
             get => _fotoPerfil;
-            private set => SetProperty(ref _fotoPerfil, value);
+            private set => EstablecerPropiedad(ref _fotoPerfil, value);
         }
 
         public bool HasUnread
         {
             get => _hasUnread;
-            private set => SetProperty(ref _hasUnread, value);
+            private set => EstablecerPropiedad(ref _hasUnread, value);
         }
 
         public int UnreadCount
         {
             get => _unreadCount;
-            private set => SetProperty(ref _unreadCount, value);
+            private set => EstablecerPropiedad(ref _unreadCount, value);
         }
 
         public bool IsBusy
@@ -77,17 +80,20 @@ namespace C_C_Final.ViewModel
             get => _isBusy;
             private set
             {
-                if (SetProperty(ref _isBusy, value))
+                if (EstablecerPropiedad(ref _isBusy, value))
                 {
-                    (GuardarDescripcionCommand as RelayCommand)?.RaiseCanExecuteChanged();
+                    (ComandoGuardarDescripcion as RelayCommand)?.NotificarCambioPuedeEjecutar();
                 }
             }
         }
 
-        public void Load(int cuentaId)
+        /// <summary>
+        /// Carga la información del perfil asociado a la cuenta indicada.
+        /// </summary>
+        public void Cargar(int cuentaId)
         {
             _idCuenta = cuentaId;
-            var perfil = _perfilRepository.GetByCuentaId(cuentaId);
+            var perfil = _perfilRepository.ObtenerPorCuentaId(cuentaId);
             if (perfil == null)
             {
                 return;
@@ -97,13 +103,16 @@ namespace C_C_Final.ViewModel
             NikName = perfil.Nikname;
             Descripcion = perfil.Biografia;
             _fotoPerfilBytes = perfil.FotoPerfil;
-            FotoPerfilUrl = ConvertToImage(_fotoPerfilBytes);
+            FotoPerfilUrl = ConvertirAImagen(_fotoPerfilBytes);
             _fechaCreacion = perfil.FechaCreacion;
 
             HasUnread = false;
             UnreadCount = 0;
         }
 
+        /// <summary>
+        /// Permite al usuario seleccionar una nueva foto de perfil.
+        /// </summary>
         private void SubirFoto()
         {
             var dialog = new Microsoft.Win32.OpenFileDialog
@@ -121,7 +130,10 @@ namespace C_C_Final.ViewModel
             FotoPerfilUrl = new BitmapImage(new Uri(dialog.FileName));
         }
 
-        private void Guardar()
+        /// <summary>
+        /// Guarda los cambios realizados sobre la descripción o imagen del perfil.
+        /// </summary>
+        private void GuardarCambios()
         {
             if (_idPerfil == 0)
             {
@@ -142,7 +154,7 @@ namespace C_C_Final.ViewModel
                     FechaCreacion = _fechaCreacion
                 };
 
-                var updated = _perfilRepository.UpdatePerfil(perfil);
+                var updated = _perfilRepository.ActualizarPerfil(perfil);
                 if (updated)
                 {
                     MessageBox.Show("Perfil actualizado", "Perfil", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -162,12 +174,18 @@ namespace C_C_Final.ViewModel
             }
         }
 
-        private void OnGoBack()
+        /// <summary>
+        /// Cierra la ventana actual y regresa a la vista anterior.
+        /// </summary>
+        private void Regresar()
         {
             Application.Current?.Windows[Application.Current.Windows.Count - 1]?.Close();
         }
 
-        private static ImageSource ConvertToImage(byte[] bytes)
+        /// <summary>
+        /// Convierte un arreglo de bytes en una imagen para su visualización.
+        /// </summary>
+        private static ImageSource ConvertirAImagen(byte[] bytes)
         {
             if (bytes == null || bytes.Length == 0)
             {
@@ -185,6 +203,9 @@ namespace C_C_Final.ViewModel
         }
     }
 
+    /// <summary>
+    /// Representa una publicación mostrada en el perfil del alumno.
+    /// </summary>
     public sealed class PublicacionItemViewModel
     {
         public string AvatarUrl { get; set; } = string.Empty;

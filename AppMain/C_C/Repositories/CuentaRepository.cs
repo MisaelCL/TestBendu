@@ -5,18 +5,22 @@ using C_C_Final.Model;
 
 namespace C_C_Final.Repositories
 {
+    /// <summary>
+    /// Implementa las operaciones de persistencia relacionadas con cuentas y alumnos.
+    /// </summary>
     public sealed class CuentaRepository : RepositoryBase, ICuentaRepository
     {
         public CuentaRepository(string connectionString = null) : base(connectionString)
         {
         }
 
-        public Cuenta GetById(int idCuenta)
+        /// <inheritdoc />
+        public Cuenta ObtenerPorId(int idCuenta)
         {
-            using var connection = OpenConnection();
+            using var connection = AbrirConexion();
             const string sql = "SELECT ID_Cuenta, Email, Hash_Contrasena, Estado_Cuenta, Fecha_Registro FROM dbo.Cuenta WHERE ID_Cuenta = @Id";
-            using var command = CreateCommand(connection, sql);
-            AddParameter(command, "@Id", idCuenta, SqlDbType.Int);
+            using var command = CrearComando(connection, sql);
+            AgregarParametro(command, "@Id", idCuenta, SqlDbType.Int);
 
             using var reader = command.ExecuteReader();
             if (!reader.Read())
@@ -24,15 +28,16 @@ namespace C_C_Final.Repositories
                 return null;
             }
 
-            return MapCuenta(reader);
+            return MapearCuenta(reader);
         }
 
-        public Cuenta GetByEmail(string email)
+        /// <inheritdoc />
+        public Cuenta ObtenerPorCorreo(string email)
         {
-            using var connection = OpenConnection();
+            using var connection = AbrirConexion();
             const string sql = "SELECT ID_Cuenta, Email, Hash_Contrasena, Estado_Cuenta, Fecha_Registro FROM dbo.Cuenta WHERE Email = @Email";
-            using var command = CreateCommand(connection, sql);
-            AddParameter(command, "@Email", email, SqlDbType.NVarChar, 260);
+            using var command = CrearComando(connection, sql);
+            AgregarParametro(command, "@Email", email, SqlDbType.NVarChar, 260);
 
             using var reader = command.ExecuteReader();
             if (!reader.Read())
@@ -40,91 +45,103 @@ namespace C_C_Final.Repositories
                 return null;
             }
 
-            return MapCuenta(reader);
+            return MapearCuenta(reader);
         }
 
-        public bool ExistsByEmail(string email)
+        /// <inheritdoc />
+        public bool ExistePorCorreo(string email)
         {
-            using var connection = OpenConnection();
+            using var connection = AbrirConexion();
             const string sql = "SELECT CASE WHEN EXISTS (SELECT 1 FROM dbo.Cuenta WHERE Email = @Email) THEN 1 ELSE 0 END";
-            using var command = CreateCommand(connection, sql);
-            AddParameter(command, "@Email", email, SqlDbType.NVarChar, 260);
+            using var command = CrearComando(connection, sql);
+            AgregarParametro(command, "@Email", email, SqlDbType.NVarChar, 260);
 
             var result = command.ExecuteScalar();
-            return SafeToInt32(result) == 1;
+            return ConvertirSeguroAInt32(result) == 1;
         }
 
-        public void CreateCuenta(string email, string passwordHash, byte estadoCuenta)
+        /// <inheritdoc />
+        public void CrearCuenta(string email, string passwordHash, byte estadoCuenta)
         {
-            using var connection = OpenConnection();
-            CreateCuenta(connection, null, email, passwordHash, estadoCuenta);
+            using var connection = AbrirConexion();
+            CrearCuenta(connection, null, email, passwordHash, estadoCuenta);
         }
 
-        public void CreateAlumno(Alumno alumno)
+        /// <inheritdoc />
+        public void CrearAlumno(Alumno alumno)
         {
-            using var connection = OpenConnection();
-            CreateAlumno(connection, null, alumno);
+            using var connection = AbrirConexion();
+            CrearAlumno(connection, null, alumno);
         }
 
-        public bool UpdatePassword(int idCuenta, string newPasswordHash)
+        /// <inheritdoc />
+        public bool ActualizarContrasena(int idCuenta, string newPasswordHash)
         {
-            using var connection = OpenConnection();
+            using var connection = AbrirConexion();
             const string sql = "UPDATE dbo.Cuenta SET Hash_Contrasena = @Hash WHERE ID_Cuenta = @Id";
-            using var command = CreateCommand(connection, sql);
-            AddParameter(command, "@Hash", newPasswordHash, SqlDbType.NVarChar, -1);
-            AddParameter(command, "@Id", idCuenta, SqlDbType.Int);
+            using var command = CrearComando(connection, sql);
+            AgregarParametro(command, "@Hash", newPasswordHash, SqlDbType.NVarChar, -1);
+            AgregarParametro(command, "@Id", idCuenta, SqlDbType.Int);
 
             var rows = command.ExecuteNonQuery();
             return rows > 0;
         }
 
-        public bool DeleteCuenta(int idCuenta)
+        /// <inheritdoc />
+        public bool EliminarCuenta(int idCuenta)
         {
-            using var connection = OpenConnection();
+            using var connection = AbrirConexion();
             const string sql = "DELETE FROM dbo.Cuenta WHERE ID_Cuenta = @Id";
-            using var command = CreateCommand(connection, sql);
-            AddParameter(command, "@Id", idCuenta, SqlDbType.Int);
+            using var command = CrearComando(connection, sql);
+            AgregarParametro(command, "@Id", idCuenta, SqlDbType.Int);
 
             var rows = command.ExecuteNonQuery();
             return rows > 0;
         }
 
-        public int CreateCuenta(SqlConnection connection, SqlTransaction tx, string email, string passwordHash, byte estadoCuenta)
+        /// <inheritdoc />
+        public int CrearCuenta(SqlConnection connection, SqlTransaction tx, string email, string passwordHash, byte estadoCuenta)
         {
             const string sql = @"INSERT INTO dbo.Cuenta (Email, Hash_Contrasena, Estado_Cuenta, Fecha_Registro)
 OUTPUT INSERTED.ID_Cuenta
 VALUES (@Email, @Hash, @Estado, @Fecha);";
-            using var command = CreateCommand(connection, sql, CommandType.Text, tx);
-            AddParameter(command, "@Email", email, SqlDbType.NVarChar, 260);
-            AddParameter(command, "@Hash", passwordHash, SqlDbType.NVarChar, -1);
-            AddParameter(command, "@Estado", estadoCuenta, SqlDbType.TinyInt);
-            AddParameter(command, "@Fecha", DateTime.UtcNow, SqlDbType.DateTime2);
+            using var command = CrearComando(connection, sql, CommandType.Text, tx);
+            AgregarParametro(command, "@Email", email, SqlDbType.NVarChar, 260);
+            AgregarParametro(command, "@Hash", passwordHash, SqlDbType.NVarChar, -1);
+            AgregarParametro(command, "@Estado", estadoCuenta, SqlDbType.TinyInt);
+            AgregarParametro(command, "@Fecha", DateTime.UtcNow, SqlDbType.DateTime2);
 
             var result = command.ExecuteScalar();
-            return SafeToInt32(result);
+            return ConvertirSeguroAInt32(result);
         }
 
-        public int CreateAlumno(SqlConnection connection, SqlTransaction tx, Alumno alumno)
+        /// <inheritdoc />
+        public int CrearAlumno(SqlConnection connection, SqlTransaction tx, Alumno alumno)
         {
             const string sql = @"INSERT INTO dbo.Alumno (Matricula, ID_Cuenta, Nombre, Apaterno, Amaterno, F_Nac, Genero, Correo, Carrera)
 VALUES (@Matricula, @Cuenta, @Nombre, @Apaterno, @Amaterno, @Nacimiento, @Genero, @Correo, @Carrera);
 SELECT CAST(SCOPE_IDENTITY() AS INT);";
-            using var command = CreateCommand(connection, sql, CommandType.Text, tx);
-            AddParameter(command, "@Matricula", alumno.Matricula, SqlDbType.NVarChar, 50);
-            AddParameter(command, "@Cuenta", alumno.IdCuenta, SqlDbType.Int);
-            AddParameter(command, "@Nombre", alumno.Nombre, SqlDbType.NVarChar, 100);
-            AddParameter(command, "@Apaterno", alumno.ApellidoPaterno, SqlDbType.NVarChar, 100);
-            AddParameter(command, "@Amaterno", alumno.ApellidoMaterno, SqlDbType.NVarChar, 100);
-            AddParameter(command, "@Nacimiento", alumno.FechaNacimiento, SqlDbType.Date);
-            AddParameter(command, "@Genero", alumno.Genero, SqlDbType.Char, 1);
-            AddParameter(command, "@Correo", alumno.Correo, SqlDbType.NVarChar, 260);
-            AddParameter(command, "@Carrera", alumno.Carrera, SqlDbType.NVarChar, 100);
+            using var command = CrearComando(connection, sql, CommandType.Text, tx);
+            AgregarParametro(command, "@Matricula", alumno.Matricula, SqlDbType.NVarChar, 50);
+            AgregarParametro(command, "@Cuenta", alumno.IdCuenta, SqlDbType.Int);
+            AgregarParametro(command, "@Nombre", alumno.Nombre, SqlDbType.NVarChar, 100);
+            AgregarParametro(command, "@Apaterno", alumno.ApellidoPaterno, SqlDbType.NVarChar, 100);
+            AgregarParametro(command, "@Amaterno", alumno.ApellidoMaterno, SqlDbType.NVarChar, 100);
+            AgregarParametro(command, "@Nacimiento", alumno.FechaNacimiento, SqlDbType.Date);
+            AgregarParametro(command, "@Genero", alumno.Genero, SqlDbType.Char, 1);
+            AgregarParametro(command, "@Correo", alumno.Correo, SqlDbType.NVarChar, 260);
+            AgregarParametro(command, "@Carrera", alumno.Carrera, SqlDbType.NVarChar, 100);
 
             var result = command.ExecuteScalar();
-            return SafeToInt32(result);
+            return ConvertirSeguroAInt32(result);
         }
 
-        private static Cuenta MapCuenta(SqlDataReader reader)
+        /// <summary>
+        /// Construye una entidad de cuenta a partir de un lector de datos.
+        /// </summary>
+        /// <param name="reader">Lector posicionado en el registro deseado.</param>
+        /// <returns>Instancia de <see cref="Cuenta"/>.</returns>
+        private static Cuenta MapearCuenta(SqlDataReader reader)
         {
             return new Cuenta
             {
