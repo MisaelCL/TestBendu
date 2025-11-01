@@ -9,7 +9,7 @@ namespace C_C_Final.Model
         bool Exists(int idPerfilA, int idPerfilB);
         IReadOnlyList<Match> ListByPerfil(int idPerfil, int page, int pageSize);
 
-        int CreateMatch(int idPerfilEmisor, int idPerfilReceptor, string estado);
+        void CreateMatch(int idPerfilEmisor, int idPerfilReceptor, string estado);
         bool UpdateEstado(int idMatch, string nuevoEstado);
         bool DeleteMatch(int idMatch);
 
@@ -19,8 +19,8 @@ namespace C_C_Final.Model
         long AddMensaje(int idChat, int idRemitentePerfil, string contenido, bool confirmacionLectura);
         IReadOnlyList<Mensaje> ListMensajes(int idChat, int page, int pageSize);
 
-        int CreateMatch(SqlConnection cn, SqlTransaction tx, int idPerfilEmisor, int idPerfilReceptor, string estado);
-        int EnsureChatForMatch(SqlConnection cn, SqlTransaction tx, int idMatch);
+        void CreateMatch(SqlConnection cn, SqlTransaction tx, int idPerfilEmisor, int idPerfilReceptor, string estado);
+        void  EnsureChatForMatch(SqlConnection cn, SqlTransaction tx, int idMatch);
         long AddMensaje(SqlConnection cn, SqlTransaction tx, int idChat, int idRemitentePerfil, string contenido, bool confirmacionLectura);
     }
 }

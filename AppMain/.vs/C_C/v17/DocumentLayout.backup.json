@@ -3,40 +3,28 @@
   "WorkspaceRootPath": "C:\\Users\\jmanu\\Desktop\\C_C_Final-main\\TestBendu\\AppMain\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|c:\\users\\jmanu\\desktop\\c_c_final-main\\testbendu\\appmain\\c_c\\model\\iperfilrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|solutionrelative:c_c\\model\\iperfilrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|c:\\users\\jmanu\\desktop\\c_c_final-main\\testbendu\\appmain\\c_c\\model\\imatchrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|solutionrelative:c_c\\model\\imatchrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|c:\\users\\jmanu\\desktop\\c_c_final-main\\testbendu\\appmain\\c_c\\model\\icuentarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|solutionrelative:c_c\\model\\icuentarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|c:\\users\\jmanu\\desktop\\c_c_final-main\\testbendu\\appmain\\c_c\\repositories\\cuentarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|solutionrelative:c_c\\repositories\\cuentarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|c:\\users\\jmanu\\desktop\\c_c_final-main\\testbendu\\appmain\\c_c\\viewmodel\\perfilviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|solutionrelative:c_c\\viewmodel\\perfilviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|c:\\users\\jmanu\\desktop\\c_c_final-main\\testbendu\\appmain\\c_c\\customcontrols\\bindablepasswordbox.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|solutionrelative:c_c\\customcontrols\\bindablepasswordbox.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|c:\\users\\jmanu\\desktop\\c_c_final-main\\testbendu\\appmain\\c_c\\viewmodel\\loginviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|solutionrelative:c_c\\viewmodel\\loginviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|c:\\users\\jmanu\\desktop\\c_c_final-main\\testbendu\\appmain\\c_c\\viewmodel\\inboxviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|solutionrelative:c_c\\viewmodel\\inboxviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|c:\\users\\jmanu\\desktop\\c_c_final-main\\testbendu\\appmain\\c_c\\viewmodel\\chatviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|solutionrelative:c_c\\viewmodel\\chatviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|c:\\users\\jmanu\\desktop\\c_c_final-main\\testbendu\\appmain\\c_c\\viewmodel\\baseviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|solutionrelative:c_c\\viewmodel\\baseviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|c:\\users\\jmanu\\desktop\\c_c_final-main\\testbendu\\appmain\\c_c\\services\\matchservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|solutionrelative:c_c\\services\\matchservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|c:\\users\\jmanu\\desktop\\c_c_final-main\\testbendu\\appmain\\c_c\\services\\registeralumnoservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|solutionrelative:c_c\\services\\registeralumnoservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|c:\\users\\jmanu\\desktop\\c_c_final-main\\testbendu\\appmain\\c_c\\resources\\utils\\hashfunction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|solutionrelative:c_c\\resources\\utils\\hashfunction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|c:\\users\\jmanu\\desktop\\c_c_final-main\\testbendu\\appmain\\c_c\\properties\\assemblyinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|solutionrelative:c_c\\properties\\assemblyinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -51,118 +39,79 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "CuentaRepository.cs",
-              "DocumentMoniker": "C:\\Users\\jmanu\\Desktop\\C_C_Final-main\\TestBendu\\AppMain\\C_C\\Repositories\\CuentaRepository.cs",
-              "RelativeDocumentMoniker": "C_C\\Repositories\\CuentaRepository.cs",
-              "ToolTip": "C:\\Users\\jmanu\\Desktop\\C_C_Final-main\\TestBendu\\AppMain\\C_C\\Repositories\\CuentaRepository.cs",
-              "RelativeToolTip": "C_C\\Repositories\\CuentaRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAG4AAAAhAAAAAAAAAA==",
+              "Title": "IPerfilRepository.cs",
+              "DocumentMoniker": "C:\\Users\\jmanu\\Desktop\\C_C_Final-main\\TestBendu\\AppMain\\C_C\\Model\\IPerfilRepository.cs",
+              "RelativeDocumentMoniker": "C_C\\Model\\IPerfilRepository.cs",
+              "ToolTip": "C:\\Users\\jmanu\\Desktop\\C_C_Final-main\\TestBendu\\AppMain\\C_C\\Model\\IPerfilRepository.cs",
+              "RelativeToolTip": "C_C\\Model\\IPerfilRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAoAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-30T16:21:27.905Z",
+              "WhenOpened": "2025-11-01T14:43:05.116Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "PerfilViewModel.cs",
-              "DocumentMoniker": "C:\\Users\\jmanu\\Desktop\\C_C_Final-main\\TestBendu\\AppMain\\C_C\\ViewModel\\PerfilViewModel.cs",
-              "RelativeDocumentMoniker": "C_C\\ViewModel\\PerfilViewModel.cs",
-              "ToolTip": "C:\\Users\\jmanu\\Desktop\\C_C_Final-main\\TestBendu\\AppMain\\C_C\\ViewModel\\PerfilViewModel.cs",
-              "RelativeToolTip": "C_C\\ViewModel\\PerfilViewModel.cs",
-              "ViewState": "AgIAALEAAAAAAAAAAAAgwLsAAAAWAAAAAAAAAA==",
+              "Title": "IMatchRepository.cs",
+              "DocumentMoniker": "C:\\Users\\jmanu\\Desktop\\C_C_Final-main\\TestBendu\\AppMain\\C_C\\Model\\IMatchRepository.cs",
+              "RelativeDocumentMoniker": "C_C\\Model\\IMatchRepository.cs",
+              "ToolTip": "C:\\Users\\jmanu\\Desktop\\C_C_Final-main\\TestBendu\\AppMain\\C_C\\Model\\IMatchRepository.cs",
+              "RelativeToolTip": "C_C\\Model\\IMatchRepository.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAowBYAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-30T16:20:23.803Z",
+              "WhenOpened": "2025-11-01T14:41:13.107Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "LoginViewModel.cs",
-              "DocumentMoniker": "C:\\Users\\jmanu\\Desktop\\C_C_Final-main\\TestBendu\\AppMain\\C_C\\ViewModel\\LoginViewModel.cs",
-              "RelativeDocumentMoniker": "C_C\\ViewModel\\LoginViewModel.cs",
-              "ToolTip": "C:\\Users\\jmanu\\Desktop\\C_C_Final-main\\TestBendu\\AppMain\\C_C\\ViewModel\\LoginViewModel.cs",
-              "RelativeToolTip": "C_C\\ViewModel\\LoginViewModel.cs",
-              "ViewState": "AgIAAIwAAAAAAAAAAAAswGwAAAARAAAAAAAAAA==",
+              "Title": "ICuentaRepository.cs",
+              "DocumentMoniker": "C:\\Users\\jmanu\\Desktop\\C_C_Final-main\\TestBendu\\AppMain\\C_C\\Model\\ICuentaRepository.cs",
+              "RelativeDocumentMoniker": "C_C\\Model\\ICuentaRepository.cs",
+              "ToolTip": "C:\\Users\\jmanu\\Desktop\\C_C_Final-main\\TestBendu\\AppMain\\C_C\\Model\\ICuentaRepository.cs",
+              "RelativeToolTip": "C_C\\Model\\ICuentaRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAOAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-30T16:19:46.852Z",
+              "WhenOpened": "2025-11-01T14:40:44.503Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "InboxViewModel.cs",
-              "DocumentMoniker": "C:\\Users\\jmanu\\Desktop\\C_C_Final-main\\TestBendu\\AppMain\\C_C\\ViewModel\\InboxViewModel.cs",
-              "RelativeDocumentMoniker": "C_C\\ViewModel\\InboxViewModel.cs",
-              "ToolTip": "C:\\Users\\jmanu\\Desktop\\C_C_Final-main\\TestBendu\\AppMain\\C_C\\ViewModel\\InboxViewModel.cs",
-              "RelativeToolTip": "C_C\\ViewModel\\InboxViewModel.cs",
-              "ViewState": "AgIAAH4AAAAAAAAAAAAawPwAAAAyAAAAAAAAAA==",
+              "Title": "CuentaRepository.cs",
+              "DocumentMoniker": "C:\\Users\\jmanu\\Desktop\\C_C_Final-main\\TestBendu\\AppMain\\C_C\\Repositories\\CuentaRepository.cs",
+              "RelativeDocumentMoniker": "C_C\\Repositories\\CuentaRepository.cs",
+              "ToolTip": "C:\\Users\\jmanu\\Desktop\\C_C_Final-main\\TestBendu\\AppMain\\C_C\\Repositories\\CuentaRepository.cs",
+              "RelativeToolTip": "C_C\\Repositories\\CuentaRepository.cs",
+              "ViewState": "AgIAAGoAAAAAAAAAAAAYwHoAAAAOAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-30T16:17:48.631Z",
+              "WhenOpened": "2025-11-01T14:40:22.906Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "ChatViewModel.cs",
-              "DocumentMoniker": "C:\\Users\\jmanu\\Desktop\\C_C_Final-main\\TestBendu\\AppMain\\C_C\\ViewModel\\ChatViewModel.cs",
-              "RelativeDocumentMoniker": "C_C\\ViewModel\\ChatViewModel.cs",
-              "ToolTip": "C:\\Users\\jmanu\\Desktop\\C_C_Final-main\\TestBendu\\AppMain\\C_C\\ViewModel\\ChatViewModel.cs",
-              "RelativeToolTip": "C_C\\ViewModel\\ChatViewModel.cs",
-              "ViewState": "AgIAAJgAAAAAAAAAAAAowFsAAAAdAAAAAAAAAA==",
+              "Title": "BindablePasswordBox.cs",
+              "DocumentMoniker": "C:\\Users\\jmanu\\Desktop\\C_C_Final-main\\TestBendu\\AppMain\\C_C\\CustomControls\\BindablePasswordBox.cs",
+              "RelativeDocumentMoniker": "C_C\\CustomControls\\BindablePasswordBox.cs",
+              "ToolTip": "C:\\Users\\jmanu\\Desktop\\C_C_Final-main\\TestBendu\\AppMain\\C_C\\CustomControls\\BindablePasswordBox.cs",
+              "RelativeToolTip": "C_C\\CustomControls\\BindablePasswordBox.cs",
+              "ViewState": "AgIAABMAAAAAAAAAAAAgwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-30T16:16:45.189Z",
+              "WhenOpened": "2025-11-01T14:40:11.229Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 5,
-              "Title": "BaseViewModel.cs",
-              "DocumentMoniker": "C:\\Users\\jmanu\\Desktop\\C_C_Final-main\\TestBendu\\AppMain\\C_C\\ViewModel\\BaseViewModel.cs",
-              "RelativeDocumentMoniker": "C_C\\ViewModel\\BaseViewModel.cs",
-              "ToolTip": "C:\\Users\\jmanu\\Desktop\\C_C_Final-main\\TestBendu\\AppMain\\C_C\\ViewModel\\BaseViewModel.cs",
-              "RelativeToolTip": "C_C\\ViewModel\\BaseViewModel.cs",
+              "Title": "AssemblyInfo.cs",
+              "DocumentMoniker": "C:\\Users\\jmanu\\Desktop\\C_C_Final-main\\TestBendu\\AppMain\\C_C\\Properties\\AssemblyInfo.cs",
+              "RelativeDocumentMoniker": "C_C\\Properties\\AssemblyInfo.cs",
+              "ToolTip": "C:\\Users\\jmanu\\Desktop\\C_C_Final-main\\TestBendu\\AppMain\\C_C\\Properties\\AssemblyInfo.cs",
+              "RelativeToolTip": "C_C\\Properties\\AssemblyInfo.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-30T16:16:38.742Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "RegisterAlumnoService.cs",
-              "DocumentMoniker": "C:\\Users\\jmanu\\Desktop\\C_C_Final-main\\TestBendu\\AppMain\\C_C\\Services\\RegisterAlumnoService.cs",
-              "RelativeDocumentMoniker": "C_C\\Services\\RegisterAlumnoService.cs",
-              "ToolTip": "C:\\Users\\jmanu\\Desktop\\C_C_Final-main\\TestBendu\\AppMain\\C_C\\Services\\RegisterAlumnoService.cs",
-              "RelativeToolTip": "C_C\\Services\\RegisterAlumnoService.cs",
-              "ViewState": "AgIAAFsAAAAAAAAAAAAQwEkAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-30T16:15:37.24Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "MatchService.cs",
-              "DocumentMoniker": "C:\\Users\\jmanu\\Desktop\\C_C_Final-main\\TestBendu\\AppMain\\C_C\\Services\\MatchService.cs",
-              "RelativeDocumentMoniker": "C_C\\Services\\MatchService.cs",
-              "ToolTip": "C:\\Users\\jmanu\\Desktop\\C_C_Final-main\\TestBendu\\AppMain\\C_C\\Services\\MatchService.cs",
-              "RelativeToolTip": "C_C\\Services\\MatchService.cs",
-              "ViewState": "AgIAAE8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-30T16:15:26.573Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "HashFunction.cs",
-              "DocumentMoniker": "C:\\Users\\jmanu\\Desktop\\C_C_Final-main\\TestBendu\\AppMain\\C_C\\Resources\\Utils\\HashFunction.cs",
-              "RelativeDocumentMoniker": "C_C\\Resources\\Utils\\HashFunction.cs",
-              "ToolTip": "C:\\Users\\jmanu\\Desktop\\C_C_Final-main\\TestBendu\\AppMain\\C_C\\Resources\\Utils\\HashFunction.cs",
-              "RelativeToolTip": "C_C\\Resources\\Utils\\HashFunction.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-30T16:13:16.85Z",
+              "WhenOpened": "2025-11-01T14:40:01.343Z",
               "EditorCaption": ""
             }
           ]

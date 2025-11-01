@@ -10,12 +10,12 @@ namespace C_C_Final.Model
         Preferencias GetPreferenciasByPerfil(int idPerfil);
         IReadOnlyList<Perfil> ListAll();
 
-        int CreatePerfil(Perfil perfil);
+        void CrearPerfil(Perfil perfil);
         bool UpdatePerfil(Perfil perfil);
         int UpsertPreferencias(Preferencias prefs);
         bool DeletePerfil(int idPerfil);
 
-        int CreatePerfil(SqlConnection cn, SqlTransaction tx, Perfil perfil);
+        void MapearPerfil(SqlConnection cn, SqlTransaction tx, Perfil perfil);
         int UpsertPreferencias(SqlConnection cn, SqlTransaction tx, Preferencias prefs);
     }
 }
