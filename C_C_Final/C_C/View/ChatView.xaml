@@ -288,7 +288,7 @@
                                     CornerRadius="28"
                                     HorizontalAlignment="Stretch"
                                     VerticalAlignment="Stretch">
-                                <Image Source="/C_C_Final;component/Images/SendArow.png"
+                                <Image Source="/Resources/Images/SendArow.png"
                                        Width="24"
                                        Height="24"
                                        HorizontalAlignment="Center"

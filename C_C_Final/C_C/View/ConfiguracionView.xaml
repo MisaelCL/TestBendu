@@ -138,12 +138,12 @@
                                             Margin="0,0,4,4"
                                             Background="White"
                                             BorderThickness="0"
-                                            Command="{Binding EditarFotoCommand}">
+                                            Command="{Binding EditarFotoCommand}" Click="Button_Click">
                                         <Button.Template>
                                             <ControlTemplate TargetType="Button">
                                                 <Border Background="{TemplateBinding Background}"
                                                         CornerRadius="16">
-                                                    <Image Source="/C_C_Final;component/Images/Lapiz.png"
+                                                    <Image Source="/Resources/Images/Lapiz.png"
                                                            Width="16"
                                                            Height="16"
                                                            HorizontalAlignment="Center"

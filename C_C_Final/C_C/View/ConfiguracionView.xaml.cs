@@ -67,5 +67,10 @@ namespace C_C_Final.View
                 DragMove();
             }
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

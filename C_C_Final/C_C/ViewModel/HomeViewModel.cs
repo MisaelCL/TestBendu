@@ -50,9 +50,6 @@ namespace C_C_Final.ViewModel
             _comandoAlternarConfiguracion = new RelayCommand(_ => IsSettingsMenuOpen = !IsSettingsMenuOpen);
             _comandoIrAMiPerfil = new RelayCommand(_ => NavegarAConfiguracion());
             _comandoBloquearPerfil = new RelayCommand(_ => BloquearPerfilActual(), _ => PerfilActual != null);
-
-            // --- CORRECCIÓN ---
-            // Carga el primer perfil al iniciar para que la UI muestre contenido inmediatamente.
             CargarSiguientePerfil();
         }
 
@@ -114,7 +111,7 @@ namespace C_C_Final.ViewModel
                 }
 
                 int idCuenta = perfilActual.IdCuenta;
-                var configuracionView = new ConfiguracionView(idCuenta);
+                var  perfilView = new PerfilView(idCuenta);
 
                 Window ventanaActual = null;
                 var app = Application.Current;
@@ -130,7 +127,7 @@ namespace C_C_Final.ViewModel
                     }
                 }
                 
-                configuracionView.Show();
+                perfilView.Show();
                 ventanaActual?.Close();
             }
             catch (Exception ex)

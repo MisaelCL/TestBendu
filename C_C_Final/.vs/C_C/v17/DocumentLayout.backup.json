@@ -3,47 +3,36 @@
   "WorkspaceRootPath": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\C_C_Final\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|c:\\users\\jmanu\\desktop\\final\\testbendu\\c_c_final\\c_c\\repositories\\repositorybase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|solutionrelative:c_c\\repositories\\repositorybase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|c:\\users\\jmanu\\desktop\\final\\testbendu\\c_c_final\\c_c\\viewmodel\\perfilviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|solutionrelative:c_c\\viewmodel\\perfilviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|c:\\users\\jmanu\\desktop\\final\\testbendu\\c_c_final\\c_c\\app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|solutionrelative:c_c\\app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|c:\\users\\jmanu\\desktop\\final\\testbendu\\c_c_final\\c_c\\view\\perfilview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|solutionrelative:c_c\\view\\perfilview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|c:\\users\\jmanu\\desktop\\final\\testbendu\\c_c_final\\c_c\\repositories\\cuentarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|solutionrelative:c_c\\repositories\\cuentarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|c:\\users\\jmanu\\desktop\\final\\testbendu\\c_c_final\\c_c\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|solutionrelative:c_c\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|c:\\users\\jmanu\\desktop\\final\\testbendu\\c_c_final\\c_c\\repositories\\preferenciasrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|solutionrelative:c_c\\repositories\\preferenciasrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|ViewDataWindow_MSSQL__/LABENDUPC_BENDUOLOSERVER/C_CBD/True/SqlTable/dbo.Chat.sql||{0058A1F7-65F3-4DB9-B3D0-CA7E64DD73CD}"
+      "AbsoluteMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|c:\\users\\jmanu\\desktop\\final\\testbendu\\c_c_final\\c_c\\viewmodel\\homeviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|solutionrelative:c_c\\viewmodel\\homeviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|c:\\users\\jmanu\\desktop\\final\\testbendu\\c_c_final\\c_c\\view\\registroview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|solutionrelative:c_c\\view\\registroview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|c:\\users\\jmanu\\desktop\\final\\testbendu\\c_c_final\\c_c\\services\\registeralumnoservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|solutionrelative:c_c\\services\\registeralumnoservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|c:\\users\\jmanu\\desktop\\final\\testbendu\\c_c_final\\c_c\\view\\loginview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|solutionrelative:c_c\\view\\loginview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|c:\\users\\jmanu\\desktop\\final\\testbendu\\c_c_final\\c_c\\services\\matchservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|solutionrelative:c_c\\services\\matchservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|c:\\users\\jmanu\\desktop\\final\\testbendu\\c_c_final\\c_c\\view\\chatview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|solutionrelative:c_c\\view\\chatview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|c:\\users\\jmanu\\desktop\\final\\testbendu\\c_c_final\\c_c\\services\\cuentadeletionservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|solutionrelative:c_c\\services\\cuentadeletionservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|c:\\users\\jmanu\\desktop\\final\\testbendu\\c_c_final\\c_c\\view\\configuracionview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|solutionrelative:c_c\\view\\configuracionview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|c:\\users\\jmanu\\desktop\\final\\testbendu\\c_c_final\\c_c\\repositories\\perfilrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|solutionrelative:c_c\\repositories\\perfilrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|c:\\users\\jmanu\\desktop\\final\\testbendu\\c_c_final\\c_c\\view\\configuracionview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|solutionrelative:c_c\\view\\configuracionview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -53,144 +42,105 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 8,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "CuentaRepository.cs",
-              "DocumentMoniker": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\C_C_Final\\C_C\\Repositories\\CuentaRepository.cs",
-              "RelativeDocumentMoniker": "C_C\\Repositories\\CuentaRepository.cs",
-              "ToolTip": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\C_C_Final\\C_C\\Repositories\\CuentaRepository.cs",
-              "RelativeToolTip": "C_C\\Repositories\\CuentaRepository.cs",
-              "ViewState": "AgIAAAIAAAAAAAAAAAAuwBUAAAAwAAAAAAAAAA==",
+              "DocumentIndex": 0,
+              "Title": "PerfilViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\C_C_Final\\C_C\\ViewModel\\PerfilViewModel.cs",
+              "RelativeDocumentMoniker": "C_C\\ViewModel\\PerfilViewModel.cs",
+              "ToolTip": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\C_C_Final\\C_C\\ViewModel\\PerfilViewModel.cs",
+              "RelativeToolTip": "C_C\\ViewModel\\PerfilViewModel.cs",
+              "ViewState": "AgIAAN4AAAAAAAAAAAAqwJsAAAA2AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-06T14:39:53.618Z",
+              "WhenOpened": "2025-11-06T14:59:19.193Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "HomeViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\C_C_Final\\C_C\\ViewModel\\HomeViewModel.cs",
+              "RelativeDocumentMoniker": "C_C\\ViewModel\\HomeViewModel.cs",
+              "ToolTip": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\C_C_Final\\C_C\\ViewModel\\HomeViewModel.cs",
+              "RelativeToolTip": "C_C\\ViewModel\\HomeViewModel.cs",
+              "ViewState": "AgIAAHEAAAAAAAAAAADwv34AAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-06T14:57:04.707Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "App.xaml",
-              "DocumentMoniker": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\C_C_Final\\C_C\\App.xaml",
-              "RelativeDocumentMoniker": "C_C\\App.xaml",
-              "ToolTip": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\C_C_Final\\C_C\\App.xaml",
-              "RelativeToolTip": "C_C\\App.xaml",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2025-11-06T14:36:02.527Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "App.xaml.cs",
-              "DocumentMoniker": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\C_C_Final\\C_C\\App.xaml.cs",
-              "RelativeDocumentMoniker": "C_C\\App.xaml.cs",
-              "ToolTip": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\C_C_Final\\C_C\\App.xaml.cs",
-              "RelativeToolTip": "C_C\\App.xaml.cs",
-              "ViewState": "AgIAAEMAAAAAAAAAAAD4v00AAABNAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-06T14:31:51.127Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "dbo.Chat [Datos]",
-              "DocumentMoniker": "ViewDataWindow_MSSQL__/LABENDUPC_BENDUOLOSERVER/C_CBD/True/SqlTable/dbo.Chat.sql",
-              "ToolTip": "dbo.Chat [Datos]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
-              "WhenOpened": "2025-11-06T14:30:58.493Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
               "Title": "RegistroView.xaml",
               "DocumentMoniker": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\C_C_Final\\C_C\\View\\RegistroView.xaml",
               "RelativeDocumentMoniker": "C_C\\View\\RegistroView.xaml",
               "ToolTip": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\C_C_Final\\C_C\\View\\RegistroView.xaml",
               "RelativeToolTip": "C_C\\View\\RegistroView.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2025-11-06T14:24:27.328Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "RegisterAlumnoService.cs",
-              "DocumentMoniker": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\C_C_Final\\C_C\\Services\\RegisterAlumnoService.cs",
-              "RelativeDocumentMoniker": "C_C\\Services\\RegisterAlumnoService.cs",
-              "ToolTip": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\C_C_Final\\C_C\\Services\\RegisterAlumnoService.cs",
-              "RelativeToolTip": "C_C\\Services\\RegisterAlumnoService.cs",
-              "ViewState": "AgIAAJYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-06T14:24:13.747Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "MatchService.cs",
-              "DocumentMoniker": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\C_C_Final\\C_C\\Services\\MatchService.cs",
-              "RelativeDocumentMoniker": "C_C\\Services\\MatchService.cs",
-              "ToolTip": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\C_C_Final\\C_C\\Services\\MatchService.cs",
-              "RelativeToolTip": "C_C\\Services\\MatchService.cs",
-              "ViewState": "AgIAAFcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-06T14:24:07.276Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "CuentaDeletionService.cs",
-              "DocumentMoniker": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\C_C_Final\\C_C\\Services\\CuentaDeletionService.cs",
-              "RelativeDocumentMoniker": "C_C\\Services\\CuentaDeletionService.cs",
-              "ToolTip": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\C_C_Final\\C_C\\Services\\CuentaDeletionService.cs",
-              "RelativeToolTip": "C_C\\Services\\CuentaDeletionService.cs",
-              "ViewState": "AgIAABYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-06T14:24:01.816Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "RepositoryBase.cs",
-              "DocumentMoniker": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\C_C_Final\\C_C\\Repositories\\RepositoryBase.cs",
-              "RelativeDocumentMoniker": "C_C\\Repositories\\RepositoryBase.cs",
-              "ToolTip": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\C_C_Final\\C_C\\Repositories\\RepositoryBase.cs",
-              "RelativeToolTip": "C_C\\Repositories\\RepositoryBase.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-06T14:23:37.155Z",
+              "WhenOpened": "2025-11-06T14:56:49.822Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "PreferenciasRepository.cs",
-              "DocumentMoniker": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\C_C_Final\\C_C\\Repositories\\PreferenciasRepository.cs",
-              "RelativeDocumentMoniker": "C_C\\Repositories\\PreferenciasRepository.cs",
-              "ToolTip": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\C_C_Final\\C_C\\Repositories\\PreferenciasRepository.cs",
-              "RelativeToolTip": "C_C\\Repositories\\PreferenciasRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAABSAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-06T14:22:54.32Z",
+              "Title": "LoginView.xaml",
+              "DocumentMoniker": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\C_C_Final\\C_C\\View\\LoginView.xaml",
+              "RelativeDocumentMoniker": "C_C\\View\\LoginView.xaml",
+              "ToolTip": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\C_C_Final\\C_C\\View\\LoginView.xaml",
+              "RelativeToolTip": "C_C\\View\\LoginView.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-11-06T14:56:34.178Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "PerfilRepository.cs",
-              "DocumentMoniker": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\C_C_Final\\C_C\\Repositories\\PerfilRepository.cs",
-              "RelativeDocumentMoniker": "C_C\\Repositories\\PerfilRepository.cs",
-              "ToolTip": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\C_C_Final\\C_C\\Repositories\\PerfilRepository.cs",
-              "RelativeToolTip": "C_C\\Repositories\\PerfilRepository.cs",
-              "ViewState": "AgIAANEAAAAAAAAAAAAgwJUAAAAmAAAAAAAAAA==",
+              "DocumentIndex": 5,
+              "Title": "ChatView.xaml",
+              "DocumentMoniker": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\C_C_Final\\C_C\\View\\ChatView.xaml",
+              "RelativeDocumentMoniker": "C_C\\View\\ChatView.xaml",
+              "ToolTip": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\C_C_Final\\C_C\\View\\ChatView.xaml",
+              "RelativeToolTip": "C_C\\View\\ChatView.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-11-06T14:56:03.444Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "ConfiguracionView.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\C_C_Final\\C_C\\View\\ConfiguracionView.xaml.cs",
+              "RelativeDocumentMoniker": "C_C\\View\\ConfiguracionView.xaml.cs",
+              "ToolTip": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\C_C_Final\\C_C\\View\\ConfiguracionView.xaml.cs",
+              "RelativeToolTip": "C_C\\View\\ConfiguracionView.xaml.cs",
+              "ViewState": "AgIAACAAAAAAAAAAAAAwwEgAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-06T14:22:32.012Z",
+              "WhenOpened": "2025-11-06T14:54:15.798Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "ConfiguracionView.xaml",
+              "DocumentMoniker": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\C_C_Final\\C_C\\View\\ConfiguracionView.xaml",
+              "RelativeDocumentMoniker": "C_C\\View\\ConfiguracionView.xaml",
+              "ToolTip": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\C_C_Final\\C_C\\View\\ConfiguracionView.xaml",
+              "RelativeToolTip": "C_C\\View\\ConfiguracionView.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-11-06T14:54:03.317Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "PerfilView.xaml",
+              "DocumentMoniker": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\C_C_Final\\C_C\\View\\PerfilView.xaml",
+              "RelativeDocumentMoniker": "C_C\\View\\PerfilView.xaml",
+              "ToolTip": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\C_C_Final\\C_C\\View\\PerfilView.xaml",
+              "RelativeToolTip": "C_C\\View\\PerfilView.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-11-06T14:53:47.649Z",
               "EditorCaption": ""
             }
           ]

@@ -146,12 +146,6 @@ namespace C_C_Final.ViewModel
 
         public void EditarPerfil()
         {
-            if (_idCuenta == 0)
-            {
-                MessageBox.Show("No se ha cargado un perfil válido.", "Editar Perfil", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
             IsSettingsMenuOpen = false;
 
             var configuracionView = new ConfiguracionView(_idCuenta);
