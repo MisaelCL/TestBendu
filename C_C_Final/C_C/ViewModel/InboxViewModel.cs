@@ -1,394 +1,29 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
+using System.ComponentModel;
 using System.Linq;
+using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
+using C_C_Final.Model;
 using C_C_Final.Repositories;
-using C_C_Final.Services;
+using C_C_Final.View;
 
 namespace C_C_Final.ViewModel
 {
-    /// <summary>
-    /// Administra la bandeja de coincidencias y sugerencias del usuario.
-    /// </summary>
-    public sealed class InboxViewModel : BaseViewModel
-    {
-        private readonly MatchRepository _matchRepository;
-        private readonly PerfilRepository _perfilRepository;
-        private readonly MatchService _matchService;
-        private readonly ObservableCollection<SugerenciaItemViewModel> _sugerencias = [];
-        private SugerenciaItemViewModel _perfilActual;
-        private bool _isSettingsMenuOpen;
-        private string _estadoMensaje;
-        private int _perfilId;
-        private int _currentIndex;
-        private readonly int _pageSize = 20;
-
-        public InboxViewModel(MatchRepository matchRepository, PerfilRepository perfilRepository, MatchService matchService)
-        {
-            _matchRepository = matchRepository;
-            _perfilRepository = perfilRepository;
-            _matchService = matchService;
-
-            ComandoAlternarConfiguracion = new RelayCommand(_ => IsSettingsMenuOpen = !IsSettingsMenuOpen);
-            ComandoIrAMiPerfil = new RelayCommand(_ => AbrirMiPerfil());
-            ComandoBloquearPerfil = new RelayCommand(_ => BloquearActual());
-            ComandoAnterior = new RelayCommand(_ => MoverAnterior());
-            ComandoSiguiente = new RelayCommand(_ => MoverSiguiente());
-            ComandoAceptar = new RelayCommand(_ => AceptarActual());
-            ComandoRechazar = new RelayCommand(_ => RechazarActual());
-        }
-
-        public ObservableCollection<SugerenciaItemViewModel> Sugerencias => _sugerencias;
-
-        public SugerenciaItemViewModel PerfilActual
-        {
-            get => _perfilActual;
-            private set => EstablecerPropiedad(ref _perfilActual, value);
-        }
-
-        public bool IsSettingsMenuOpen
-        {
-            get => _isSettingsMenuOpen;
-            set => EstablecerPropiedad(ref _isSettingsMenuOpen, value);
-        }
-
-        public string EstadoMensaje
-        {
-            get => _estadoMensaje;
-            private set => EstablecerPropiedad(ref _estadoMensaje, value);
-        }
-
-        public event Action<int> MiPerfilRequested;
-
-        public ICommand ComandoAlternarConfiguracion { get; }
-        public ICommand ComandoIrAMiPerfil { get; }
-        public ICommand ComandoBloquearPerfil { get; }
-        public ICommand ComandoAnterior { get; }
-        public ICommand ComandoSiguiente { get; }
-        public ICommand ComandoAceptar { get; }
-        public ICommand ComandoRechazar { get; }
-
-        /// <summary>
-        /// Carga los perfiles sugeridos y coincidencias para el usuario indicado.
-        /// </summary>
-        public void Cargar(int perfilId)
-        {
-            _perfilId = perfilId;
-            _sugerencias.Clear();
-            _currentIndex = 0;
-
-            var matches = _matchRepository.ListarPorPerfil(perfilId, 0, _pageSize);
-            var perfilesAgregados = new HashSet<int>();
-
-            foreach (var match in matches.OrderByDescending(m => m.FechaMatch))
-            {
-                var otherPerfilId = match.PerfilEmisor == perfilId ? match.PerfilReceptor : match.PerfilEmisor;
-                var perfil = _perfilRepository.ObtenerPorId(otherPerfilId);
-                if (perfil == null)
-                {
-                    continue;
-                }
-
-                if (!perfilesAgregados.Add(otherPerfilId))
-                {
-                    continue;
-                }
-
-                var descripcionEstado = MatchEstadoHelper.ObtenerDescripcionPara(match.Estado, perfilId, otherPerfilId);
-
-                var sugerencia = new SugerenciaItemViewModel
-                {
-                    MatchId = match.IdMatch,
-                    PerfilId = otherPerfilId,
-                    NombreEdad = perfil.Nikname,
-                    CarreraTexto = string.IsNullOrWhiteSpace(descripcionEstado) ? perfil.Biografia : descripcionEstado,
-                    FotoUrl = ConvertirAImagen(perfil.FotoPerfil),
-                    EsPerfilRegistrado = false,
-                    EstadoMatch = match.Estado
-                };
-                _sugerencias.Add(sugerencia);
-            }
-
-            var perfilesRegistrados = _perfilRepository.ListarTodos();
-            foreach (var perfil in perfilesRegistrados.Where(p => p.IdPerfil != perfilId))
-            {
-                if (!perfilesAgregados.Add(perfil.IdPerfil))
-                {
-                    continue;
-                }
-
-                var descripcion = string.IsNullOrWhiteSpace(perfil.Biografia)
-                    ? "Este perfil aún no tiene biografía."
-                    : perfil.Biografia;
-
-                var sugerencia = new SugerenciaItemViewModel
-                {
-                    MatchId = 0,
-                    PerfilId = perfil.IdPerfil,
-                    NombreEdad = perfil.Nikname,
-                    CarreraTexto = descripcion,
-                    FotoUrl = ConvertirAImagen(perfil.FotoPerfil),
-                    EsPerfilRegistrado = true,
-                    EstadoMatch = string.Empty
-                };
-
-                _sugerencias.Add(sugerencia);
-            }
-
-            PerfilActual = _sugerencias.FirstOrDefault();
-
-            if (_sugerencias.Count == 0)
-            {
-                EstadoMensaje = "No hay perfiles registrados.";
-            }
-            else if (matches.Count > 0)
-            {
-                EstadoMensaje = "Selecciona un perfil para interactuar.";
-            }
-            else
-            {
-                EstadoMensaje = "Explora los perfiles registrados.";
-            }
-        }
-
-        private void AbrirMiPerfil()
-        {
-
-
-            try
-            {
-                var perfil = _perfilRepository.ObtenerPorId(_perfilId);
-                if (perfil == null)
-                {
-                    EstadoMensaje = "No se encontró tu perfil.";
-                    return;
-                }
-
-                IsSettingsMenuOpen = false;
-                EstadoMensaje = "Mostrando tu perfil.";
-                MiPerfilRequested.Invoke(perfil.IdCuenta);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString());
-                EstadoMensaje = e.ToString();
-                
-            }
-        }
-
-        private void AceptarActual()
-        {
-            try
-            {
-                var otroPerfilId = PerfilActual.PerfilId;
-                var match = PerfilActual.MatchId > 0
-                    ? _matchRepository.ObtenerPorId(PerfilActual.MatchId)
-                    : _matchRepository.ObtenerPorPerfiles(_perfilId, otroPerfilId);
-
-                    PerfilActual.MatchId = match.IdMatch;
-                    PerfilActual.EsPerfilRegistrado = false;
-                    PerfilActual.EstadoMatch = match.Estado ?? string.Empty;
-                    var estadoActual = PerfilActual.EstadoMatch ?? string.Empty;
-
-                    if (MatchEstadoHelper.EsActivo(estadoActual))
-                    {
-                        _matchService.AsegurarChatParaMatch(match.IdMatch);
-                        PerfilActual.CarreraTexto = MatchEstadoHelper.ObtenerDescripcionPara(estadoActual, _perfilId, otroPerfilId);
-                        EstadoMensaje = $"Ya tienes un match activo con {PerfilActual.NombreEdad}.";
-                        return;
-                    }
-
-                    if (MatchEstadoHelper.EsPendienteDe(estadoActual, _perfilId))
-                    {
-                        PerfilActual.CarreraTexto = MatchEstadoHelper.ObtenerDescripcionPara(estadoActual, _perfilId, otroPerfilId);
-                        EstadoMensaje = $"Ya enviaste un corazón a {PerfilActual.NombreEdad}.";
-                        return;
-                    }
-
-                    if (MatchEstadoHelper.EsPendienteDe(estadoActual, otroPerfilId)
-                        || string.Equals(estadoActual, "pendiente", StringComparison.OrdinalIgnoreCase))
-                    {
-                        _matchRepository.ActualizarEstado(match.IdMatch, "activo");
-                        PerfilActual.EstadoMatch = "activo";
-                        PerfilActual.CarreraTexto = MatchEstadoHelper.ObtenerDescripcionPara("activo", _perfilId, otroPerfilId);
-                        _matchService.AsegurarChatParaMatch(match.IdMatch);
-                        EstadoMensaje = $"¡Es un match con {PerfilActual.NombreEdad}! Ya pueden chatear.";
-                        return;
-                    }
-
-                    if (MatchEstadoHelper.EsRechazadoPor(estadoActual, otroPerfilId)
-                        || string.Equals(estadoActual, "rechazado", StringComparison.OrdinalIgnoreCase))
-                    {
-                        PerfilActual.CarreraTexto = MatchEstadoHelper.ObtenerDescripcionPara(estadoActual, _perfilId, otroPerfilId);
-                        EstadoMensaje = $"{PerfilActual.NombreEdad} rechazó tu corazón.";
-                        return;
-                    }
-
-                    if (MatchEstadoHelper.EsRechazadoPor(estadoActual, _perfilId))
-                    {
-                        var nuevoEstado = MatchEstadoHelper.ConstruirPendiente(_perfilId);
-                        _matchRepository.ActualizarEstado(match.IdMatch, nuevoEstado);
-                        PerfilActual.EstadoMatch = nuevoEstado;
-                        PerfilActual.CarreraTexto = MatchEstadoHelper.ObtenerDescripcionPara(nuevoEstado, _perfilId, otroPerfilId);
-                        EstadoMensaje = $"Has enviado un corazón a {PerfilActual.NombreEdad}.";
-                        return;
-                    }
-
-                    var estadoPendiente = MatchEstadoHelper.ConstruirPendiente(_perfilId);
-                    _matchRepository.ActualizarEstado(match.IdMatch, estadoPendiente);
-                    PerfilActual.EstadoMatch = estadoPendiente;
-                    PerfilActual.CarreraTexto = MatchEstadoHelper.ObtenerDescripcionPara(estadoPendiente, _perfilId, otroPerfilId);
-                    EstadoMensaje = $"Has enviado un corazón a {PerfilActual.NombreEdad}. Espera su respuesta.";
-                    return;
-
-                var pendiente = MatchEstadoHelper.ConstruirPendiente(_perfilId);
-                var nuevoMatchId = _matchRepository.CrearMatch(_perfilId, otroPerfilId, pendiente);
-                PerfilActual.MatchId = nuevoMatchId;
-                PerfilActual.EsPerfilRegistrado = false;
-                PerfilActual.EstadoMatch = pendiente;
-                PerfilActual.CarreraTexto = MatchEstadoHelper.ObtenerDescripcionPara(pendiente, _perfilId, otroPerfilId);
-                EstadoMensaje = $"Has enviado un corazón a {PerfilActual.NombreEdad}. Espera su respuesta.";
-            }
-            catch (Exception ex)
-            {
-                EstadoMensaje = ex.ToString();
-            }
-        }
-
-        private void RechazarActual()
-        {
-            if (PerfilActual == null)
-            {
-                EstadoMensaje = "No hay un perfil seleccionado.";
-                return;
-            }
-
-            try
-            {
-                var otroPerfilId = PerfilActual.PerfilId;
-                if (otroPerfilId == 0)
-                {
-                    EstadoMensaje = "No se pudo identificar el perfil seleccionado.";
-                    return;
-                }
-
-                var match = PerfilActual.MatchId > 0
-                    ? _matchRepository.ObtenerPorId(PerfilActual.MatchId)
-                    : _matchRepository.ObtenerPorPerfiles(_perfilId, otroPerfilId);
-
-                if (match == null)
-                {
-                    var estadoRechazado = MatchEstadoHelper.ConstruirRechazado(_perfilId);
-                    var nuevoMatchId = _matchRepository.CrearMatch(_perfilId, otroPerfilId, estadoRechazado);
-                    PerfilActual.MatchId = nuevoMatchId;
-                    PerfilActual.EstadoMatch = estadoRechazado;
-                    PerfilActual.EsPerfilRegistrado = false;
-                    PerfilActual.CarreraTexto = MatchEstadoHelper.ObtenerDescripcionPara(estadoRechazado, _perfilId, otroPerfilId);
-                    EstadoMensaje = $"Has rechazado a {PerfilActual.NombreEdad}";
-                    return;
-                }
-
-                PerfilActual.MatchId = match.IdMatch;
-                PerfilActual.EsPerfilRegistrado = false;
-                var estadoActual = match.Estado ?? string.Empty;
-
-                if (MatchEstadoHelper.EsRechazadoPor(estadoActual, _perfilId))
-                {
-                    PerfilActual.EstadoMatch = estadoActual;
-                    PerfilActual.CarreraTexto = MatchEstadoHelper.ObtenerDescripcionPara(estadoActual, _perfilId, otroPerfilId);
-                    EstadoMensaje = $"Ya habías rechazado a {PerfilActual.NombreEdad}.";
-                    return;
-                }
-
-                var nuevoEstado = MatchEstadoHelper.ConstruirRechazado(_perfilId);
-                _matchRepository.ActualizarEstado(match.IdMatch, nuevoEstado);
-                PerfilActual.EstadoMatch = nuevoEstado;
-                PerfilActual.CarreraTexto = MatchEstadoHelper.ObtenerDescripcionPara(nuevoEstado, _perfilId, otroPerfilId);
-                EstadoMensaje = $"Has rechazado a {PerfilActual.NombreEdad}";
-            }
-            catch (Exception ex)
-            {
-                EstadoMensaje = $"No se pudo completar la acción: {ex.Message}";
-            }
-        }
-
-        private void BloquearActual()
-        {
-            if (PerfilActual?.MatchId > 0)
-            {
-                _matchRepository.EliminarMatch(PerfilActual.MatchId);
-            }
-            _sugerencias.Remove(PerfilActual);
-            PerfilActual = _sugerencias.Count > 0 ? _sugerencias[Math.Min(_currentIndex, _sugerencias.Count - 1)] : null;
-
-            if (PerfilActual == null)
-            {
-                _currentIndex = 0;
-            }
-            else
-            {
-                _currentIndex = _sugerencias.IndexOf(PerfilActual);
-            }
-
-            EstadoMensaje = "El perfil se eliminó de tu bandeja.";
-        }
-
-        private void MoverAnterior()
-        {
-            if (_sugerencias.Count == 0)
-            {
-                return;
-            }
-
-            _currentIndex = (_currentIndex - 1 + _sugerencias.Count) % _sugerencias.Count;
-            PerfilActual = _sugerencias[_currentIndex];
-        }
-
-        private void MoverSiguiente()
-        {
-            if (_sugerencias.Count == 0)
-            {
-                return;
-            }
-
-            _currentIndex = (_currentIndex + 1) % _sugerencias.Count;
-            PerfilActual = _sugerencias[_currentIndex];
-        }
-
-        /// <summary>
-        /// Convierte la imagen binaria de un perfil a un recurso visual.
-        /// </summary>
-        private static ImageSource ConvertirAImagen(byte[] bytes)
-        {
-            if (bytes == null || bytes.Length == 0)
-            {
-                return null;
-            }
-
-            var stream = new MemoryStream(bytes);
-            var image = new BitmapImage();
-            image.BeginInit();
-            image.CacheOption = BitmapCacheOption.OnLoad;
-            image.StreamSource = stream;
-            image.EndInit();
-            image.Freeze();
-            return image;
-        }
-    }
-
-    public class SugerenciaItemViewModel : BaseViewModel
+    // (La clase ChatResumenViewModel se mantiene igual que en tu archivo original)
+    public sealed class ChatResumenViewModel : BaseViewModel
     {
         private int _matchId;
-        private int _perfilId;
-        private string _nombreEdad = string.Empty;
-        private string _carreraTexto = string.Empty;
-        private ImageSource _fotoUrl;
-        private bool _esPerfilRegistrado;
-        private string _estadoMatch = string.Empty;
+        private int _chatId;
+        private string _nombreContacto = string.Empty;
+        private ImageSource _fotoPerfil;
+        private string _ultimoMensaje = string.Empty;
+        private bool _isOnline;
+        private int _mensajesNoLeidos;
+        private DateTime _ultimoMensajeFecha;
+        private bool _esActivo;
 
         public int MatchId
         {
@@ -396,40 +31,281 @@ namespace C_C_Final.ViewModel
             set => EstablecerPropiedad(ref _matchId, value);
         }
 
-        public int PerfilId
+        public int ChatId
         {
-            get => _perfilId;
-            set => EstablecerPropiedad(ref _perfilId, value);
+            get => _chatId;
+            set => EstablecerPropiedad(ref _chatId, value);
         }
 
-        public string NombreEdad
+        public string NombreContacto
         {
-            get => _nombreEdad;
-            set => EstablecerPropiedad(ref _nombreEdad, value);
+            get => _nombreContacto;
+            set => EstablecerPropiedad(ref _nombreContacto, value);
         }
 
-        public string CarreraTexto
+        public ImageSource FotoPerfil
         {
-            get => _carreraTexto;
-            set => EstablecerPropiedad(ref _carreraTexto, value);
+            get => _fotoPerfil;
+            set => EstablecerPropiedad(ref _fotoPerfil, value);
         }
 
-        public ImageSource FotoUrl
+        public string UltimoMensaje
         {
-            get => _fotoUrl;
-            set => EstablecerPropiedad(ref _fotoUrl, value);
+            get => _ultimoMensaje;
+            set => EstablecerPropiedad(ref _ultimoMensaje, value);
         }
 
-        public bool EsPerfilRegistrado
+        public bool IsOnline
         {
-            get => _esPerfilRegistrado;
-            set => EstablecerPropiedad(ref _esPerfilRegistrado, value);
+            get => _isOnline;
+            set => EstablecerPropiedad(ref _isOnline, value);
         }
 
-        public string EstadoMatch
+        public int MensajesNoLeidos
         {
-            get => _estadoMatch;
-            set => EstablecerPropiedad(ref _estadoMatch, value);
+            get => _mensajesNoLeidos;
+            set => EstablecerPropiedad(ref _mensajesNoLeidos, value);
+        }
+
+        public DateTime UltimoMensajeFecha
+        {
+            get => _ultimoMensajeFecha;
+            set => EstablecerPropiedad(ref _ultimoMensajeFecha, value);
+        }
+
+        public bool EsActivo
+        {
+            get => _esActivo;
+            set => EstablecerPropiedad(ref _esActivo, value);
+        }
+    }
+
+    // --- Clase principal del ViewModel ---
+    public sealed class InboxViewModel : BaseViewModel
+    {
+        private readonly IPerfilRepository _perfilRepository;
+        private readonly IMatchRepository _matchRepository;
+        private readonly int _idPerfilActual;
+        private readonly ObservableCollection<ChatResumenViewModel> _listaChats = new ObservableCollection<ChatResumenViewModel>();
+        private readonly ICollectionView _chatsView;
+        private string _filtroBusqueda = string.Empty;
+        private Perfil _perfilActual;
+        private bool _isMenuAbierto;
+
+        public ICommand ComandoAbrirChat { get; }
+        public ICommand ComandoAbrirPerfil { get; }
+        public ICommand ComandoAlternarMenu { get; }
+        public ICommand ComandoCerrarSesion { get; }
+        public ICommand ComandoIrAConfiguracion { get; }
+
+        public Perfil PerfilActual
+        {
+            get => _perfilActual;
+            set => EstablecerPropiedad(ref _perfilActual, value);
+        }
+
+        public ICollectionView ChatsView => _chatsView;
+
+        public string FiltroBusqueda
+        {
+            get => _filtroBusqueda;
+            set
+            {
+                if (EstablecerPropiedad(ref _filtroBusqueda, value))
+                {
+                    _chatsView.Refresh();
+                }
+            }
+        }
+
+        public bool IsMenuAbierto
+        {
+            get => _isMenuAbierto;
+            set => EstablecerPropiedad(ref _isMenuAbierto, value);
+        }
+
+        public InboxViewModel(int idPerfil)
+        {
+            _idPerfilActual = idPerfil;
+            _perfilRepository = new PerfilRepository();
+            _matchRepository = new MatchRepository();
+            
+            _chatsView = CollectionViewSource.GetDefaultView(_listaChats);
+            _chatsView.Filter = FiltrarChat;
+            _chatsView.SortDescriptions.Add(new SortDescription(nameof(ChatResumenViewModel.UltimoMensajeFecha), ListSortDirection.Descending));
+
+            ComandoAbrirChat = new RelayCommand(param => AbrirChat(param as ChatResumenViewModel), param => param is ChatResumenViewModel);
+            ComandoAbrirPerfil = new RelayCommand(_ => AbrirMiPerfil());
+            ComandoAlternarMenu = new RelayCommand(_ => IsMenuAbierto = !IsMenuAbierto);
+            ComandoCerrarSesion = new RelayCommand(_ => CerrarSesion());
+            ComandoIrAConfiguracion = new RelayCommand(_ => AbrirConfiguracion());
+
+            CargarPerfil();
+            CargarChats();
+        }
+
+        private bool FiltrarChat(object obj)
+        {
+            if (string.IsNullOrWhiteSpace(FiltroBusqueda))
+            {
+                return true;
+            }
+
+            if (obj is not ChatResumenViewModel chat)
+            {
+                return false;
+            }
+
+            return chat.NombreContacto?.IndexOf(FiltroBusqueda, StringComparison.OrdinalIgnoreCase) >= 0;
+        }
+
+        private void CargarPerfil()
+        {
+            if (_idPerfilActual == 0) return;
+            PerfilActual = _perfilRepository.ObtenerPorId(_idPerfilActual);
+        }
+
+        private Window ObtenerVentanaActual()
+        {
+            var app = Application.Current;
+            if (app == null) return null;
+            
+            foreach (Window window in app.Windows)
+            {
+                if (ReferenceEquals(window.DataContext, this))
+                {
+                    return window;
+                }
+            }
+            return null;
+        }
+
+        private void AbrirMiPerfil()
+        {
+            if (PerfilActual == null) return;
+            
+            var perfilView = new PerfilView(PerfilActual.IdCuenta);
+            var ventanaActual = ObtenerVentanaActual();
+            perfilView.Show();
+            ventanaActual?.Close();
+        }
+
+        private void AbrirConfiguracion()
+        {
+            if (PerfilActual == null) return;
+            
+            var configView = new ConfiguracionView(PerfilActual.IdCuenta);
+            var ventanaActual = ObtenerVentanaActual();
+            configView.Show();
+            ventanaActual?.Close();
+        }
+
+        private void CerrarSesion()
+        {
+            var loginView = new LoginView();
+            var ventanaActual = ObtenerVentanaActual();
+            loginView.Show();
+            ventanaActual?.Close();
+        }
+
+        private void AbrirChat(ChatResumenViewModel chatResumen)
+        {
+            if (chatResumen == null || !chatResumen.EsActivo)
+            {
+                MessageBox.Show("No se puede abrir este chat. El match ya no está activo.", "Chat", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var chatView = new ChatView(chatResumen.MatchId, _idPerfilActual)
+            {
+                Owner = ObtenerVentanaActual()
+            };
+            chatView.ShowDialog(); // Usamos ShowDialog para bloquear hasta que se cierre
+
+            // Recargar la lista de chats para actualizar el último mensaje y no leídos
+            CargarChats();
+        }
+
+        private void CargarChats()
+        {
+            // --- CORRECCIÓN (CS0162) ---
+            // Se mueve _listaChats.Clear() al inicio del método.
+            _listaChats.Clear();
+            
+            if (_idPerfilActual == 0)
+            {
+                return;
+            }
+
+            try
+            {
+                var matches = _matchRepository.ListarPorPerfil(_idPerfilActual, 0, 100) ?? Array.Empty<Match>();
+                
+                foreach (var match in matches)
+                {
+                    var esActivo = MatchEstadoHelper.EsActivo(match.Estado);
+                    
+                    var contactoId = match.PerfilEmisor == _idPerfilActual ? match.PerfilReceptor : match.PerfilEmisor;
+                    var contacto = _perfilRepository.ObtenerPorId(contactoId);
+                    if (contacto == null) continue;
+
+                    var chat = _matchRepository.ObtenerChatPorMatchId(match.IdMatch);
+                    
+                    if (!esActivo && chat == null)
+                    {
+                        // Si no está activo y nunca chatearon, no lo mostramos
+                        continue;
+                    }
+                    
+                    if (esActivo && chat == null)
+                    {
+                        // Si es activo pero no tiene chat, lo creamos para mostrarlo
+                        var chatId = _matchRepository.AsegurarChatParaMatch(match.IdMatch);
+                        chat = new Chat { IdChat = chatId, IdMatch = match.IdMatch, FechaCreacion = DateTime.UtcNow };
+                    }
+                    
+                    string ultimoMensaje = esActivo ? "¡Es un match! Envía un mensaje." : "Match no activo";
+                    int mensajesNoLeidos = 0;
+                    var fechaUltimoMensaje = chat?.FechaCreacion ?? match.FechaMatch;
+
+                    if (chat != null && chat.IdChat != 0)
+                    {
+                        var mensajes = _matchRepository.ListarMensajes(chat.IdChat, 0, 1);
+                        var masReciente = mensajes.FirstOrDefault();
+                        if (masReciente != null)
+                        {
+                            ultimoMensaje = (masReciente.IdRemitentePerfil == _idPerfilActual ? "Tú: " : "") + masReciente.Contenido;
+                            fechaUltimoMensaje = masReciente.FechaEnvio;
+                            
+                            // Recalcular no leídos (esto es costoso, idealmente se hace en otro lado)
+                            var todosMensajes = _matchRepository.ListarMensajes(chat.IdChat, 0, 50);
+                            mensajesNoLeidos = todosMensajes.Count(m => !m.ConfirmacionLectura && m.IdRemitentePerfil != _idPerfilActual);
+                        }
+                    }
+
+                    _listaChats.Add(new ChatResumenViewModel
+                    {
+                        MatchId = match.IdMatch,
+                        ChatId = chat?.IdChat ?? 0,
+                        NombreContacto = contacto.Nikname,
+                        FotoPerfil = PerfilViewModel.ConvertirAImagen(contacto.FotoPerfil),
+                        UltimoMensaje = ultimoMensaje,
+                        MensajesNoLeidos = mensajesNoLeidos,
+                        UltimoMensajeFecha = fechaUltimoMensaje,
+                        EsActivo = esActivo
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return; 
+                // _listaChats.Clear(); // <-- ESTE ERA EL CÓDIGO INALCANZABLE
+            }
+            finally
+            {
+                _chatsView.Refresh();
+            }
         }
     }
 }

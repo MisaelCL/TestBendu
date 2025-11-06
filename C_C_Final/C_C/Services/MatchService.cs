@@ -20,7 +20,8 @@ namespace C_C_Final.Services
         }
 
         /// <summary>
-        /// Crea un nuevo emparejamiento y garantiza la existencia de un chat asociado.
+        /// Crea un nuevo emparejamiento (SIN chat).
+        /// El chat debe asegurarse por separado cuando el match esté 'activo'.
         /// </summary>
         public int CrearMatch(int idPerfilEmisor, int idPerfilReceptor, string estado)
         {
@@ -29,16 +30,17 @@ namespace C_C_Final.Services
             using var transaction = connection.BeginTransaction();
             try
             {
+                // Solo creamos el match
                 var matchId = _matchRepository.CrearMatch(connection, transaction, idPerfilEmisor, idPerfilReceptor, estado);
 
-                // --- LÍNEA CORREGIDA ---
+                // --- CORRECCIÓN ---
                 // Se elimina la llamada a AsegurarChatParaMatch.
                 // El chat SÓLO debe crearse cuando el match sea "activo",
                 // no cuando esté "pendiente".
                 //
                 // LÍNEA ELIMINADA:
                 // _matchRepository.AsegurarChatParaMatch(connection, transaction, matchId);
-
+                
                 transaction.Commit();
                 return matchId;
             }
@@ -51,7 +53,7 @@ namespace C_C_Final.Services
 
         /// <summary>
         /// Garantiza la existencia de un chat para un emparejamiento existente.
-        /// (Este método es correcto y se debe llamar cuando el match sea 'activo')
+        /// (Este método es correcto y se llama desde el HomeViewModel cuando hay match)
         /// </summary>
         public int AsegurarChatParaMatch(int idMatch)
         {
