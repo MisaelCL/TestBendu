@@ -8,13 +8,14 @@ namespace C_C_Final
 {
     public partial class App : System.Windows.Application
     {
-        public string ConnectionString { get; private set; }
-        public CuentaRepository CuentaRepository { get; private set; }
-        public PerfilRepository PerfilRepository { get; private set; }
-        public MatchRepository MatchRepository { get; private set; }
-        public RegisterAlumnoService RegisterAlumnoService { get; private set; }
-        public MatchService MatchService { get; private set; }
-        public CuentaDeletionService CuentaDeletionService { get; private set; }
+        public string ConnectionString { get; private set; } = string.Empty;
+        public CuentaRepository CuentaRepository { get; private set; } = null!;
+        public PerfilRepository PerfilRepository { get; private set; } = null!;
+        public PreferenciasRepository PreferenciasRepository { get; private set; } = null!;
+        public MatchRepository MatchRepository { get; private set; } = null!;
+        public RegisterAlumnoService RegisterAlumnoService { get; private set; } = null!;
+        public MatchService MatchService { get; private set; } = null!;
+        public CuentaDeletionService CuentaDeletionService { get; private set; } = null!;
         public static new App Current => (App)System.Windows.Application.Current;
 
         protected override void OnStartup(StartupEventArgs e)
@@ -23,10 +24,11 @@ namespace C_C_Final
             ConnectionString = RepositoryBase.ResolverCadenaConexion(null);
             CuentaRepository = new CuentaRepository(ConnectionString);
             PerfilRepository = new PerfilRepository(ConnectionString);
+            PreferenciasRepository = new PreferenciasRepository(ConnectionString);
             MatchRepository = new MatchRepository(ConnectionString);
-            RegisterAlumnoService = new RegisterAlumnoService(CuentaRepository, PerfilRepository, ConnectionString);
+            RegisterAlumnoService = new RegisterAlumnoService(CuentaRepository, PerfilRepository, PreferenciasRepository, ConnectionString);
             MatchService = new MatchService(MatchRepository, ConnectionString);
-            CuentaDeletionService = new CuentaDeletionService(CuentaRepository, PerfilRepository, MatchRepository, ConnectionString);
+            CuentaDeletionService = new CuentaDeletionService(CuentaRepository, PerfilRepository, MatchRepository);
 
             var login = new LoginView
             {

@@ -15,7 +15,11 @@ namespace C_C_Final.Repositories
         public Perfil ObtenerPorId(int idPerfil)
         {
             using var connection = AbrirConexion();
-            const string sql = "SELECT * FROM dbo.Perfil WHERE ID_Perfil = @Id";
+            const string sql = @"SELECT p.ID_Perfil, p.ID_Cuenta, p.Nikname, p.Biografia, p.Foto_Perfil AS FotoPerfil,
+c.Fecha_Registro AS FechaCreacion
+FROM dbo.Perfil p
+INNER JOIN dbo.Cuenta c ON c.ID_Cuenta = p.ID_Cuenta
+WHERE p.ID_Perfil = @Id";
             using var command = CrearComando(connection, sql);
             AgregarParametro(command, "@Id", idPerfil, SqlDbType.Int);
 
@@ -26,7 +30,11 @@ namespace C_C_Final.Repositories
         public Perfil ObtenerPorCuentaId(int idCuenta)
         {
             using var connection = AbrirConexion();
-            const string sql = "SELECT * FROM dbo.Perfil WHERE ID_Cuenta = @Id";
+            const string sql = @"SELECT p.ID_Perfil, p.ID_Cuenta, p.Nikname, p.Biografia, p.Foto_Perfil AS FotoPerfil,
+c.Fecha_Registro AS FechaCreacion
+FROM dbo.Perfil p
+INNER JOIN dbo.Cuenta c ON c.ID_Cuenta = p.ID_Cuenta
+WHERE p.ID_Cuenta = @Id";
             using var command = CrearComando(connection, sql);
             AgregarParametro(command, "@Id", idCuenta, SqlDbType.Int);
 
@@ -43,7 +51,11 @@ namespace C_C_Final.Repositories
             if (idList.Count == 0) return list;
 
             using var connection = AbrirConexion();
-            var sql = $"SELECT * FROM dbo.Perfil WHERE ID_Perfil IN ({string.Join(",", idList)})";
+            var sql = $@"SELECT p.ID_Perfil, p.ID_Cuenta, p.Nikname, p.Biografia, p.Foto_Perfil AS FotoPerfil,
+c.Fecha_Registro AS FechaCreacion
+FROM dbo.Perfil p
+INNER JOIN dbo.Cuenta c ON c.ID_Cuenta = p.ID_Cuenta
+WHERE p.ID_Perfil IN ({string.Join(",", idList)})";
             using var command = CrearComando(connection, sql);
 
             using var reader = command.ExecuteReader();
@@ -57,15 +69,29 @@ namespace C_C_Final.Repositories
         public int CrearPerfil(Perfil perfil)
         {
             using var connection = AbrirConexion();
-            const string sql = @"INSERT INTO dbo.Perfil (ID_Cuenta, Nikname, Biografia, FotoPerfil, FechaCreacion)
+            return CrearPerfil(connection, null, perfil);
+        }
+
+        public int CrearPerfil(SqlConnection connection, SqlTransaction transaction, Perfil perfil)
+        {
+            if (connection is null)
+            {
+                throw new ArgumentNullException(nameof(connection));
+            }
+
+            if (perfil is null)
+            {
+                throw new ArgumentNullException(nameof(perfil));
+            }
+
+            const string sql = @"INSERT INTO dbo.Perfil (ID_Cuenta, Nikname, Biografia, Foto_Perfil)
 OUTPUT INSERTED.ID_Perfil
-VALUES (@Cuenta, @Nik, @Bio, @Foto, @Fecha);";
-            using var command = CrearComando(connection, sql);
+VALUES (@Cuenta, @Nik, @Bio, @Foto);";
+            using var command = CrearComando(connection, sql, CommandType.Text, transaction);
             AgregarParametro(command, "@Cuenta", perfil.IdCuenta, SqlDbType.Int);
             AgregarParametro(command, "@Nik", perfil.Nikname, SqlDbType.NVarChar, 50);
             AgregarParametro(command, "@Bio", perfil.Biografia, SqlDbType.NVarChar, 500);
-            AgregarParametro(command, "@Foto", perfil.FotoPerfil, SqlDbType.VarBinary, -1);
-            AgregarParametro(command, "@Fecha", perfil.FechaCreacion, SqlDbType.DateTime2);
+            AgregarParametro(command, "@Foto", perfil.FotoPerfil, SqlDbType.Image);
 
             var result = command.ExecuteScalar();
             return ConvertirSeguroAInt32(result);
@@ -77,12 +103,12 @@ VALUES (@Cuenta, @Nik, @Bio, @Foto, @Fecha);";
             const string sql = @"UPDATE dbo.Perfil SET
 Nikname = @Nik,
 Biografia = @Bio,
-FotoPerfil = @Foto
+Foto_Perfil = @Foto
 WHERE ID_Perfil = @Id AND ID_Cuenta = @CuentaId";
             using var command = CrearComando(connection, sql);
             AgregarParametro(command, "@Nik", perfil.Nikname, SqlDbType.NVarChar, 50);
             AgregarParametro(command, "@Bio", perfil.Biografia, SqlDbType.NVarChar, 500);
-            AgregarParametro(command, "@Foto", perfil.FotoPerfil, SqlDbType.VarBinary, -1);
+            AgregarParametro(command, "@Foto", perfil.FotoPerfil, SqlDbType.Image);
             AgregarParametro(command, "@Id", perfil.IdPerfil, SqlDbType.Int);
             AgregarParametro(command, "@CuentaId", perfil.IdCuenta, SqlDbType.Int);
 
@@ -105,24 +131,35 @@ WHERE ID_Perfil = @Id AND ID_Cuenta = @CuentaId";
         public Perfil ObtenerSiguientePerfilPara(int idPerfilActual)
         {
             using var connection = AbrirConexion();
-            // Esta consulta busca un perfil aleatorio
-            // 1. Que no sea el usuario actual.
-            // 2. Que no exista ya en la tabla Match (en ninguna dirección).
-            // 3. Ordena aleatoriamente (NEWID()) y toma el primero.
+            // Devuelve un perfil al azar que todavía no tenga interacciones
+            // con el usuario actual o que le haya enviado un corazón pendiente
+            // para que pueda responderlo.
             const string sql = @"
-SELECT TOP 1 p.*
+SELECT TOP 1 p.ID_Perfil, p.ID_Cuenta, p.Nikname, p.Biografia, p.Foto_Perfil AS FotoPerfil,
+       c.Fecha_Registro AS FechaCreacion
 FROM dbo.Perfil p
-WHERE p.ID_Perfil != @IdPerfilActual
-  AND NOT EXISTS (
-      SELECT 1
-      FROM dbo.Match m
-      WHERE (m.Perfil_Emisor = @IdPerfilActual AND m.Perfil_Receptor = p.ID_Perfil)
-         OR (m.Perfil_Emisor = p.ID_Perfil AND m.Perfil_Receptor = @IdPerfilActual)
-  )
-ORDER BY NEWID();";
-            
+INNER JOIN dbo.Cuenta c ON c.ID_Cuenta = p.ID_Cuenta
+OUTER APPLY (
+    SELECT TOP 1 m.ID_Match, m.Perfil_Emisor, m.Perfil_Receptor, m.Estado
+    FROM dbo.Match m
+    WHERE (m.Perfil_Emisor = @IdPerfilActual AND m.Perfil_Receptor = p.ID_Perfil)
+       OR (m.Perfil_Emisor = p.ID_Perfil AND m.Perfil_Receptor = @IdPerfilActual)
+    ORDER BY m.Fecha_Match DESC, m.ID_Match DESC
+) ultimoMatch
+WHERE p.ID_Perfil <> @IdPerfilActual
+  AND (
+        ultimoMatch.ID_Match IS NULL
+        OR (
+            ultimoMatch.Estado = @EstadoPendiente
+            AND ultimoMatch.Perfil_Emisor = p.ID_Perfil
+            AND ultimoMatch.Perfil_Receptor = @IdPerfilActual
+        )
+    )
+ORDER BY CASE WHEN ultimoMatch.ID_Match IS NOT NULL THEN 0 ELSE 1 END, NEWID();";
+
             using var command = CrearComando(connection, sql);
             AgregarParametro(command, "@IdPerfilActual", idPerfilActual, SqlDbType.Int);
+            AgregarParametro(command, "@EstadoPendiente", "pendiente", SqlDbType.NVarChar, 10);
 
             using var reader = command.ExecuteReader();
             return reader.Read() ? MapearPerfil(reader) : null;
@@ -131,14 +168,23 @@ ORDER BY NEWID();";
 
         private static Perfil MapearPerfil(SqlDataReader reader)
         {
+            var idPerfilIndex = reader.GetOrdinal("ID_Perfil");
+            var idCuentaIndex = reader.GetOrdinal("ID_Cuenta");
+            var niknameIndex = reader.GetOrdinal("Nikname");
+            var biografiaIndex = reader.GetOrdinal("Biografia");
+            var fotoIndex = reader.GetOrdinal("FotoPerfil");
+            var fechaIndex = reader.GetOrdinal("FechaCreacion");
+
             return new Perfil
             {
-                IdPerfil = ConvertirSeguroAInt32(reader["ID_Perfil"]),
-                IdCuenta = ConvertirSeguroAInt32(reader["ID_Cuenta"]),
-                Nikname = (string)(reader["Nikname"]),
-                Biografia = (string)reader["Biografia"],
-                FotoPerfil = (byte[])reader["FotoPerfil"],
-                FechaCreacion = (DateTime)(reader["FechaCreacion"])
+                IdPerfil = reader.IsDBNull(idPerfilIndex) ? 0 : reader.GetInt32(idPerfilIndex),
+                IdCuenta = reader.IsDBNull(idCuentaIndex) ? 0 : reader.GetInt32(idCuentaIndex),
+                Nikname = reader.IsDBNull(niknameIndex) ? string.Empty : reader.GetString(niknameIndex),
+                Biografia = reader.IsDBNull(biografiaIndex)
+                    ? string.Empty
+                    : Convert.ToString(reader.GetValue(biografiaIndex)) ?? string.Empty,
+                FotoPerfil = reader.IsDBNull(fotoIndex) ? Array.Empty<byte>() : (byte[])reader.GetValue(fotoIndex),
+                FechaCreacion = reader.IsDBNull(fechaIndex) ? DateTime.MinValue : reader.GetDateTime(fechaIndex)
             };
         }
     }

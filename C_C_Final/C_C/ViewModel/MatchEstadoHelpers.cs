@@ -7,13 +7,10 @@ namespace C_C_Final.ViewModel
     /// </summary>
     internal static class MatchEstadoHelper
     {
-        private const string EstadoActivo = "activo";
         private const string EstadoAceptado = "aceptado";
-        private const string EstadoPendientePlano = "pendiente";
-        private const string EstadoRechazadoPlano = "rechazado";
+        private const string EstadoPendiente = "pendiente";
+        private const string EstadoRechazado = "rechazado";
         private const string EstadoRoto = "roto";
-        private const string PrefijoPendiente = "pendiente:";
-        private const string PrefijoRechazado = "rechazado:";
 
         public static bool EsActivo(string estado)
         {
@@ -22,70 +19,62 @@ namespace C_C_Final.ViewModel
                 return false;
             }
 
-            return string.Equals(estado, EstadoActivo, StringComparison.OrdinalIgnoreCase)
-                || string.Equals(estado, EstadoAceptado, StringComparison.OrdinalIgnoreCase);
+            return string.Equals(estado, EstadoAceptado, StringComparison.OrdinalIgnoreCase);
         }
 
         public static bool EsPendiente(string estado)
         {
-            return string.Equals(estado, EstadoPendientePlano, StringComparison.OrdinalIgnoreCase)
-                || TryObtenerIdDesdePrefijo(estado, PrefijoPendiente, out _);
+            return string.Equals(estado, EstadoPendiente, StringComparison.OrdinalIgnoreCase);
         }
 
-        public static bool EsPendienteDe(string estado, int perfilId)
+        public static bool EsPendienteDe(string estado, int perfilEmisor, int perfilId)
         {
-            return TryObtenerIdDesdePrefijo(estado, PrefijoPendiente, out var id) && id == perfilId;
+            return EsPendiente(estado) && perfilEmisor == perfilId;
         }
 
         public static bool EsRechazado(string estado)
         {
-            return string.Equals(estado, EstadoRechazadoPlano, StringComparison.OrdinalIgnoreCase)
-                || TryObtenerIdDesdePrefijo(estado, PrefijoRechazado, out _);
+            return string.Equals(estado, EstadoRechazado, StringComparison.OrdinalIgnoreCase);
         }
 
-        public static bool EsRechazadoPor(string estado, int perfilId)
+        public static string ConstruirPendiente()
         {
-            return TryObtenerIdDesdePrefijo(estado, PrefijoRechazado, out var id) && id == perfilId;
+            return EstadoPendiente;
         }
 
-        public static string ConstruirPendiente(int perfilId)
+        public static string ConstruirRechazado()
         {
-            return $"{PrefijoPendiente}{perfilId}";
+            return EstadoRechazado;
         }
 
-        public static string ConstruirRechazado(int perfilId)
-        {
-            return $"{PrefijoRechazado}{perfilId}";
-        }
-
-        public static string ObtenerDescripcionPara(string estado, int perfilActualId, int otroPerfilId)
+        public static string ObtenerDescripcionPara(string estado, int perfilActualId, int otroPerfilId, int perfilEmisor)
         {
             if (EsActivo(estado))
             {
                 return "¡Ya pueden chatear!";
             }
 
-            if (EsPendienteDe(estado, perfilActualId))
+            if (EsPendienteDe(estado, perfilEmisor, perfilActualId))
             {
                 return "Has enviado un corazón. Espera la respuesta.";
             }
 
-            if (EsPendienteDe(estado, otroPerfilId))
+            if (EsPendienteDe(estado, perfilEmisor, otroPerfilId))
             {
                 return "Este perfil te envió un corazón.";
             }
 
-            if (EsRechazadoPor(estado, perfilActualId))
+            if (EsRechazado(estado) && perfilEmisor == perfilActualId)
             {
                 return "Rechazaste este perfil.";
             }
 
-            if (EsRechazadoPor(estado, otroPerfilId))
+            if (EsRechazado(estado) && perfilEmisor == otroPerfilId)
             {
                 return "Este perfil rechazó tu corazón.";
             }
 
-            if (string.Equals(estado, EstadoRechazadoPlano, StringComparison.OrdinalIgnoreCase))
+            if (EsRechazado(estado))
             {
                 return "El match fue rechazado.";
             }
@@ -101,24 +90,6 @@ namespace C_C_Final.ViewModel
             }
 
             return estado;
-        }
-
-        private static bool TryObtenerIdDesdePrefijo(string estado, string prefijo, out int perfilId)
-        {
-            perfilId = 0;
-            if (string.IsNullOrWhiteSpace(estado))
-            {
-                return false;
-            }
-
-            var estadoNormalizado = estado.Trim();
-            if (!estadoNormalizado.StartsWith(prefijo, StringComparison.OrdinalIgnoreCase))
-            {
-                return false;
-            }
-
-            var segmento = estadoNormalizado.Substring(prefijo.Length);
-            return int.TryParse(segmento, out perfilId);
         }
     }
 }

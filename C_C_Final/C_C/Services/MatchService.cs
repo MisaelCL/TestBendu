@@ -21,7 +21,7 @@ namespace C_C_Final.Services
 
         /// <summary>
         /// Crea un nuevo emparejamiento (SIN chat).
-        /// El chat debe asegurarse por separado cuando el match esté 'activo'.
+        /// El chat debe asegurarse por separado cuando el match esté 'aceptado'.
         /// </summary>
         public int CrearMatch(int idPerfilEmisor, int idPerfilReceptor, string estado)
         {
@@ -35,7 +35,7 @@ namespace C_C_Final.Services
 
                 // --- CORRECCIÓN ---
                 // Se elimina la llamada a AsegurarChatParaMatch.
-                // El chat SÓLO debe crearse cuando el match sea "activo",
+                // El chat SÓLO debe crearse cuando el match sea "aceptado",
                 // no cuando esté "pendiente".
                 //
                 // LÍNEA ELIMINADA:
