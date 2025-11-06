@@ -11,6 +11,7 @@ namespace C_C_Final
         public string ConnectionString { get; private set; }
         public CuentaRepository CuentaRepository { get; private set; }
         public PerfilRepository PerfilRepository { get; private set; }
+        public PreferenciasRepository PreferenciasRepository { get; private set; }
         public MatchRepository MatchRepository { get; private set; }
         public RegisterAlumnoService RegisterAlumnoService { get; private set; }
         public MatchService MatchService { get; private set; }
@@ -23,10 +24,11 @@ namespace C_C_Final
             ConnectionString = RepositoryBase.ResolverCadenaConexion(null);
             CuentaRepository = new CuentaRepository(ConnectionString);
             PerfilRepository = new PerfilRepository(ConnectionString);
+            PreferenciasRepository = new PreferenciasRepository(ConnectionString);
             MatchRepository = new MatchRepository(ConnectionString);
-            RegisterAlumnoService = new RegisterAlumnoService(CuentaRepository, PerfilRepository, ConnectionString);
+            RegisterAlumnoService = new RegisterAlumnoService(CuentaRepository, PerfilRepository, PreferenciasRepository, ConnectionString);
             MatchService = new MatchService(MatchRepository, ConnectionString);
-            CuentaDeletionService = new CuentaDeletionService(CuentaRepository, PerfilRepository, MatchRepository, ConnectionString);
+            CuentaDeletionService = new CuentaDeletionService(CuentaRepository, PerfilRepository, MatchRepository);
 
             var login = new LoginView
             {

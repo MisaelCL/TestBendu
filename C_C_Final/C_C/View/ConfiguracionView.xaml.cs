@@ -20,7 +20,7 @@ namespace C_C_Final.View
             var app = App.Current;
             if (app != null)
             {
-                var viewModel = new PreferenciasViewModel(app.PerfilRepository, app.CuentaDeletionService);
+                var viewModel = new PreferenciasViewModel(app.PerfilRepository, app.PreferenciasRepository, app.CuentaDeletionService);
                 DataContext = viewModel;
                 Loaded += (_, _) => CargarVista(viewModel, _cuentaId);
             }
