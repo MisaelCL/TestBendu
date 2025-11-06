@@ -135,10 +135,10 @@ ORDER BY NEWID();";
             {
                 IdPerfil = ConvertirSeguroAInt32(reader["ID_Perfil"]),
                 IdCuenta = ConvertirSeguroAInt32(reader["ID_Cuenta"]),
-                Nikname = ConvertirSeguroAString(reader["Nikname"]),
-                Biografia = ConvertirSeguroAString(reader["Biografia"]),
-                FotoPerfil = reader["FotoPerfil"] as byte[],
-                FechaCreacion = ConvertirSeguroADateTime(reader["FechaCreacion"])
+                Nikname = (string)(reader["Nikname"]),
+                Biografia = (string)reader["Biografia"],
+                FotoPerfil = (byte[])reader["FotoPerfil"],
+                FechaCreacion = (DateTime)(reader["FechaCreacion"])
             };
         }
     }

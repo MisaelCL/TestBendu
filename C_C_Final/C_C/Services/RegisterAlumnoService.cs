@@ -122,7 +122,7 @@ namespace C_C_Final.Services
                     FotoPerfil = request.FotoPerfil,
                     FechaCreacion = DateTime.UtcNow
                 };
-                var perfilId = _perfilRepository.CrearPerfil(connection, transaction, perfil);
+                var perfilId = _perfilRepository.CrearPerfil(perfil);
 
                 if (perfilId <= 0)
                 {
@@ -138,7 +138,7 @@ namespace C_C_Final.Services
                     PreferenciaCarrera = string.Empty,
                     Intereses = string.Empty
                 };
-                var preferenciasId = _perfilRepository.InsertarOActualizarPreferencias(connection, transaction, preferencias);
+                var preferenciasId = _perfilRepository(connection, transaction, preferencias);
 
                 if (preferenciasId < 0)
                 {

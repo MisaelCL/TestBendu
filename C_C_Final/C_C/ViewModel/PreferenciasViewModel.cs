@@ -48,9 +48,7 @@ namespace C_C_Final.ViewModel
                 "Todos"
             });
             EditarFotoCommand = new RelayCommand(_ => EditarFoto());
-            EditarNombreCommand = new RelayCommand(_ => { });
             GuardarPerfilCommand = new RelayCommand(_ => GuardarCambios(), _ => !IsBusy);
-            EditarDescripcionCommand = new RelayCommand(_ => { });
             CerrarSesionCommand = new RelayCommand(_ => CerrarSesion());
             EliminarCuentaCommand = new RelayCommand(_ => EliminarCuenta(), _ => !IsBusy);
         }
@@ -158,7 +156,7 @@ namespace C_C_Final.ViewModel
             _fotoPerfilBytes = perfil.FotoPerfil ?? Array.Empty<byte>();
             FotoPerfilUrl = ConvertirAImagen(_fotoPerfilBytes);
 
-            var preferencias = _perfilRepository.ObtenerPreferenciasPorPerfil(_idPerfil);
+            var preferencias = _perfilRepository.ObtenerPorId(_idPerfil);
             if (preferencias != null)
             {
                 var edadMinima = NormalizarEdadMinima(preferencias.EdadMinima);
@@ -210,7 +208,7 @@ namespace C_C_Final.ViewModel
                 };
 
                 _perfilRepository.ActualizarPerfil(perfil);
-
+                /*
                 var preferencias = new Preferencias
                 {
                     IdPerfil = _idPerfil,
@@ -221,8 +219,9 @@ namespace C_C_Final.ViewModel
                     Intereses = string.Empty
                 };
 
-                _perfilRepository.InsertarOActualizarPreferencias(preferencias);
+                _perfilRepository.ActualizarPerfil(preferencias);
                 MessageBox.Show("Preferencias actualizadas", "Preferencias", MessageBoxButton.OK, MessageBoxImage.Information);
+                */
             }
             catch (Exception ex)
             {
@@ -256,7 +255,7 @@ namespace C_C_Final.ViewModel
             try
             {
                 IsBusy = true;
-                _cuentaDeletionService.EliminarCuentaCompleta(_idCuenta);
+                _cuentaDeletionService.EliminarCuenta(_idCuenta);
                 MessageBox.Show("Tu cuenta se eliminó correctamente.", "Cuenta", MessageBoxButton.OK, MessageBoxImage.Information);
                 CerrarSesion();
             }

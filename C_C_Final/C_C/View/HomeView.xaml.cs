@@ -41,7 +41,7 @@ namespace C_C_Final.View
             if (DataContext is HomeViewModel viewModel)
             {
                 // Este método 'AbrirConfiguracion' ya existe en InboxViewModel
-                viewModel.AbrirConfiguracion(); 
+                viewModel.NavegarAConfiguracion(); 
             }
         }
     }

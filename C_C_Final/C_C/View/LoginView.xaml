@@ -11,7 +11,7 @@
         WindowStyle="None"
         AllowsTransparency="True"
         Background="Transparent"
-        d:DataContext="{d:DesignInstance Type=viewModel:LoginViewModel, IsDesignTimeCreatable=False}">
+        d:DataContext="{d:DesignInstance Type=viewModel:LoginViewModel, IsDesignTimeCreatable=True}">
 
     <!-- Paleta reutilizable (tomada del primer view y armonizada con el segundo) -->
     <Window.Resources>
