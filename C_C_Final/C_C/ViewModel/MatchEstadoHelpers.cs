@@ -37,6 +37,11 @@ namespace C_C_Final.ViewModel
             return string.Equals(estado, EstadoRechazado, StringComparison.OrdinalIgnoreCase);
         }
 
+        public static string ConstruirAceptado()
+        {
+            return EstadoAceptado;
+        }
+
         public static string ConstruirPendiente()
         {
             return EstadoPendiente;
