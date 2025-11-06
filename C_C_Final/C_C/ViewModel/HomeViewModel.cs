@@ -217,6 +217,20 @@ namespace C_C_Final.ViewModel
                 var vista = CrearSugerencia(perfil);
                 _sugerencias.Add(vista);
                 PerfilActual = vista;
+
+                var match = _matchRepository.ObtenerPorPerfiles(_idPerfilActual, perfil.IdPerfil);
+                if (match != null && MatchEstadoHelper.EsPendiente(match.Estado) && match.PerfilEmisor == perfil.IdPerfil)
+                {
+                    EstadoMensaje = $"{vista.NombreEdad} te envió un corazón. ¡Devuélvelo para hacer match!";
+                }
+                else
+                {
+                    EstadoMensaje = string.Empty;
+                }
+
+                var vista = CrearSugerencia(perfil);
+                _sugerencias.Add(vista);
+                PerfilActual = vista;
                 EstadoMensaje = string.Empty;
             }
             catch (Exception ex)
@@ -246,7 +260,7 @@ namespace C_C_Final.ViewModel
 
         public sealed class PerfilSugerenciaViewModel
         {
-            public PerfilSugerenciaViewModel(Perfil perfil, ImageSource fotoUrl, string nombreEdad, string carreraTexto)
+            public PerfilSugerenciaViewModel(Perfil perfil, ImageSource? fotoUrl, string nombreEdad, string carreraTexto)
             {
                 Perfil = perfil;
                 FotoUrl = fotoUrl;
@@ -255,79 +269,7 @@ namespace C_C_Final.ViewModel
             }
 
             public Perfil Perfil { get; }
-            public ImageSource FotoUrl { get; }
-            public string NombreEdad { get; }
-            public string CarreraTexto { get; }
-        }
-
-        private void BloquearPerfilActual()
-        {
-            if (PerfilActual?.Perfil == null)
-            {
-                return;
-            }
-
-            IsSettingsMenuOpen = false;
-            var resultado = MessageBox.Show(
-                $"¿Deseas bloquear a {PerfilActual.NombreEdad}?", "Bloquear perfil",
-                MessageBoxButton.YesNo, MessageBoxImage.Question);
-
-            if (resultado == MessageBoxResult.Yes)
-            {
-                RegistrarInteraccion(false);
-                EstadoMensaje = "Perfil bloqueado.";
-            }
-        }
-
-        private static PerfilSugerenciaViewModel CrearSugerencia(Perfil perfil)
-        {
-            var nombre = string.IsNullOrWhiteSpace(perfil.Nikname)
-                ? "Usuario desconocido"
-                : perfil.Nikname;
-
-            var descripcion = string.IsNullOrWhiteSpace(perfil.Biografia)
-                ? "Sin biografía disponible"
-                : perfil.Biografia;
-
-            return new PerfilSugerenciaViewModel(perfil, ConvertirAImagen(perfil.FotoPerfil), nombre, descripcion);
-        }
-
-        private static ImageSource ConvertirAImagen(byte[] bytes)
-        {
-            if (bytes == null || bytes.Length == 0)
-            {
-                return null;
-            }
-
-            try
-            {
-                using var ms = new MemoryStream(bytes);
-                var image = new BitmapImage();
-                image.BeginInit();
-                image.StreamSource = ms;
-                image.CacheOption = BitmapCacheOption.OnLoad;
-                image.EndInit();
-                image.Freeze();
-                return image;
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        public sealed class PerfilSugerenciaViewModel
-        {
-            public PerfilSugerenciaViewModel(Perfil perfil, ImageSource fotoUrl, string nombreEdad, string carreraTexto)
-            {
-                Perfil = perfil;
-                FotoUrl = fotoUrl;
-                NombreEdad = nombreEdad;
-                CarreraTexto = carreraTexto;
-            }
-
-            public Perfil Perfil { get; }
-            public ImageSource FotoUrl { get; }
+            public ImageSource? FotoUrl { get; }
             public string NombreEdad { get; }
             public string CarreraTexto { get; }
         }

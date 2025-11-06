@@ -131,26 +131,35 @@ WHERE ID_Perfil = @Id AND ID_Cuenta = @CuentaId";
         public Perfil ObtenerSiguientePerfilPara(int idPerfilActual)
         {
             using var connection = AbrirConexion();
-            // Esta consulta busca un perfil aleatorio
-            // 1. Que no sea el usuario actual.
-            // 2. Que no exista ya en la tabla Match (en ninguna dirección).
-            // 3. Ordena aleatoriamente (NEWID()) y toma el primero.
+            // Devuelve un perfil al azar que todavía no tenga interacciones
+            // con el usuario actual o que le haya enviado un corazón pendiente
+            // para que pueda responderlo.
             const string sql = @"
 SELECT TOP 1 p.ID_Perfil, p.ID_Cuenta, p.Nikname, p.Biografia, p.Foto_Perfil AS FotoPerfil,
        c.Fecha_Registro AS FechaCreacion
 FROM dbo.Perfil p
 INNER JOIN dbo.Cuenta c ON c.ID_Cuenta = p.ID_Cuenta
-WHERE p.ID_Perfil != @IdPerfilActual
-  AND NOT EXISTS (
-      SELECT 1
-      FROM dbo.Match m
-      WHERE (m.Perfil_Emisor = @IdPerfilActual AND m.Perfil_Receptor = p.ID_Perfil)
-         OR (m.Perfil_Emisor = p.ID_Perfil AND m.Perfil_Receptor = @IdPerfilActual)
-  )
-ORDER BY NEWID();";
-            
+OUTER APPLY (
+    SELECT TOP 1 m.ID_Match, m.Perfil_Emisor, m.Perfil_Receptor, m.Estado
+    FROM dbo.Match m
+    WHERE (m.Perfil_Emisor = @IdPerfilActual AND m.Perfil_Receptor = p.ID_Perfil)
+       OR (m.Perfil_Emisor = p.ID_Perfil AND m.Perfil_Receptor = @IdPerfilActual)
+    ORDER BY m.Fecha_Match DESC, m.ID_Match DESC
+) ultimoMatch
+WHERE p.ID_Perfil <> @IdPerfilActual
+  AND (
+        ultimoMatch.ID_Match IS NULL
+        OR (
+            ultimoMatch.Estado = @EstadoPendiente
+            AND ultimoMatch.Perfil_Emisor = p.ID_Perfil
+            AND ultimoMatch.Perfil_Receptor = @IdPerfilActual
+        )
+    )
+ORDER BY CASE WHEN ultimoMatch.ID_Match IS NOT NULL THEN 0 ELSE 1 END, NEWID();";
+
             using var command = CrearComando(connection, sql);
             AgregarParametro(command, "@IdPerfilActual", idPerfilActual, SqlDbType.Int);
+            AgregarParametro(command, "@EstadoPendiente", "pendiente", SqlDbType.NVarChar, 10);
 
             using var reader = command.ExecuteReader();
             return reader.Read() ? MapearPerfil(reader) : null;
