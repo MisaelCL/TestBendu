@@ -15,7 +15,7 @@ namespace C_C_Final.Repositories
         ///     reutiliza la resuelta por <see cref="RepositoryBase"/>; durante pruebas puede inyectarse otra.
         /// </summary>
         /// <param name="connectionString">Cadena de conexión opcional.</param>
-        public CuentaRepository(string connectionString = null) : base(connectionString)
+        public CuentaRepository(string connectionString = null) : base()
         {
         }
 

@@ -13,15 +13,11 @@ namespace C_C_Final.Repositories
         public PreferenciasRepository(string connectionString = null) : base(connectionString)
         {
         }
-
-        /// <inheritdoc />
         public Preferencias ObtenerPorPerfilId(int idPerfil)
         {
             using var connection = AbrirConexion();
             return ObtenerPorPerfilId(connection, null, idPerfil);
         }
-
-        /// <inheritdoc />
         public Preferencias ObtenerPorCuentaId(int idCuenta)
         {
             using var connection = AbrirConexion();
@@ -37,14 +33,12 @@ WHERE p.ID_Cuenta = @Cuenta";
             return reader.Read() ? Mapear(reader) : null;
         }
 
-        /// <inheritdoc />
         public int CrearPreferencias(Preferencias preferencias)
         {
             using var connection = AbrirConexion();
             return CrearPreferencias(connection, null, preferencias);
         }
 
-        /// <inheritdoc />
         public int CrearPreferencias(SqlConnection connection, SqlTransaction transaction, Preferencias preferencias)
         {
             if (connection is null)
@@ -72,15 +66,11 @@ VALUES (@Perfil, @Genero, @EdadMin, @EdadMax, @Carrera, @Intereses);";
             var result = command.ExecuteScalar();
             return ConvertirSeguroAInt32(result);
         }
-
-        /// <inheritdoc />
         public bool ActualizarPreferencias(Preferencias preferencias)
         {
             using var connection = AbrirConexion();
             return ActualizarPreferencias(connection, null, preferencias);
         }
-
-        /// <inheritdoc />
         public bool ActualizarPreferencias(SqlConnection connection, SqlTransaction transaction, Preferencias preferencias)
         {
             if (connection is null)
@@ -112,8 +102,6 @@ WHERE ID_Perfil = @Perfil";
             var rows = command.ExecuteNonQuery();
             return rows > 0;
         }
-
-        /// <inheritdoc />
         public bool EliminarPorPerfil(int idPerfil)
         {
             using var connection = AbrirConexion();

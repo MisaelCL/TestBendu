@@ -136,7 +136,6 @@ WHERE ID_Perfil = @Id AND ID_Cuenta = @CuentaId";
             return rows > 0;
         }
 
-        // --- IMPLEMENTACIÓN DEL MÉTODO AÑADIDO ---
         /// <summary>
         ///     Recupera el siguiente perfil que debe mostrarse al usuario actual. La consulta prioriza matches
         ///     pendientes iniciados por otros usuarios y descarta aquellos perfiles sobre los que ya existe

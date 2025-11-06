@@ -75,7 +75,7 @@ namespace C_C_Final
             base.OnStartup(e);
 
             // 1. Resolver la cadena de conexión desde App.config a través del repositorio base.
-            ConnectionString = RepositoryBase.ResolverCadenaConexion(null);
+            ConnectionString = RepositoryBase().ResolverCadenaConexion(null);
 
             // 2. Instanciar los repositorios concretos compartidos por toda la aplicación.
             CuentaRepository = new CuentaRepository(ConnectionString);

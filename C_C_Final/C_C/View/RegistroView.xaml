@@ -82,7 +82,7 @@
                                 CornerRadius="14"
                                 BorderBrush="#05AFC6"
                                 BorderThickness="3"
-                                Padding="20" Height="671">
+                                Padding="20" Height="auto">
                             <StackPanel>
                                 <TextBlock Text="Carrera/Unidad:"
                                            Foreground="#0B2340"
