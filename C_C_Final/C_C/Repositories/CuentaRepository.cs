@@ -62,30 +62,6 @@ namespace C_C_Final.Repositories
             return ConvertirSeguroAInt32(result) == 1;
         }
 
-        public void CrearCuenta(string email, string passwordHash, string passwordSalt, byte estadoCuenta)
-        {
-            using var connection = AbrirConexion();
-            CrearCuenta(connection, null, email, passwordHash, passwordSalt, estadoCuenta);
-        }
-
-        public void CrearAlumno(Alumno alumno)
-        {
-            using var connection = AbrirConexion();
-            CrearAlumno(connection, null, alumno);
-        }
-
-        public bool ActualizarContrasena(int idCuenta, string newPasswordHash)
-        {
-            using var connection = AbrirConexion();
-            const string sql = "UPDATE dbo.Cuenta SET Hash_Contrasena = @Hash WHERE ID_Cuenta = @Id";
-            using var command = CrearComando(connection, sql);
-            AgregarParametro(command, "@Hash", newPasswordHash, SqlDbType.NVarChar, -1);
-            AgregarParametro(command, "@Id", idCuenta, SqlDbType.Int);
-
-            var rows = command.ExecuteNonQuery();
-            return rows > 0;
-        }
-
         public bool EliminarCuenta(int idCuenta)
         {
             using var connection = AbrirConexion();
@@ -118,8 +94,8 @@ VALUES (@Email, @Hash, @Salt, @Estado, @Fecha);";
         public int CrearAlumno(SqlConnection connection, SqlTransaction tx, Alumno alumno)
         {
             // La matrícula se inserta como clave de negocio y se vincula con la cuenta creada previamente.
-            const string sql = @"INSERT INTO dbo.Alumno (Matricula, ID_Cuenta, Nombre, Apaterno, Amaterno, F_Nac, Genero, Correo, Carrera)
-VALUES (@Matricula, @Cuenta, @Nombre, @Apaterno, @Amaterno, @Nacimiento, @Genero, @Correo, @Carrera);";
+            const string sql = @"INSERT INTO dbo.Alumno (Matricula, ID_Cuenta, Nombre, Apaterno, Amaterno, F_Nac, Genero, Carrera)
+VALUES (@Matricula, @Cuenta, @Nombre, @Apaterno, @Amaterno, @Nacimiento, @Genero, @Carrera);";
             using var command = CrearComando(connection, sql, CommandType.Text, tx);
             AgregarParametro(command, "@Matricula", alumno.Matricula, SqlDbType.NVarChar, 50);
             AgregarParametro(command, "@Cuenta", alumno.IdCuenta, SqlDbType.Int);
@@ -128,7 +104,6 @@ VALUES (@Matricula, @Cuenta, @Nombre, @Apaterno, @Amaterno, @Nacimiento, @Genero
             AgregarParametro(command, "@Amaterno", alumno.ApellidoMaterno, SqlDbType.NVarChar, 100);
             AgregarParametro(command, "@Nacimiento", alumno.FechaNacimiento, SqlDbType.Date);
             AgregarParametro(command, "@Genero", alumno.Genero, SqlDbType.Char, 1);
-            AgregarParametro(command, "@Correo", alumno.Correo, SqlDbType.NVarChar, 260);
             AgregarParametro(command, "@Carrera", alumno.Carrera, SqlDbType.NVarChar, 100);
 
             var rowsAffected = command.ExecuteNonQuery();

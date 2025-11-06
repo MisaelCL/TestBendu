@@ -28,9 +28,6 @@ namespace C_C_Final.Model
         /// <summary>Sexo declarado (M/F) utilizado en filtros y estadísticas.</summary>
         public char Genero { get; set; }
 
-        /// <summary>Correo alterno o institucional del alumno.</summary>
-        public string Correo { get; set; } = string.Empty;
-
         /// <summary>Carrera académica principal que cursa el alumno.</summary>
         public string Carrera { get; set; } = string.Empty;
     }

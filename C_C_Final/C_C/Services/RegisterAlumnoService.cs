@@ -139,10 +139,6 @@ namespace C_C_Final.Services
                     throw new InvalidOperationException("No se pudo crear la cuenta del alumno.");
                 }
 
-                var correoAlumno = string.IsNullOrWhiteSpace(request.CorreoAlumno)
-                    ? normalizedEmail
-                    : request.CorreoAlumno.Trim();
-
                 // 2. Se registra la información personal en la tabla Alumno.
                 var alumno = new Alumno
                 {
@@ -153,7 +149,6 @@ namespace C_C_Final.Services
                     ApellidoMaterno = request.ApellidoMaterno?.Trim() ?? string.Empty,
                     FechaNacimiento = request.FechaNacimiento,
                     Genero = request.Genero,
-                    Correo = correoAlumno,
                     Carrera = request.Carrera?.Trim() ?? string.Empty
                 };
                 var rowsAffected = _cuentaRepository.CrearAlumno(connection, transaction, alumno);
