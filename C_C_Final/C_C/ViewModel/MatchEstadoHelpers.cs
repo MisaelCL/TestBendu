@@ -7,7 +7,6 @@ namespace C_C_Final.ViewModel
     /// </summary>
     internal static class MatchEstadoHelper
     {
-        private const string EstadoActivo = "activo";
         private const string EstadoAceptado = "aceptado";
         private const string EstadoPendiente = "pendiente";
         private const string EstadoRechazado = "rechazado";
@@ -20,8 +19,7 @@ namespace C_C_Final.ViewModel
                 return false;
             }
 
-            return string.Equals(estado, EstadoActivo, StringComparison.OrdinalIgnoreCase)
-                || string.Equals(estado, EstadoAceptado, StringComparison.OrdinalIgnoreCase);
+            return string.Equals(estado, EstadoAceptado, StringComparison.OrdinalIgnoreCase);
         }
 
         public static bool EsPendiente(string estado)

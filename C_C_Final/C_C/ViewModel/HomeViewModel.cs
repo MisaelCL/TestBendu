@@ -166,7 +166,7 @@ namespace C_C_Final.ViewModel
                             && matchExistente.PerfilEmisor == idPerfilDestino)
                         {
                             // ¡Es un match mutuo!
-                            _matchRepository.ActualizarEstado(matchExistente.IdMatch, "activo");
+                            _matchRepository.ActualizarEstado(matchExistente.IdMatch, "aceptado");
 
                             // ¡AHORA SÍ, creamos el chat!
                             _matchService.AsegurarChatParaMatch(matchExistente.IdMatch);
@@ -237,22 +237,6 @@ namespace C_C_Final.ViewModel
             }
         }
 
-        public sealed class PerfilSugerenciaViewModel
-        {
-            public PerfilSugerenciaViewModel(Perfil perfil, ImageSource? fotoUrl, string nombreEdad, string carreraTexto)
-            {
-                Perfil = perfil;
-                FotoUrl = fotoUrl;
-                NombreEdad = nombreEdad;
-                CarreraTexto = carreraTexto;
-            }
-
-            public Perfil Perfil { get; }
-            public ImageSource? FotoUrl { get; }
-            public string NombreEdad { get; }
-            public string CarreraTexto { get; }
-        }
-
         private void BloquearPerfilActual()
         {
             if (PerfilActual?.Perfil == null)
@@ -307,6 +291,22 @@ namespace C_C_Final.ViewModel
             {
                 return null;
             }
+        }
+
+        public sealed class PerfilSugerenciaViewModel
+        {
+            public PerfilSugerenciaViewModel(Perfil perfil, ImageSource? fotoUrl, string nombreEdad, string carreraTexto)
+            {
+                Perfil = perfil;
+                FotoUrl = fotoUrl;
+                NombreEdad = nombreEdad;
+                CarreraTexto = carreraTexto;
+            }
+
+            public Perfil Perfil { get; }
+            public ImageSource? FotoUrl { get; }
+            public string NombreEdad { get; }
+            public string CarreraTexto { get; }
         }
     }
 }
