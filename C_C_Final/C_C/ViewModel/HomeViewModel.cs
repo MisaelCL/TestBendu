@@ -223,6 +223,38 @@ namespace C_C_Final.ViewModel
                 _sugerencias.Clear();
                 EstadoMensaje = "Ocurrió un error al cargar perfiles.";
             }
+
+            try
+            {
+                using var ms = new MemoryStream(bytes);
+                var image = new BitmapImage();
+                image.BeginInit();
+                image.StreamSource = ms;
+                image.CacheOption = BitmapCacheOption.OnLoad;
+                image.EndInit();
+                image.Freeze();
+                return image;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public sealed class PerfilSugerenciaViewModel
+        {
+            public PerfilSugerenciaViewModel(Perfil perfil, ImageSource fotoUrl, string nombreEdad, string carreraTexto)
+            {
+                Perfil = perfil;
+                FotoUrl = fotoUrl;
+                NombreEdad = nombreEdad;
+                CarreraTexto = carreraTexto;
+            }
+
+            public Perfil Perfil { get; }
+            public ImageSource FotoUrl { get; }
+            public string NombreEdad { get; }
+            public string CarreraTexto { get; }
         }
 
         private void BloquearPerfilActual()
