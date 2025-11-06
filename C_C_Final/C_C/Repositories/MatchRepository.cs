@@ -11,6 +11,10 @@ namespace C_C_Final.Repositories
     /// </summary>
     public sealed class MatchRepository : RepositoryBase, IMatchRepository
     {
+        /// <summary>
+        ///     Permite reutilizar la lógica base del repositorio con una cadena de conexión específica.
+        /// </summary>
+        /// <param name="connectionString">Cadena de conexión opcional.</param>
         public MatchRepository(string connectionString = null) : base(connectionString)
         {
         }
@@ -217,6 +221,7 @@ OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
                 throw new ArgumentException("Los perfiles del match deben ser distintos", nameof(idPerfilEmisor));
             }
 
+            // El match se registra con la marca temporal en UTC para facilitar la sincronización entre clientes.
             const string sql = @"INSERT INTO dbo.Match (Perfil_Emisor, Perfil_Receptor, Estado, Fecha_Match)
 OUTPUT INSERTED.ID_Match
 VALUES (@Emisor, @Receptor, @Estado, SYSUTCDATETIME());";
@@ -232,6 +237,8 @@ VALUES (@Emisor, @Receptor, @Estado, SYSUTCDATETIME());";
         /// <inheritdoc />
         public int AsegurarChatParaMatch(SqlConnection connection, SqlTransaction tx, int idMatch)
         {
+            // El bloque T-SQL utiliza bloqueos de actualización (UPDLOCK, HOLDLOCK) para garantizar que solo
+            // se cree un chat por match incluso cuando múltiples hilos/usuarios intenten hacerlo a la vez.
             const string sql = @"DECLARE @Existing INT;
 SELECT @Existing = ID_Chat FROM dbo.Chat WITH (UPDLOCK, HOLDLOCK) WHERE ID_Match = @Match;
 IF @Existing IS NOT NULL
@@ -255,6 +262,8 @@ END";
         public long AgregarMensaje(SqlConnection connection, SqlTransaction tx, int idChat, int idRemitentePerfil, string contenido, bool confirmacionLectura)
         {
             var fechaEnvio = DateTime.UtcNow;
+            // La inserción retorna el identificador del nuevo mensaje para actualizar la cabecera del chat
+            // inmediatamente después dentro de la misma transacción.
             const string insertSql = @"INSERT INTO dbo.Mensaje (ID_Chat, Remitente, Contenido, Fecha_Envio, Confirmacion_Lectura, IsEdited, EditedAtUtc, IsDeleted)
 OUTPUT INSERTED.ID_Mensaje
 VALUES (@Chat, @Remitente, @Contenido, @Fecha, @Confirmado, 0, NULL, 0);";
@@ -268,6 +277,8 @@ VALUES (@Chat, @Remitente, @Contenido, @Fecha, @Confirmado, 0, NULL, 0);";
             var mensajeIdObj = insertCommand.ExecuteScalar();
             var mensajeId = ConvertirSeguroAInt64(mensajeIdObj);
 
+            // Tras insertar el mensaje se actualiza la metadata del chat para que la UI pueda ordenar las
+            // conversaciones por actividad reciente sin ejecutar otra consulta.
             const string updateChatSql = "UPDATE dbo.Chat SET LastMessageAtUtc = @Fecha, LastMessageId = @Mensaje WHERE ID_Chat = @Chat";
             using var updateCommand = CrearComando(connection, updateChatSql, CommandType.Text, tx);
             AgregarParametro(updateCommand, "@Fecha", fechaEnvio, SqlDbType.DateTime2);

@@ -6,8 +6,17 @@ using C_C_Final.Model;
 
 namespace C_C_Final.Repositories
 {
+    /// <summary>
+    ///     Gestiona la persistencia de la entidad <see cref="Perfil"/>. Además de las operaciones CRUD básicas,
+    ///     contiene la consulta central que obtiene la siguiente sugerencia de perfil para el flujo de "swipe".
+    /// </summary>
     public sealed class PerfilRepository : RepositoryBase, IPerfilRepository
     {
+        /// <summary>
+        ///     Inicializa el repositorio utilizando la cadena de conexión proporcionada (o la configuración
+        ///     predeterminada).
+        /// </summary>
+        /// <param name="connectionString">Cadena de conexión opcional.</param>
         public PerfilRepository(string connectionString = null) : base(connectionString)
         {
         }
@@ -128,12 +137,19 @@ WHERE ID_Perfil = @Id AND ID_Cuenta = @CuentaId";
         }
 
         // --- IMPLEMENTACIÓN DEL MÉTODO AÑADIDO ---
+        /// <summary>
+        ///     Recupera el siguiente perfil que debe mostrarse al usuario actual. La consulta prioriza matches
+        ///     pendientes iniciados por otros usuarios y descarta aquellos perfiles sobre los que ya existe
+        ///     una interacción registrada.
+        /// </summary>
+        /// <param name="idPerfilActual">Identificador del perfil que solicita la sugerencia.</param>
+        /// <returns>Perfil sugerido o <c>null</c> si no hay más candidatos.</returns>
         public Perfil ObtenerSiguientePerfilPara(int idPerfilActual)
         {
             using var connection = AbrirConexion();
-            // Devuelve un perfil al azar que todavía no tenga interacciones
-            // con el usuario actual o que le haya enviado un corazón pendiente
-            // para que pueda responderlo.
+            // Devuelve un perfil al azar que todavía no tenga interacciones con el usuario actual
+            // o que le haya enviado un "like" pendiente. OUTER APPLY obtiene la última interacción
+            // entre ambos perfiles para determinar si se debe mostrar con prioridad.
             const string sql = @"
 SELECT TOP 1 p.ID_Perfil, p.ID_Cuenta, p.Nikname, p.Biografia, p.Foto_Perfil AS FotoPerfil,
        c.Fecha_Registro AS FechaCreacion
@@ -166,6 +182,11 @@ ORDER BY CASE WHEN ultimoMatch.ID_Match IS NOT NULL THEN 0 ELSE 1 END, NEWID();"
         }
 
 
+        /// <summary>
+        ///     Traduce un registro de base de datos a la entidad <see cref="Perfil"/> tomando en cuenta los valores nulos
+        ///     y la conversión de la foto a <see cref="byte[]"/>.
+        /// </summary>
+        /// <param name="reader">Lector posicionado en el registro que se desea convertir.</param>
         private static Perfil MapearPerfil(SqlDataReader reader)
         {
             var idPerfilIndex = reader.GetOrdinal("ID_Perfil");

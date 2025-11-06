@@ -40,6 +40,7 @@ namespace C_C_Final.ViewModel
         public RegistroViewModel(RegisterAlumnoService registerAlumnoService)
         {
             _registerAlumnoService = registerAlumnoService;
+            // Los comandos exponen las acciones principales de la vista y se bloquean mientras IsBusy es true.
             ComandoRegistrar = new RelayCommand(_ => Registrar(), _ => !IsBusy);
             ComandoRegresar = new RelayCommand(_ => RegresarALogin(), _ => !IsBusy);
         }
@@ -142,7 +143,7 @@ namespace C_C_Final.ViewModel
                 IsBusy = true;
                 ErrorMessage = null;
 
-                
+                // 1. Validaciones de datos mínimos.
                 if (string.IsNullOrWhiteSpace(Correo))
                 {
                     ErrorMessage = "El correo es obligatorio";
@@ -155,7 +156,7 @@ namespace C_C_Final.ViewModel
                     return;
                 }
 
-                
+                // 2. Comprobaciones de formato y reglas de negocio adicionales.
                 if (!EsCorreoValido(Correo))
                 {
                     ErrorMessage = "El formato del correo electrónico no es válido (ej. usuario@dominio.com)";
@@ -182,6 +183,7 @@ namespace C_C_Final.ViewModel
                 var apaterno = ApellidoPaterno?.Trim() ?? string.Empty;
                 var amaterno = ApellidoMaterno?.Trim() ?? string.Empty;
 
+                // 3. Construcción del DTO que el servicio utilizará para persistir la información.
                 var request = new RegisterAlumnoRequest
                 {
                     Email = Correo,
@@ -198,6 +200,7 @@ namespace C_C_Final.ViewModel
                     Biografia = string.Empty
                 };
 
+                // 4. Invocación del servicio transaccional; devuelve el ID de cuenta creado.
                 var cuentaId = _registerAlumnoService.Registrar(request);
 
                 if (cuentaId <= 0)
@@ -206,6 +209,7 @@ namespace C_C_Final.ViewModel
                     return;
                 }
 
+                // 5. Retroalimentación visual y limpieza de campos sensibles.
                 Password = string.Empty;
                 ConfirmPassword = string.Empty;
                 MessageBox.Show("Registro completado", "Registro", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -221,11 +225,17 @@ namespace C_C_Final.ViewModel
             }
         }
 
+        /// <summary>
+        ///     Maneja la acción de regresar a la pantalla previa sin completar el registro.
+        /// </summary>
         private void RegresarALogin()
         {
             AbrirLoginYCerrarVentanaActual();
         }
 
+        /// <summary>
+        ///     Vuelve a la pantalla de inicio de sesión reutilizando las dependencias configuradas en <see cref="App"/>.
+        /// </summary>
         private void AbrirLoginYCerrarVentanaActual()
         {
             var app = App.Current;
@@ -237,6 +247,7 @@ namespace C_C_Final.ViewModel
             var login = new LoginView();
             if (login.DataContext is not LoginViewModel)
             {
+                // Se reutilizan los repositorios instanciados en el composition root.
                 login.DataContext = new LoginViewModel(app.CuentaRepository, app.PerfilRepository);
             }
 
@@ -245,6 +256,9 @@ namespace C_C_Final.ViewModel
             CerrarVentanaAsociada();
         }
 
+        /// <summary>
+        ///     Cierra la ventana cuya DataContext coincide con este ViewModel.
+        /// </summary>
         private void CerrarVentanaAsociada()
         {
             var app = Application.Current;
@@ -265,6 +279,9 @@ namespace C_C_Final.ViewModel
 
 
 
+        /// <summary>
+        ///     Valida el formato general de un correo electrónico utilizando <see cref="MailAddress"/>.
+        /// </summary>
         private bool EsCorreoValido(string email)
         {
             if (string.IsNullOrWhiteSpace(email))
@@ -283,6 +300,9 @@ namespace C_C_Final.ViewModel
         }
 
         
+        /// <summary>
+        ///     Calcula la edad a partir de la fecha de nacimiento, considerando si el cumpleaños ya ocurrió este año.
+        /// </summary>
         private int CalcularEdad(DateTime fechaNacimiento)
         {
             var today = DateTime.Today;

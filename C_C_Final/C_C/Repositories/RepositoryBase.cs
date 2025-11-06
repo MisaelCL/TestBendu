@@ -15,6 +15,12 @@ namespace C_C_Final.Repositories
         private readonly string _connectionString;
         private static string _cachedConnectionString;
 
+        /// <summary>
+        ///     Inicializa el repositorio resolviendo y normalizando la cadena de conexión. Permite opcionalmente
+        ///     recibir una cadena externa (por ejemplo, durante pruebas unitarias) o reutilizar la configurada
+        ///     en <c>App.config</c>.
+        /// </summary>
+        /// <param name="connectionString">Cadena de conexión alternativa; si es nula se toma la configurada.</param>
         protected RepositoryBase(string connectionString = null)
         {
             _connectionString = ResolverCadenaConexion(connectionString);

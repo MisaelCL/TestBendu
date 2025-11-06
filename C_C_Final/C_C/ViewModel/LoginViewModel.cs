@@ -25,6 +25,7 @@ namespace C_C_Final.ViewModel
             _cuentaRepository = cuentaRepository ?? throw new ArgumentNullException(nameof(cuentaRepository));
             _perfilRepository = perfilRepository ?? throw new ArgumentNullException(nameof(perfilRepository));
 
+            // Comandos que se enlazan con la UI. Se deshabilitan automáticamente cuando hay operaciones en curso.
             ComandoIniciarSesion = new RelayCommand(_ => IniciarSesion(), _ => !IsBusy);
             ComandoAbrirRegistro = new RelayCommand(_ => AbrirRegistro(), _ => !IsBusy);
         }
@@ -78,6 +79,7 @@ namespace C_C_Final.ViewModel
             {
                 ErrorMessage = null;
 
+                // 1. Normalización de entradas y validaciones básicas.
                 var email = Username?.Trim();
                 var password = Password ?? string.Empty;
 
@@ -87,6 +89,7 @@ namespace C_C_Final.ViewModel
                     return;
                 }
 
+                // 2. Búsqueda de la cuenta asociada en la base de datos.
                 var cuenta = _cuentaRepository.ObtenerPorCorreo(email);
                 if (cuenta == null)
                 {
@@ -94,6 +97,7 @@ namespace C_C_Final.ViewModel
                     return;
                 }
 
+                // 3. Verificación de la contraseña utilizando el salt almacenado.
                 var hasher = new PasswordHasher();
                 if (!hasher.VerifyPassword(password, cuenta.HashContrasena, cuenta.SaltContrasena))
                 {
@@ -107,6 +111,7 @@ namespace C_C_Final.ViewModel
                     return;
                 }
 
+                // 4. Recuperación del perfil asociado. Sin perfil no puede continuar el flujo principal.
                 var perfil = _perfilRepository.ObtenerPorCuentaId(cuenta.IdCuenta);
                 if (perfil == null)
                 {
@@ -114,6 +119,7 @@ namespace C_C_Final.ViewModel
                     return;
                 }
 
+                // 5. Al llegar aquí las credenciales son válidas: se limpian datos sensibles y se navega a Home.
                 Username = email;
                 Password = string.Empty;
                 ErrorMessage = null;
@@ -142,6 +148,7 @@ namespace C_C_Final.ViewModel
             var registro = new RegistroView();
             if (registro.DataContext is not RegistroViewModel)
             {
+                // Se crea el ViewModel asegurando que utilice el servicio registrado en App.xaml.cs.
                 registro.DataContext = new RegistroViewModel(app.RegisterAlumnoService);
             }
 

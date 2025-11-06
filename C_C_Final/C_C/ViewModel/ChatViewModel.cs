@@ -29,12 +29,16 @@ namespace C_C_Final.ViewModel
         private int _chatId;
         private int _perfilActualId;
 
+        /// <summary>
+        ///     Inicializa el chat con las dependencias necesarias para consultar el historial y enviar mensajes.
+        /// </summary>
         public ChatViewModel(IMatchRepository matchRepository, IPerfilRepository perfilRepository, MatchService matchService)
         {
             _matchRepository = matchRepository;
             _perfilRepository = perfilRepository;
             _matchService = matchService;
 
+            // Comandos principales de la conversación. Se enlazan directamente con la interfaz XAML.
             ComandoRegresar = new RelayCommand(_ => CerrarVentana());
             ComandoAlternarMenuChat = new RelayCommand(_ => IsChatMenuOpen = !IsChatMenuOpen);
             ComandoAlternarMenuConversacion = new RelayCommand(_ => IsThreadMenuOpen = !IsThreadMenuOpen);
@@ -97,6 +101,7 @@ namespace C_C_Final.ViewModel
             _perfilActualId = perfilActualId;
             Mensajes.Clear();
 
+            // 1. Recuperar información del match y determinar quién es el contacto.
             var match = _matchRepository.ObtenerPorId(matchId);
             if (match == null)
             {
@@ -111,6 +116,7 @@ namespace C_C_Final.ViewModel
                 ContactoAvatarUrl = ConvertirAImagen(perfilContacto.FotoPerfil);
             }
 
+            // 2. Asegurar que exista un chat físico. Si aún no se creó se hace en este momento.
             var chat = _matchRepository.ObtenerChatPorMatchId(matchId) ?? new Chat();
             if (chat.IdChat == 0)
             {
@@ -120,6 +126,7 @@ namespace C_C_Final.ViewModel
 
             _chatId = chat.IdChat;
 
+            // 3. Cargar los mensajes en orden cronológico ascendente para mostrarlos en la interfaz.
             var mensajes = _matchRepository.ListarMensajes(_chatId, 0, 50);
             foreach (var mensaje in mensajes.OrderBy(m => m.FechaEnvio))
             {
@@ -139,6 +146,7 @@ namespace C_C_Final.ViewModel
 
             var contenido = NuevoMensaje.Trim();
             NuevoMensaje = string.Empty;
+            // La capa de servicio se encarga de las transacciones y la actualización de metadatos del chat.
             var mensajeId = _matchService.EnviarMensaje(_chatId, _perfilActualId, contenido);
             var mensaje = new Mensaje
             {
@@ -154,6 +162,9 @@ namespace C_C_Final.ViewModel
             Mensajes.Add(MapearMensaje(mensaje));
         }
 
+        /// <summary>
+        ///     Cambia el estado del match a "roto" para impedir futuros mensajes del contacto.
+        /// </summary>
         private void BloquearContacto()
         {
             if (_matchId == 0)
@@ -165,6 +176,9 @@ namespace C_C_Final.ViewModel
             MessageBox.Show("El contacto fue bloqueado", "Chat", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
+        /// <summary>
+        ///     Elimina el match (y por cascada el chat) y cierra la ventana actual.
+        /// </summary>
         private void EliminarChat()
         {
             if (_matchId == 0)
@@ -176,6 +190,9 @@ namespace C_C_Final.ViewModel
             Application.Current?.Windows[Application.Current.Windows.Count - 1]?.Close();
         }
 
+        /// <summary>
+        ///     Cierra la ventana activa del chat.
+        /// </summary>
         private void CerrarVentana()
         {
             Application.Current?.Windows[Application.Current.Windows.Count - 1]?.Close();
@@ -220,14 +237,30 @@ namespace C_C_Final.ViewModel
         }
     }
 
+    /// <summary>
+    ///     Representa la información necesaria para dibujar una burbuja de chat en la interfaz.
+    /// </summary>
     public sealed class MensajeItemViewModel : BaseViewModel
     {
+        /// <summary>Identificador del mensaje (útil para editar o borrar).</summary>
         public long MensajeId { get; set; }
+
+        /// <summary>Contenido textual del mensaje que se muestra en la burbuja.</summary>
         public string Contenido { get; set; } = string.Empty;
+
+        /// <summary>Columna donde se coloca el avatar dentro del grid (0 izquierda, 2 derecha).</summary>
         public int AvatarColumn { get; set; }
+
+        /// <summary>Columna que ocupará la burbuja para alinear correctamente la conversación.</summary>
         public int BubbleColumn { get; set; }
+
+        /// <summary>Alineación horizontal de la burbuja.</summary>
         public HorizontalAlignment BubbleAlign { get; set; } = HorizontalAlignment.Left;
+
+        /// <summary>Color de fondo de la burbuja (diferencia mensajes propios y ajenos).</summary>
         public Brush BubbleColor { get; set; } = Brushes.White;
+
+        /// <summary>Imagen del contacto cuando el mensaje es de la otra persona.</summary>
         public ImageSource? AvatarUrl { get; set; }
     }
 }

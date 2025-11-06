@@ -10,6 +10,11 @@ namespace C_C_Final.Repositories
     /// </summary>
     public sealed class CuentaRepository : RepositoryBase, ICuentaRepository
     {
+        /// <summary>
+        ///     Permite instanciar el repositorio con una cadena de conexión concreta. En escenarios normales se
+        ///     reutiliza la resuelta por <see cref="RepositoryBase"/>; durante pruebas puede inyectarse otra.
+        /// </summary>
+        /// <param name="connectionString">Cadena de conexión opcional.</param>
         public CuentaRepository(string connectionString = null) : base(connectionString)
         {
         }
@@ -102,6 +107,8 @@ namespace C_C_Final.Repositories
         /// <inheritdoc />
         public int CrearCuenta(SqlConnection connection, SqlTransaction tx, string email, string passwordHash, string passwordSalt, byte estadoCuenta)
         {
+            // Este INSERT devuelve el ID generado para relacionar la cuenta con el alumno, perfil y preferencias
+            // dentro de la misma transacción de registro.
             const string sql = @"INSERT INTO dbo.Cuenta (Email, Hash_Contrasena, Salt_Contrasena, Estado_Cuenta, Fecha_Registro)
 OUTPUT INSERTED.ID_Cuenta
 VALUES (@Email, @Hash, @Salt, @Estado, @Fecha);";
@@ -119,6 +126,7 @@ VALUES (@Email, @Hash, @Salt, @Estado, @Fecha);";
         /// <inheritdoc />
         public int CrearAlumno(SqlConnection connection, SqlTransaction tx, Alumno alumno)
         {
+            // La matrícula se inserta como clave de negocio y se vincula con la cuenta creada previamente.
             const string sql = @"INSERT INTO dbo.Alumno (Matricula, ID_Cuenta, Nombre, Apaterno, Amaterno, F_Nac, Genero, Correo, Carrera)
 VALUES (@Matricula, @Cuenta, @Nombre, @Apaterno, @Amaterno, @Nacimiento, @Genero, @Correo, @Carrera);";
             using var command = CrearComando(connection, sql, CommandType.Text, tx);

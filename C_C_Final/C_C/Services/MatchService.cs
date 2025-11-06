@@ -14,6 +14,11 @@ namespace C_C_Final.Services
         private readonly IMatchRepository _matchRepository;
         private readonly string _connectionString;
 
+        /// <summary>
+        ///     Inicializa el servicio con el repositorio que conoce los detalles de persistencia.
+        /// </summary>
+        /// <param name="matchRepository">Repositorio especializado en matches, chats y mensajes.</param>
+        /// <param name="connectionString">Cadena de conexión opcional.</param>
         public MatchService(IMatchRepository matchRepository, string connectionString = null)
         {
             _matchRepository = matchRepository;
@@ -33,6 +38,7 @@ namespace C_C_Final.Services
                 estadoNormalizado = MatchEstadoHelper.ConstruirPendiente();
             }
 
+            // Se inicia una transacción corta ya que solo se crea el match (sin chat).
             using var connection = new SqlConnection(_connectionString);
             connection.Open();
             using var transaction = connection.BeginTransaction();
@@ -49,6 +55,7 @@ namespace C_C_Final.Services
                 // LÍNEA ELIMINADA:
                 // _matchRepository.AsegurarChatParaMatch(connection, transaction, matchId);
                 
+                // Al finalizar se confirma el cambio. El chat se generará posteriormente cuando ambos acepten.
                 transaction.Commit();
                 return matchId;
             }
@@ -65,6 +72,7 @@ namespace C_C_Final.Services
         /// </summary>
         public int AsegurarChatParaMatch(int idMatch)
         {
+            // Este método se invoca exclusivamente cuando el match ya es mutuo.
             using var connection = new SqlConnection(_connectionString);
             connection.Open();
             using var transaction = connection.BeginTransaction();
@@ -91,6 +99,8 @@ namespace C_C_Final.Services
                 throw new ArgumentException("El contenido del mensaje es obligatorio", nameof(contenido));
             }
 
+            // Cada envío de mensaje se encapsula en su propia transacción para asegurar que la actualización
+            // del chat (last message) se ejecute junto con la inserción del mensaje.
             using var connection = new SqlConnection(_connectionString);
             connection.Open();
             using var transaction = connection.BeginTransaction();
