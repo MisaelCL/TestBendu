@@ -149,23 +149,18 @@ namespace C_C_Final.ViewModel
 
                 if (matchExistente == null)
                 {
-                    string nuevoEstado;
-                    if (esLike)
-                    {
-                        nuevoEstado = MatchEstadoHelper.ConstruirPendiente(_idPerfilActual); 
-                    }
-                    else
-                    {
-                        nuevoEstado = MatchEstadoHelper.ConstruirRechazado(_idPerfilActual); 
-                    }
-                    // Usa el MatchService (CORREGIDO) que YA NO crea un chat.
-                    _matchService.CrearMatch(_idPerfilActual, idPerfilDestino, nuevoEstado);
+                    var estadoInicial = esLike
+                        ? MatchEstadoHelper.ConstruirPendiente()
+                        : MatchEstadoHelper.ConstruirRechazado();
+
+                    _matchService.CrearMatch(_idPerfilActual, idPerfilDestino, estadoInicial);
                 }
                 else
                 {
                     if (esLike)
                     {
-                        if (MatchEstadoHelper.EsPendienteDe(matchExistente.Estado, idPerfilDestino))
+                        if (MatchEstadoHelper.EsPendiente(matchExistente.Estado)
+                            && matchExistente.PerfilEmisor == idPerfilDestino)
                         {
                             // ¡Es un match mutuo!
                             _matchRepository.ActualizarEstado(matchExistente.IdMatch, "activo");
@@ -175,11 +170,17 @@ namespace C_C_Final.ViewModel
 
                             MessageBox.Show($"¡Hiciste match con {PerfilActual.NombreEdad}!", "¡Es un Match!", MessageBoxButton.OK, MessageBoxImage.Information);
                         }
+                        else if (MatchEstadoHelper.EsRechazado(matchExistente.Estado))
+                        {
+                            // Permite reintentar enviando un nuevo corazón.
+                            _matchRepository.ActualizarEstado(matchExistente.IdMatch, MatchEstadoHelper.ConstruirPendiente());
+                            _matchRepository.ActualizarParticipantes(matchExistente.IdMatch, _idPerfilActual, idPerfilDestino);
+                        }
                     }
                     else
                     {
-                        string nuevoEstado = MatchEstadoHelper.ConstruirRechazado(_idPerfilActual);
-                        _matchRepository.ActualizarEstado(matchExistente.IdMatch, nuevoEstado);
+                        _matchRepository.ActualizarEstado(matchExistente.IdMatch, MatchEstadoHelper.ConstruirRechazado());
+                        _matchRepository.ActualizarParticipantes(matchExistente.IdMatch, _idPerfilActual, idPerfilDestino);
                     }
                 }
             }
@@ -222,6 +223,38 @@ namespace C_C_Final.ViewModel
                 _sugerencias.Clear();
                 EstadoMensaje = "Ocurrió un error al cargar perfiles.";
             }
+
+            try
+            {
+                using var ms = new MemoryStream(bytes);
+                var image = new BitmapImage();
+                image.BeginInit();
+                image.StreamSource = ms;
+                image.CacheOption = BitmapCacheOption.OnLoad;
+                image.EndInit();
+                image.Freeze();
+                return image;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public sealed class PerfilSugerenciaViewModel
+        {
+            public PerfilSugerenciaViewModel(Perfil perfil, ImageSource fotoUrl, string nombreEdad, string carreraTexto)
+            {
+                Perfil = perfil;
+                FotoUrl = fotoUrl;
+                NombreEdad = nombreEdad;
+                CarreraTexto = carreraTexto;
+            }
+
+            public Perfil Perfil { get; }
+            public ImageSource FotoUrl { get; }
+            public string NombreEdad { get; }
+            public string CarreraTexto { get; }
         }
 
         private void BloquearPerfilActual()
