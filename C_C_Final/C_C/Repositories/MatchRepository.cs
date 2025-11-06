@@ -38,13 +38,14 @@ WHERE ID_Match = @Id";
         public Match ObtenerPorPerfiles(int idPerfilA, int idPerfilB)
         {
             using var connection = AbrirConexion();
-            var (emisor, receptor) = NormalizarPerfiles(idPerfilA, idPerfilB);
-            const string sql = @"SELECT ID_Match, Perfil_Emisor, Perfil_Receptor, Estado, Fecha_Match AS FechaMatch
+            const string sql = @"SELECT TOP 1 ID_Match, Perfil_Emisor, Perfil_Receptor, Estado, Fecha_Match AS FechaMatch
 FROM dbo.Match
-WHERE Perfil_Emisor = @Emisor AND Perfil_Receptor = @Receptor";
+WHERE (Perfil_Emisor = @A AND Perfil_Receptor = @B)
+   OR (Perfil_Emisor = @B AND Perfil_Receptor = @A)
+ORDER BY Fecha_Match DESC, ID_Match DESC";
             using var command = CrearComando(connection, sql);
-            AgregarParametro(command, "@Emisor", emisor, SqlDbType.Int);
-            AgregarParametro(command, "@Receptor", receptor, SqlDbType.Int);
+            AgregarParametro(command, "@A", idPerfilA, SqlDbType.Int);
+            AgregarParametro(command, "@B", idPerfilB, SqlDbType.Int);
 
             using var reader = command.ExecuteReader();
             if (!reader.Read())
@@ -99,9 +100,13 @@ OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
         /// <inheritdoc />
         public int CrearMatch(int idPerfilEmisor, int idPerfilReceptor, string estado)
         {
+            if (idPerfilEmisor == idPerfilReceptor)
+            {
+                throw new ArgumentException("No se puede crear un match con el mismo perfil", nameof(idPerfilEmisor));
+            }
+
             using var connection = AbrirConexion();
-            var (emisor, receptor) = NormalizarPerfiles(idPerfilEmisor, idPerfilReceptor);
-            return CrearMatch(connection, null, emisor, receptor, estado);
+            return CrearMatch(connection, null, idPerfilEmisor, idPerfilReceptor, estado);
         }
 
         /// <inheritdoc />
@@ -110,11 +115,29 @@ OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
             using var connection = AbrirConexion();
             const string sql = "UPDATE dbo.Match SET Estado = @Estado WHERE ID_Match = @Id";
             using var command = CrearComando(connection, sql);
-            AgregarParametro(command, "@Estado", nuevoEstado ?? string.Empty, SqlDbType.NVarChar, 20);
+            AgregarParametro(command, "@Estado", nuevoEstado ?? string.Empty, SqlDbType.NVarChar, 10);
             AgregarParametro(command, "@Id", idMatch, SqlDbType.Int);
 
             var rows = command.ExecuteNonQuery();
             return rows > 0;
+        }
+
+        /// <inheritdoc />
+        public void ActualizarParticipantes(int idMatch, int nuevoEmisor, int nuevoReceptor)
+        {
+            if (nuevoEmisor == nuevoReceptor)
+            {
+                throw new ArgumentException("Los perfiles del match deben ser distintos", nameof(nuevoEmisor));
+            }
+
+            using var connection = AbrirConexion();
+            const string sql = "UPDATE dbo.Match SET Perfil_Emisor = @Emisor, Perfil_Receptor = @Receptor WHERE ID_Match = @Id";
+            using var command = CrearComando(connection, sql);
+            AgregarParametro(command, "@Emisor", nuevoEmisor, SqlDbType.Int);
+            AgregarParametro(command, "@Receptor", nuevoReceptor, SqlDbType.Int);
+            AgregarParametro(command, "@Id", idMatch, SqlDbType.Int);
+
+            command.ExecuteNonQuery();
         }
 
         /// <inheritdoc />
@@ -189,27 +212,21 @@ OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
         /// <inheritdoc />
         public int CrearMatch(SqlConnection connection, SqlTransaction tx, int idPerfilEmisor, int idPerfilReceptor, string estado)
         {
-            var (emisor, receptor) = NormalizarPerfiles(idPerfilEmisor, idPerfilReceptor);
+            if (idPerfilEmisor == idPerfilReceptor)
+            {
+                throw new ArgumentException("Los perfiles del match deben ser distintos", nameof(idPerfilEmisor));
+            }
+
             const string sql = @"INSERT INTO dbo.Match (Perfil_Emisor, Perfil_Receptor, Estado, Fecha_Match)
 OUTPUT INSERTED.ID_Match
 VALUES (@Emisor, @Receptor, @Estado, SYSUTCDATETIME());";
             using var command = CrearComando(connection, sql, CommandType.Text, tx);
-            AgregarParametro(command, "@Emisor", emisor, SqlDbType.Int);
-            AgregarParametro(command, "@Receptor", receptor, SqlDbType.Int);
-            AgregarParametro(command, "@Estado", estado ?? string.Empty, SqlDbType.NVarChar, 20);
+            AgregarParametro(command, "@Emisor", idPerfilEmisor, SqlDbType.Int);
+            AgregarParametro(command, "@Receptor", idPerfilReceptor, SqlDbType.Int);
+            AgregarParametro(command, "@Estado", estado ?? string.Empty, SqlDbType.NVarChar, 10);
 
             var result = command.ExecuteScalar();
             return ConvertirSeguroAInt32(result);
-        }
-
-        private static (int Emisor, int Receptor) NormalizarPerfiles(int perfilA, int perfilB)
-        {
-            if (perfilA <= perfilB)
-            {
-                return (perfilA, perfilB);
-            }
-
-            return (perfilB, perfilA);
         }
 
         /// <inheritdoc />
