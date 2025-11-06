@@ -22,9 +22,11 @@ namespace C_C_Final.ViewModel
         private const int EdadMaximaPredeterminada = 35;
 
         private readonly IPerfilRepository _perfilRepository;
+        private readonly IPreferenciasRepository _preferenciasRepository;
         private readonly CuentaDeletionService _cuentaDeletionService;
         private int _idCuenta;
         private int _idPerfil;
+        private int _idPreferencias;
         private string _nikName = string.Empty;
         private string _descripcion = string.Empty;
         private byte[] _fotoPerfilBytes;
@@ -36,9 +38,13 @@ namespace C_C_Final.ViewModel
         private string _generoSeleccionado;
         private bool _isBusy;
 
-        public PreferenciasViewModel(IPerfilRepository perfilRepository, CuentaDeletionService cuentaDeletionService)
+        public PreferenciasViewModel(
+            IPerfilRepository perfilRepository,
+            IPreferenciasRepository preferenciasRepository,
+            CuentaDeletionService cuentaDeletionService)
         {
             _perfilRepository = perfilRepository ?? throw new ArgumentNullException(nameof(perfilRepository));
+            _preferenciasRepository = preferenciasRepository ?? throw new ArgumentNullException(nameof(preferenciasRepository));
             _cuentaDeletionService = cuentaDeletionService ?? throw new ArgumentNullException(nameof(cuentaDeletionService));
             Generos = new ObservableCollection<string>(new[]
             {
@@ -83,7 +89,7 @@ namespace C_C_Final.ViewModel
                 if (nuevoValor > _edadMax)
                 {
                     _edadMax = nuevoValor;
-                    NotificarCambioPropiedad(nameof(_edadMax));
+                    NotificarCambioPropiedad(nameof(EdadMax));
                 }
 
                 EstablecerPropiedad(ref _edadMin, nuevoValor);
@@ -156,9 +162,10 @@ namespace C_C_Final.ViewModel
             _fotoPerfilBytes = perfil.FotoPerfil ?? Array.Empty<byte>();
             FotoPerfilUrl = ConvertirAImagen(_fotoPerfilBytes);
 
-            var preferencias = _perfilRepository.ObtenerPorId(_idPerfil);
+            var preferencias = _preferenciasRepository.ObtenerPorPerfilId(_idPerfil);
             if (preferencias != null)
             {
+                _idPreferencias = preferencias.IdPreferencias;
                 var edadMinima = NormalizarEdadMinima(preferencias.EdadMinima);
                 var edadMaxima = NormalizarEdadMaxima(preferencias.EdadMaxima, edadMinima);
 
@@ -178,6 +185,12 @@ namespace C_C_Final.ViewModel
                 GeneroSeleccionado = MapearGeneroDesdeCodigo(preferencias.PreferenciaGenero);
             }
             else
+            {
+                _idPreferencias = 0;
+                GeneroSeleccionado = Generos[0];
+            }
+
+            if (string.IsNullOrWhiteSpace(GeneroSeleccionado))
             {
                 GeneroSeleccionado = Generos[0];
             }
@@ -207,10 +220,14 @@ namespace C_C_Final.ViewModel
                     FechaCreacion = _fechaCreacion
                 };
 
-                _perfilRepository.ActualizarPerfil(perfil);
-                /*
+                if (!_perfilRepository.ActualizarPerfil(perfil))
+                {
+                    throw new InvalidOperationException("No se pudieron guardar los cambios del perfil.");
+                }
+
                 var preferencias = new Preferencias
                 {
+                    IdPreferencias = _idPreferencias,
                     IdPerfil = _idPerfil,
                     PreferenciaGenero = MapearGeneroDesdeTexto(GeneroSeleccionado),
                     EdadMinima = EdadMin,
@@ -219,9 +236,25 @@ namespace C_C_Final.ViewModel
                     Intereses = string.Empty
                 };
 
-                _perfilRepository.ActualizarPerfil(preferencias);
+                if (_idPreferencias > 0)
+                {
+                    if (!_preferenciasRepository.ActualizarPreferencias(preferencias))
+                    {
+                        throw new InvalidOperationException("No se pudieron actualizar las preferencias.");
+                    }
+                }
+                else
+                {
+                    var newId = _preferenciasRepository.CrearPreferencias(preferencias);
+                    if (newId <= 0)
+                    {
+                        throw new InvalidOperationException("No se pudieron guardar las preferencias.");
+                    }
+
+                    _idPreferencias = newId;
+                }
+
                 MessageBox.Show("Preferencias actualizadas", "Preferencias", MessageBoxButton.OK, MessageBoxImage.Information);
-                */
             }
             catch (Exception ex)
             {
@@ -336,8 +369,6 @@ namespace C_C_Final.ViewModel
                     return "Solo hombres";
                 case 3:
                     return "Todos";
-                case 4:
-                    return "Sin preferencia";
                 default:
                     return "Sin preferencia";
             }

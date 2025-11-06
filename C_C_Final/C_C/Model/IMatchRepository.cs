@@ -28,5 +28,6 @@ namespace C_C_Final.Model
         long AgregarMensaje(SqlConnection cn, SqlTransaction tx, int idChat, int idRemitentePerfil, string contenido, bool confirmacionLectura);
 
         void EliminarMatchesPorPerfil(int idPerfil, SqlConnection connection, SqlTransaction transaction);
+        void ActualizarParticipantes(int idMatch, int nuevoEmisor, int nuevoReceptor);
     }
 }
