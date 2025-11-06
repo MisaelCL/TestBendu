@@ -40,6 +40,7 @@ namespace C_C_Final.ViewModel
         // --- Constructor ---
         public HomeViewModel(int idPerfilLogueado)
         {
+            // El ViewModel crea sus dependencias requeridas para la lectura de perfiles y gestión de matches.
             _perfilRepository = new PerfilRepository();
             _matchRepository = new MatchRepository();
             _matchService = new MatchService(_matchRepository);
@@ -54,7 +55,7 @@ namespace C_C_Final.ViewModel
             _comandoBloquearPerfil = new RelayCommand(_ => BloquearPerfilActual(), _ => PerfilActual != null);
 
             // --- CORRECCIÓN ---
-            // Carga el primer perfil al iniciar
+            // Carga el primer perfil al iniciar para que la UI muestre contenido inmediatamente.
             CargarSiguientePerfil();
         }
 
@@ -98,6 +99,9 @@ namespace C_C_Final.ViewModel
         public ICommand ComandoBloquearPerfil => _comandoBloquearPerfil;
 
         // --- LÓGICA DE NAVEGACIÓN ---
+        /// <summary>
+        ///     Abre la vista de configuración del usuario autenticado cerrando la ventana actual para evitar duplicados.
+        /// </summary>
         public void NavegarAConfiguracion()
         {
             try
@@ -137,6 +141,10 @@ namespace C_C_Final.ViewModel
         }
 
         // --- LÓGICA DE "LIKE" Y "RECHAZO" ---
+        /// <summary>
+        ///     Registra la interacción del usuario (like o rechazo) y gestiona la creación/actualización de matches.
+        /// </summary>
+        /// <param name="esLike">Indica si la acción es un like (true) o un rechazo (false).</param>
         private void RegistrarInteraccion(bool esLike)
         {
             if (PerfilActual?.Perfil == null)
@@ -148,10 +156,12 @@ namespace C_C_Final.ViewModel
 
             try
             {
+                // 1. Consultar si ya existe alguna interacción previa entre los perfiles.
                 var matchExistente = _matchRepository.ObtenerPorPerfiles(_idPerfilActual, idPerfilDestino);
 
                 if (matchExistente == null)
                 {
+                    // 2a. No existe interacción: se crea un nuevo registro con estado pendiente o rechazado.
                     var estadoInicial = esLike
                         ? MatchEstadoHelper.ConstruirPendiente()
                         : MatchEstadoHelper.ConstruirRechazado();
@@ -162,6 +172,7 @@ namespace C_C_Final.ViewModel
                 {
                     if (esLike)
                     {
+                        // 2b. Ya existe un match pendiente emitido por el otro perfil: al aceptar se crea el chat.
                         if (MatchEstadoHelper.EsPendiente(matchExistente.Estado)
                             && matchExistente.PerfilEmisor == idPerfilDestino)
                         {
@@ -175,13 +186,14 @@ namespace C_C_Final.ViewModel
                         }
                         else if (MatchEstadoHelper.EsRechazado(matchExistente.Estado))
                         {
-                            // Permite reintentar enviando un nuevo corazón.
+                            // Permite reintentar enviando un nuevo corazón reactivando el estado pendiente.
                             _matchRepository.ActualizarEstado(matchExistente.IdMatch, MatchEstadoHelper.ConstruirPendiente());
                             _matchRepository.ActualizarParticipantes(matchExistente.IdMatch, _idPerfilActual, idPerfilDestino);
                         }
                     }
                     else
                     {
+                        // 2c. Rechazo explícito: actualiza estado y asegura que el perfil actual sea el emisor.
                         _matchRepository.ActualizarEstado(matchExistente.IdMatch, MatchEstadoHelper.ConstruirRechazado());
                         _matchRepository.ActualizarParticipantes(matchExistente.IdMatch, _idPerfilActual, idPerfilDestino);
                     }
@@ -192,11 +204,14 @@ namespace C_C_Final.ViewModel
                 MessageBox.Show($"Error al registrar la interacción: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
-            // Cargar el siguiente perfil
+            // 3. Tras completar la interacción se carga la siguiente sugerencia.
             CargarSiguientePerfil();
         }
 
         // --- CORRECCIÓN ---
+        /// <summary>
+        ///     Solicita al repositorio la siguiente sugerencia disponible, limpia la colección y actualiza los mensajes de estado.
+        /// </summary>
         private void CargarSiguientePerfil()
         {
             try
@@ -237,6 +252,9 @@ namespace C_C_Final.ViewModel
             }
         }
 
+        /// <summary>
+        ///     Marca un perfil como bloqueado reutilizando la lógica de rechazo y proporciona feedback visual.
+        /// </summary>
         private void BloquearPerfilActual()
         {
             if (PerfilActual?.Perfil == null)
@@ -256,6 +274,9 @@ namespace C_C_Final.ViewModel
             }
         }
 
+        /// <summary>
+        ///     Transforma la entidad <see cref="Perfil"/> en un objeto listo para mostrar en la tarjeta de sugerencia.
+        /// </summary>
         private static PerfilSugerenciaViewModel CrearSugerencia(Perfil perfil)
         {
             var nombre = string.IsNullOrWhiteSpace(perfil.Nikname)
@@ -269,6 +290,9 @@ namespace C_C_Final.ViewModel
             return new PerfilSugerenciaViewModel(perfil, ConvertirAImagen(perfil.FotoPerfil), nombre, descripcion);
         }
 
+        /// <summary>
+        ///     Convierte un arreglo de bytes almacenado en la base de datos en una imagen compatible con WPF.
+        /// </summary>
         private static ImageSource? ConvertirAImagen(byte[] bytes)
         {
             if (bytes == null || bytes.Length == 0)
@@ -293,6 +317,9 @@ namespace C_C_Final.ViewModel
             }
         }
 
+        /// <summary>
+        ///     ViewModel auxiliar que encapsula los datos visuales de una tarjeta de sugerencia.
+        /// </summary>
         public sealed class PerfilSugerenciaViewModel
         {
             public PerfilSugerenciaViewModel(Perfil perfil, ImageSource? fotoUrl, string nombreEdad, string carreraTexto)
