@@ -1,4 +1,5 @@
 using System;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -11,12 +12,14 @@ namespace C_C_Final.Repositories
     {
         protected const int DefaultCommandTimeout = 30;
 
-        private static readonly string _connectionString =
-            @"Data Source=LABENDUPC\BENDUOLOSERVER;Initial Catalog=C_CBD;Integrated Security=True;Connect Timeout=30;Encrypt=True;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+        private static readonly Lazy<string> _defaultConnectionString = new Lazy<string>(CargarCadenaConexionDesdeConfiguracion);
 
-        protected RepositoryBase()
+        protected RepositoryBase(string connectionString = null)
         {
+            ConnectionString = ResolverCadenaConexion(connectionString);
         }
+
+        protected string ConnectionString { get; }
 
         /// <summary>
         /// Crea un comando SQL configurado con los parámetros indicados.
@@ -72,9 +75,30 @@ namespace C_C_Final.Repositories
         /// <returns>Instancia abierta de <see cref="SqlConnection"/>.</returns>
         protected SqlConnection AbrirConexion()
         {
-            var connection = new SqlConnection(_connectionString);
+            var connection = new SqlConnection(ConnectionString);
             connection.Open();
             return connection;
+        }
+
+        public static string ResolverCadenaConexion(string connectionString = null)
+        {
+            if (!string.IsNullOrWhiteSpace(connectionString))
+            {
+                return connectionString;
+            }
+
+            return _defaultConnectionString.Value;
+        }
+
+        private static string CargarCadenaConexionDesdeConfiguracion()
+        {
+            var settings = ConfigurationManager.ConnectionStrings["DefaultConnection"];
+            if (settings == null || string.IsNullOrWhiteSpace(settings.ConnectionString))
+            {
+                throw new InvalidOperationException("No se encontró la cadena de conexión 'DefaultConnection' en App.config.");
+            }
+
+            return settings.ConnectionString;
         }
 
     }
