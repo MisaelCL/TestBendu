@@ -128,7 +128,7 @@ namespace C_C_Final.Services
                     FotoPerfil = request.FotoPerfil,
                     FechaCreacion = DateTime.UtcNow
                 };
-                var perfilId = _perfilRepository.CrearPerfil(perfil);
+                var perfilId = _perfilRepository.CrearPerfil(connection, transaction, perfil);
 
                 if (perfilId <= 0)
                 {
