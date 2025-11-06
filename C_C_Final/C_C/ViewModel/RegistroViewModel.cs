@@ -26,7 +26,9 @@ namespace C_C_Final.ViewModel
         private readonly ObservableCollection<string> _generos = new ObservableCollection<string>(new[] { "Masculino", "Femenino" });
         private string _carreraSeleccionada;
         private string _matricula = string.Empty;
-        private string _nombreCompleto = string.Empty;
+        private string _nombre = string.Empty;
+        private string _apellidoPaterno = string.Empty;
+        private string _apellidoMaterno = string.Empty;
         private string _generoSeleccionado;
         private DateTime? _fechaNacimiento = DateTime.Today;
         private string _correo = string.Empty;
@@ -56,10 +58,22 @@ namespace C_C_Final.ViewModel
             set => EstablecerPropiedad(ref _matricula, value);
         }
 
-        public string NombreCompleto
+        public string Nombre
         {
-            get => _nombreCompleto;
-            set => EstablecerPropiedad(ref _nombreCompleto, value);
+            get => _nombre;
+            set => EstablecerPropiedad(ref _nombre, value);
+        }
+
+        public string ApellidoPaterno
+        {
+            get => _apellidoPaterno;
+            set => EstablecerPropiedad(ref _apellidoPaterno, value);
+        }
+
+        public string ApellidoMaterno
+        {
+            get => _apellidoMaterno;
+            set => EstablecerPropiedad(ref _apellidoMaterno, value);
         }
 
         public ObservableCollection<string> Generos => _generos;
@@ -164,7 +178,9 @@ namespace C_C_Final.ViewModel
 
                 
                 var genero = GeneroSeleccionado?.StartsWith("M", StringComparison.OrdinalIgnoreCase) == true ? 'M' : 'F';
-                var (nombre, apaterno, amaterno) = AnalizarNombreCompleto(NombreCompleto);
+                var nombre = Nombre?.Trim() ?? string.Empty;
+                var apaterno = ApellidoPaterno?.Trim() ?? string.Empty;
+                var amaterno = ApellidoMaterno?.Trim() ?? string.Empty;
 
                 var request = new RegisterAlumnoRequest
                 {
@@ -282,23 +298,5 @@ namespace C_C_Final.ViewModel
 
 
         
-        private static (string Nombre, string Apaterno, string Amaterno) AnalizarNombreCompleto(string nombreCompleto)
-        {
-            if (string.IsNullOrWhiteSpace(nombreCompleto))
-            {
-                return ("", "", "");
-            }
-
-            var partes = nombreCompleto.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            if (partes.Length == 0)
-            {
-                return ("", "", "");
-            }
-
-            var nombre = partes[0];
-            var apaterno = partes.Length > 1 ? partes[1] : string.Empty;
-            var amaterno = partes.Length > 2 ? partes[2] : string.Empty;
-            return (nombre, apaterno, amaterno);
-        }
     }
 }

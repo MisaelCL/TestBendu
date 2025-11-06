@@ -18,7 +18,7 @@ namespace C_C_Final.Repositories
         public Cuenta ObtenerPorId(int idCuenta)
         {
             using var connection = AbrirConexion();
-            const string sql = "SELECT ID_Cuenta, Email, Hash_Contrasena, Estado_Cuenta, Fecha_Registro FROM dbo.Cuenta WHERE ID_Cuenta = @Id";
+            const string sql = "SELECT ID_Cuenta, Email, Hash_Contrasena, Salt_Contrasena, Estado_Cuenta, Fecha_Registro FROM dbo.Cuenta WHERE ID_Cuenta = @Id";
             using var command = CrearComando(connection, sql);
             AgregarParametro(command, "@Id", idCuenta, SqlDbType.Int);
 
@@ -35,7 +35,7 @@ namespace C_C_Final.Repositories
         public Cuenta ObtenerPorCorreo(string email)
         {
             using var connection = AbrirConexion();
-            const string sql = "SELECT ID_Cuenta, Email, Hash_Contrasena, Estado_Cuenta, Fecha_Registro FROM dbo.Cuenta WHERE Email = @Email";
+            const string sql = "SELECT ID_Cuenta, Email, Hash_Contrasena, Salt_Contrasena, Estado_Cuenta, Fecha_Registro FROM dbo.Cuenta WHERE Email = @Email";
             using var command = CrearComando(connection, sql);
             AgregarParametro(command, "@Email", email, SqlDbType.NVarChar, 260);
 
@@ -61,10 +61,10 @@ namespace C_C_Final.Repositories
         }
 
         /// <inheritdoc />
-        public void CrearCuenta(string email, string passwordHash, byte estadoCuenta)
+        public void CrearCuenta(string email, string passwordHash, string passwordSalt, byte estadoCuenta)
         {
             using var connection = AbrirConexion();
-            CrearCuenta(connection, null, email, passwordHash, estadoCuenta);
+            CrearCuenta(connection, null, email, passwordHash, passwordSalt, estadoCuenta);
         }
 
         /// <inheritdoc />
@@ -100,14 +100,15 @@ namespace C_C_Final.Repositories
         }
 
         /// <inheritdoc />
-        public int CrearCuenta(SqlConnection connection, SqlTransaction tx, string email, string passwordHash, byte estadoCuenta)
+        public int CrearCuenta(SqlConnection connection, SqlTransaction tx, string email, string passwordHash, string passwordSalt, byte estadoCuenta)
         {
-            const string sql = @"INSERT INTO dbo.Cuenta (Email, Hash_Contrasena, Estado_Cuenta, Fecha_Registro)
+            const string sql = @"INSERT INTO dbo.Cuenta (Email, Hash_Contrasena, Salt_Contrasena, Estado_Cuenta, Fecha_Registro)
 OUTPUT INSERTED.ID_Cuenta
-VALUES (@Email, @Hash, @Estado, @Fecha);";
+VALUES (@Email, @Hash, @Salt, @Estado, @Fecha);";
             using var command = CrearComando(connection, sql, CommandType.Text, tx);
             AgregarParametro(command, "@Email", email, SqlDbType.NVarChar, 260);
             AgregarParametro(command, "@Hash", passwordHash, SqlDbType.NVarChar, -1);
+            AgregarParametro(command, "@Salt", passwordSalt, SqlDbType.NVarChar, -1);
             AgregarParametro(command, "@Estado", estadoCuenta, SqlDbType.TinyInt);
             AgregarParametro(command, "@Fecha", DateTime.UtcNow, SqlDbType.DateTime2);
 
@@ -119,8 +120,7 @@ VALUES (@Email, @Hash, @Estado, @Fecha);";
         public int CrearAlumno(SqlConnection connection, SqlTransaction tx, Alumno alumno)
         {
             const string sql = @"INSERT INTO dbo.Alumno (Matricula, ID_Cuenta, Nombre, Apaterno, Amaterno, F_Nac, Genero, Correo, Carrera)
-VALUES (@Matricula, @Cuenta, @Nombre, @Apaterno, @Amaterno, @Nacimiento, @Genero, @Correo, @Carrera);
-SELECT CAST(SCOPE_IDENTITY() AS INT);";
+VALUES (@Matricula, @Cuenta, @Nombre, @Apaterno, @Amaterno, @Nacimiento, @Genero, @Correo, @Carrera);";
             using var command = CrearComando(connection, sql, CommandType.Text, tx);
             AgregarParametro(command, "@Matricula", alumno.Matricula, SqlDbType.NVarChar, 50);
             AgregarParametro(command, "@Cuenta", alumno.IdCuenta, SqlDbType.Int);
@@ -132,8 +132,8 @@ SELECT CAST(SCOPE_IDENTITY() AS INT);";
             AgregarParametro(command, "@Correo", alumno.Correo, SqlDbType.NVarChar, 260);
             AgregarParametro(command, "@Carrera", alumno.Carrera, SqlDbType.NVarChar, 100);
 
-            var result = command.ExecuteScalar();
-            return ConvertirSeguroAInt32(result);
+            var rowsAffected = command.ExecuteNonQuery();
+            return rowsAffected;
         }
 
         /// <summary>
@@ -148,8 +148,9 @@ SELECT CAST(SCOPE_IDENTITY() AS INT);";
                 IdCuenta = reader.IsDBNull(0) ? 0 : reader.GetInt32(0),
                 Email = reader.IsDBNull(1) ? string.Empty : reader.GetString(1),
                 HashContrasena = reader.IsDBNull(2) ? string.Empty : reader.GetString(2),
-                EstadoCuenta = reader.IsDBNull(3) ? (byte)0 : reader.GetByte(3),
-                FechaRegistro = reader.IsDBNull(4) ? DateTime.MinValue : reader.GetDateTime(4)
+                SaltContrasena = reader.IsDBNull(3) ? string.Empty : reader.GetString(3),
+                EstadoCuenta = reader.IsDBNull(4) ? (byte)0 : reader.GetByte(4),
+                FechaRegistro = reader.IsDBNull(5) ? DateTime.MinValue : reader.GetDateTime(5)
             };
         }
     }
