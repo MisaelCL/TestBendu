@@ -32,12 +32,18 @@ namespace C_C_Final.Services
     {
         private readonly CuentaRepository _cuentaRepository;
         private readonly PerfilRepository _perfilRepository;
+        private readonly IPreferenciasRepository _preferenciasRepository;
         private readonly string _connectionString;
 
-        public RegisterAlumnoService(CuentaRepository cuentaRepository, PerfilRepository perfilRepository, string connectionString = null)
+        public RegisterAlumnoService(
+            CuentaRepository cuentaRepository,
+            PerfilRepository perfilRepository,
+            IPreferenciasRepository preferenciasRepository,
+            string connectionString = null)
         {
-            _cuentaRepository = cuentaRepository;
-            _perfilRepository = perfilRepository;
+            _cuentaRepository = cuentaRepository ?? throw new ArgumentNullException(nameof(cuentaRepository));
+            _perfilRepository = perfilRepository ?? throw new ArgumentNullException(nameof(perfilRepository));
+            _preferenciasRepository = preferenciasRepository ?? throw new ArgumentNullException(nameof(preferenciasRepository));
             _connectionString = RepositoryBase.ResolverCadenaConexion(connectionString);
         }
 
@@ -122,7 +128,7 @@ namespace C_C_Final.Services
                     FotoPerfil = request.FotoPerfil,
                     FechaCreacion = DateTime.UtcNow
                 };
-                var perfilId = _perfilRepository.CrearPerfil(perfil);
+                var perfilId = _perfilRepository.CrearPerfil(connection, transaction, perfil);
 
                 if (perfilId <= 0)
                 {
@@ -138,9 +144,9 @@ namespace C_C_Final.Services
                     PreferenciaCarrera = string.Empty,
                     Intereses = string.Empty
                 };
-                var preferenciasId = _perfilRepository(connection, transaction, preferencias);
+                var preferenciasId = _preferenciasRepository.CrearPreferencias(connection, transaction, preferencias);
 
-                if (preferenciasId < 0)
+                if (preferenciasId <= 0)
                 {
                     throw new InvalidOperationException("No se pudieron guardar las preferencias del perfil.");
                 }

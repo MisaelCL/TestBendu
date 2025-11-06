@@ -27,8 +27,8 @@ namespace C_C_Final.ViewModel
         private int _idCuenta;
         private string _nikName = string.Empty;
         private string _descripcion = string.Empty;
-        private ImageSource _fotoPerfil;
-        private byte[] _fotoPerfilBytes;
+        private ImageSource? _fotoPerfil;
+        private byte[] _fotoPerfilBytes = Array.Empty<byte>();
         private bool _hasUnread;
         private int _unreadCount;
         private bool _isBusy;
@@ -75,7 +75,7 @@ namespace C_C_Final.ViewModel
             set => EstablecerPropiedad(ref _descripcion, value);
         }
 
-        public ImageSource FotoPerfilUrl
+        public ImageSource? FotoPerfilUrl
         {
             get => _fotoPerfil;
             private set => EstablecerPropiedad(ref _fotoPerfil, value);
@@ -380,7 +380,7 @@ namespace C_C_Final.ViewModel
         /// <summary>
         /// Convierte un arreglo de bytes en una imagen para su visualización.
         /// </summary>
-        public static ImageSource ConvertirAImagen(byte[] bytes)
+        public static ImageSource? ConvertirAImagen(byte[] bytes)
         {
             if (bytes == null || bytes.Length == 0)
             {

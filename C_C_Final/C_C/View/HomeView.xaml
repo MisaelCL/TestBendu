@@ -41,8 +41,7 @@
                         Cursor="Hand"
                         ToolTip="Ajustes"
                         HorizontalAlignment="Left"
-                        Margin="0,6,6,6"
-                        Click="SettingsButton_Click">
+                        Margin="0,6,6,6">
                     <Button.Template>
                         <ControlTemplate TargetType="Button">
                             <Border Background="{TemplateBinding Background}"
