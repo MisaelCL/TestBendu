@@ -56,7 +56,13 @@ namespace C_C_Final.Services
                 {
                     _matchRepository.EliminarMatchesPorPerfil(perfil.IdPerfil, connection, transaction);
 
-                    // Falta implementar eliminación de mensajes. Ver nota en especificación.
+                    const string sqlDeleteMsgs = @"DELETE FROM dbo.Mensaje 
+                                                   WHERE Remitente = @IdPerfil";
+                    using (var cmdMsgs = CrearComando(connection, sqlDeleteMsgs, CommandType.Text, transaction))
+                    {
+                        AgregarParametro(cmdMsgs, "@IdPerfil", perfil.IdPerfil, SqlDbType.Int);
+                        cmdMsgs.ExecuteNonQuery();
+                    }
 
                     const string sqlDeleteCuenta = "DELETE FROM dbo.Cuenta WHERE ID_Cuenta = @Id";
                     using (var cmd = CrearComando(connection, sqlDeleteCuenta, CommandType.Text, transaction))
