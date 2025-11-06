@@ -12,19 +12,27 @@ namespace C_C_Final.ViewModel
         private const string EstadoRechazado = "rechazado";
         private const string EstadoRoto = "roto";
 
+        private static string NormalizarEntrada(string estado)
+        {
+            return string.IsNullOrWhiteSpace(estado) ? string.Empty : estado.Trim();
+        }
+
         public static bool EsActivo(string estado)
         {
-            if (string.IsNullOrWhiteSpace(estado))
+            var estadoNormalizado = NormalizarEntrada(estado);
+
+            if (string.IsNullOrEmpty(estadoNormalizado))
             {
                 return false;
             }
 
-            return string.Equals(estado, EstadoAceptado, StringComparison.OrdinalIgnoreCase);
+            return string.Equals(estadoNormalizado, EstadoAceptado, StringComparison.OrdinalIgnoreCase);
         }
 
         public static bool EsPendiente(string estado)
         {
-            return string.Equals(estado, EstadoPendiente, StringComparison.OrdinalIgnoreCase);
+            var estadoNormalizado = NormalizarEntrada(estado);
+            return string.Equals(estadoNormalizado, EstadoPendiente, StringComparison.OrdinalIgnoreCase);
         }
 
         public static bool EsPendienteDe(string estado, int perfilEmisor, int perfilId)
@@ -34,7 +42,13 @@ namespace C_C_Final.ViewModel
 
         public static bool EsRechazado(string estado)
         {
-            return string.Equals(estado, EstadoRechazado, StringComparison.OrdinalIgnoreCase);
+            var estadoNormalizado = NormalizarEntrada(estado);
+            return string.Equals(estadoNormalizado, EstadoRechazado, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public static string ConstruirAceptado()
+        {
+            return EstadoAceptado;
         }
 
         public static string ConstruirAceptado()
@@ -52,49 +66,78 @@ namespace C_C_Final.ViewModel
             return EstadoRechazado;
         }
 
+        public static string NormalizarParaPersistencia(string estado)
+        {
+            var estadoNormalizado = NormalizarEntrada(estado);
+
+            if (string.Equals(estadoNormalizado, EstadoAceptado, StringComparison.OrdinalIgnoreCase))
+            {
+                return EstadoAceptado;
+            }
+
+            if (string.Equals(estadoNormalizado, EstadoPendiente, StringComparison.OrdinalIgnoreCase))
+            {
+                return EstadoPendiente;
+            }
+
+            if (string.Equals(estadoNormalizado, EstadoRechazado, StringComparison.OrdinalIgnoreCase))
+            {
+                return EstadoRechazado;
+            }
+
+            if (string.Equals(estadoNormalizado, EstadoRoto, StringComparison.OrdinalIgnoreCase))
+            {
+                return EstadoRoto;
+            }
+
+            return estadoNormalizado.ToLowerInvariant();
+        }
+
         public static string ObtenerDescripcionPara(string estado, int perfilActualId, int otroPerfilId, int perfilEmisor)
         {
-            if (EsActivo(estado))
+            var estadoNormalizado = NormalizarEntrada(estado);
+
+            if (EsActivo(estadoNormalizado))
             {
                 return "¡Ya pueden chatear!";
             }
 
-            if (EsPendienteDe(estado, perfilEmisor, perfilActualId))
+            if (EsPendienteDe(estadoNormalizado, perfilEmisor, perfilActualId))
             {
                 return "Has enviado un corazón. Espera la respuesta.";
             }
 
-            if (EsPendienteDe(estado, perfilEmisor, otroPerfilId))
+            if (EsPendienteDe(estadoNormalizado, perfilEmisor, otroPerfilId))
             {
                 return "Este perfil te envió un corazón.";
             }
 
-            if (EsRechazado(estado) && perfilEmisor == perfilActualId)
+            if (EsRechazado(estadoNormalizado) && perfilEmisor == perfilActualId)
             {
                 return "Rechazaste este perfil.";
             }
 
-            if (EsRechazado(estado) && perfilEmisor == otroPerfilId)
+            if (EsRechazado(estadoNormalizado) && perfilEmisor == otroPerfilId)
             {
                 return "Este perfil rechazó tu corazón.";
             }
 
-            if (EsRechazado(estado))
+            if (EsRechazado(estadoNormalizado))
             {
                 return "El match fue rechazado.";
             }
 
-            if (string.Equals(estado, EstadoRoto, StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(estadoNormalizado, EstadoRoto, StringComparison.OrdinalIgnoreCase))
             {
                 return "El chat fue bloqueado.";
             }
 
-            if (string.IsNullOrWhiteSpace(estado))
+            if (string.IsNullOrEmpty(estadoNormalizado))
             {
                 return string.Empty;
             }
 
-            return estado;
+            return estadoNormalizado;
         }
     }
 }
