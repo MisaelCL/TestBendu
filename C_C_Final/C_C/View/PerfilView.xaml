@@ -329,6 +329,102 @@
 
                     </StackPanel>
 
+                    <!-- Matches pendientes -->
+                    <StackPanel Margin="0,18,0,0">
+                        <TextBlock Text="Matches pendientes"
+                                   Style="{StaticResource SectionTitleStyle}" />
+
+                        <TextBlock Text="No tienes matches pendientes por revisar"
+                                   Foreground="{StaticResource TextLightBrush}">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding MatchesPendientes.Count}"
+                                                     Value="0">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+
+                        <ItemsControl ItemsSource="{Binding MatchesPendientes}"
+                                      Margin="0,8,0,0">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="#E6F8FF"
+                                            CornerRadius="16"
+                                            Padding="12"
+                                            Margin="0,0,0,10">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="64" />
+                                                <ColumnDefinition />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <Ellipse Width="56"
+                                                     Height="56"
+                                                     Stroke="White"
+                                                     StrokeThickness="2"
+                                                     VerticalAlignment="Center">
+                                                <Ellipse.Fill>
+                                                    <ImageBrush ImageSource="{Binding FotoPerfil}"
+                                                                Stretch="UniformToFill" />
+                                                </Ellipse.Fill>
+                                            </Ellipse>
+
+                                            <StackPanel Grid.Column="1"
+                                                        Margin="12,0,0,0">
+                                                <TextBlock Text="{Binding NombreContacto}"
+                                                           FontWeight="Bold"
+                                                           Foreground="{StaticResource TextDarkBrush}" />
+                                                <TextBlock Text="{Binding MensajeResumen}"
+                                                           FontSize="13"
+                                                           Foreground="#3B3B3B" />
+                                                <TextBlock Text="{Binding Descripcion}"
+                                                           TextWrapping="Wrap"
+                                                           Foreground="#555555"
+                                                           FontSize="13"
+                                                           Margin="0,4,0,0">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Visibility" Value="Visible" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding TieneDescripcion}" Value="False">
+                                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Column="2"
+                                                        Orientation="Horizontal"
+                                                        VerticalAlignment="Center">
+                                                <Button Content="Aceptar"
+                                                        Command="{Binding DataContext.ComandoAceptarMatch, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                        CommandParameter="{Binding}"
+                                                        Style="{StaticResource PillButtonStyle}"
+                                                        Margin="0,0,8,0"
+                                                        Background="#05AFC6"
+                                                        Foreground="White" />
+                                                <Button Content="Rechazar"
+                                                        Command="{Binding DataContext.ComandoRechazarMatch, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                        CommandParameter="{Binding}"
+                                                        Style="{StaticResource PillButtonStyle}"
+                                                        Background="#FF6B6B"
+                                                        Foreground="White" />
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+
                     <!-- Bandeja de chats -->
                     <StackPanel Margin="0,18,0,0">
                         <TextBlock Text="Chats"
