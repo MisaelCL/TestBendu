@@ -47,14 +47,6 @@ namespace C_C_Final.Services
                 // Solo creamos el match
                 var matchId = _matchRepository.CrearMatch(connection, transaction, idPerfilEmisor, idPerfilReceptor, estadoNormalizado);
 
-                // --- CORRECCIÓN ---
-                // Se elimina la llamada a AsegurarChatParaMatch.
-                // El chat SÓLO debe crearse cuando el match sea "aceptado",
-                // no cuando esté "pendiente".
-                //
-                // LÍNEA ELIMINADA:
-                // _matchRepository.AsegurarChatParaMatch(connection, transaction, matchId);
-                
                 // Al finalizar se confirma el cambio. El chat se generará posteriormente cuando ambos acepten.
                 transaction.Commit();
                 return matchId;

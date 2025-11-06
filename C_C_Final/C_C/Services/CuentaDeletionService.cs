@@ -14,7 +14,6 @@ namespace C_C_Final.Services
         private readonly ICuentaRepository _cuentaRepository;
         private readonly IPerfilRepository _perfilRepository;
         private readonly IMatchRepository _matchRepository;
-        // NOTA: Falta un IMensajeRepository.
 
         public CuentaDeletionService(
             ICuentaRepository cuentaRepository,
@@ -59,20 +58,6 @@ namespace C_C_Final.Services
 
                     // Borra Matches
                     _matchRepository.EliminarMatchesPorPerfil(perfil.IdPerfil, connection, transaction);
-
-                    // ***** ¡IMPORTANTE! *****
-                    // Necesitarás implementar un IMensajeRepository y MensajeRepository
-                    // con un método similar "EliminarMensajesPorPerfil(int idPerfil, ...)"
-                    // y llamarlo aquí.
-                    // Ejemplo:
-                    // _mensajeRepository.EliminarMensajesPorPerfil(perfil.IdPerfil, connection, transaction);
-
-                    // 2. Borrar la Cuenta principal.
-                    // Esto activará el ON DELETE CASCADE para Alumno, Perfil y Preferencias.
-
-                    // Necesitamos un método en ICuentaRepository que acepte la transacción
-                    // Por ahora, usaremos el método existente dentro de la transacción.
-                    // (Sería mejor refactorizar EliminarCuenta para aceptar tx)
 
                     const string sqlDeleteCuenta = "DELETE FROM dbo.Cuenta WHERE ID_Cuenta = @Id";
                     using (var cmd = CrearComando(connection, sqlDeleteCuenta, CommandType.Text, transaction))

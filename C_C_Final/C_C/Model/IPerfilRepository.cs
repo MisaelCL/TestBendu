@@ -11,7 +11,6 @@ namespace C_C_Final.Model
         bool ActualizarPerfil(Perfil perfil);
         bool EliminarPerfil(int idPerfil);
 
-        // --- MÉTODO AÑADIDO ---
         Perfil ObtenerSiguientePerfilPara(int idPerfilActual);
     }
 }

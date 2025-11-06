@@ -19,7 +19,6 @@ namespace C_C_Final.Repositories
         {
         }
 
-        /// <inheritdoc />
         public Cuenta ObtenerPorId(int idCuenta)
         {
             using var connection = AbrirConexion();
@@ -36,7 +35,6 @@ namespace C_C_Final.Repositories
             return MapearCuenta(reader);
         }
 
-        /// <inheritdoc />
         public Cuenta ObtenerPorCorreo(string email)
         {
             using var connection = AbrirConexion();
@@ -53,7 +51,6 @@ namespace C_C_Final.Repositories
             return MapearCuenta(reader);
         }
 
-        /// <inheritdoc />
         public bool ExistePorCorreo(string email)
         {
             using var connection = AbrirConexion();
@@ -65,21 +62,18 @@ namespace C_C_Final.Repositories
             return ConvertirSeguroAInt32(result) == 1;
         }
 
-        /// <inheritdoc />
         public void CrearCuenta(string email, string passwordHash, string passwordSalt, byte estadoCuenta)
         {
             using var connection = AbrirConexion();
             CrearCuenta(connection, null, email, passwordHash, passwordSalt, estadoCuenta);
         }
 
-        /// <inheritdoc />
         public void CrearAlumno(Alumno alumno)
         {
             using var connection = AbrirConexion();
             CrearAlumno(connection, null, alumno);
         }
 
-        /// <inheritdoc />
         public bool ActualizarContrasena(int idCuenta, string newPasswordHash)
         {
             using var connection = AbrirConexion();
@@ -92,7 +86,6 @@ namespace C_C_Final.Repositories
             return rows > 0;
         }
 
-        /// <inheritdoc />
         public bool EliminarCuenta(int idCuenta)
         {
             using var connection = AbrirConexion();
@@ -104,7 +97,6 @@ namespace C_C_Final.Repositories
             return rows > 0;
         }
 
-        /// <inheritdoc />
         public int CrearCuenta(SqlConnection connection, SqlTransaction tx, string email, string passwordHash, string passwordSalt, byte estadoCuenta)
         {
             // Este INSERT devuelve el ID generado para relacionar la cuenta con el alumno, perfil y preferencias
@@ -123,7 +115,6 @@ VALUES (@Email, @Hash, @Salt, @Estado, @Fecha);";
             return ConvertirSeguroAInt32(result);
         }
 
-        /// <inheritdoc />
         public int CrearAlumno(SqlConnection connection, SqlTransaction tx, Alumno alumno)
         {
             // La matrícula se inserta como clave de negocio y se vincula con la cuenta creada previamente.

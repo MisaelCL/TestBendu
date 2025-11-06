@@ -51,11 +51,6 @@ namespace C_C_Final.ViewModel
             return EstadoAceptado;
         }
 
-        public static string ConstruirAceptado()
-        {
-            return EstadoAceptado;
-        }
-
         public static string ConstruirPendiente()
         {
             return EstadoPendiente;
