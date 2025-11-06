@@ -120,7 +120,7 @@ namespace C_C_Final.ViewModel
             var chat = _matchRepository.ObtenerChatPorMatchId(matchId) ?? new Chat();
             if (chat.IdChat == 0)
             {
-                var chatId = _matchRepository.AsegurarChatParaMatch(matchId);
+                var chatId = _matchService.AsegurarChatParaMatch(matchId);
                 chat = _matchRepository.ObtenerChatPorMatchId(matchId) ?? new Chat { IdChat = chatId };
             }
 

@@ -11,9 +11,6 @@ namespace C_C_Final.Model
         Cuenta ObtenerPorCorreo(string email);
         bool ExistePorCorreo(string email);
 
-        void CrearCuenta(string email, string passwordHash, string passwordSalt, byte estadoCuenta);
-        void CrearAlumno(Alumno alumno);
-        bool ActualizarContrasena(int idCuenta, string newPasswordHash);
         bool EliminarCuenta(int idCuenta);
 
         int CrearCuenta(SqlConnection cn, SqlTransaction tx, string email, string passwordHash, string passwordSalt, byte estadoCuenta);

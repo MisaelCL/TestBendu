@@ -102,18 +102,6 @@ OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
         }
 
         /// <inheritdoc />
-        public int CrearMatch(int idPerfilEmisor, int idPerfilReceptor, string estado)
-        {
-            if (idPerfilEmisor == idPerfilReceptor)
-            {
-                throw new ArgumentException("No se puede crear un match con el mismo perfil", nameof(idPerfilEmisor));
-            }
-
-            using var connection = AbrirConexion();
-            return CrearMatch(connection, null, idPerfilEmisor, idPerfilReceptor, estado);
-        }
-
-        /// <inheritdoc />
         public bool ActualizarEstado(int idMatch, string nuevoEstado)
         {
             using var connection = AbrirConexion();
@@ -157,13 +145,6 @@ OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
         }
 
         /// <inheritdoc />
-        public int AsegurarChatParaMatch(int idMatch)
-        {
-            using var connection = AbrirConexion();
-            return AsegurarChatParaMatch(connection, null, idMatch);
-        }
-
-        /// <inheritdoc />
         public Chat ObtenerChatPorMatchId(int idMatch)
         {
             using var connection = AbrirConexion();
@@ -180,13 +161,6 @@ WHERE ID_Match = @Match";
             }
 
             return MapearChat(reader);
-        }
-
-        /// <inheritdoc />
-        public long AgregarMensaje(int idChat, int idRemitentePerfil, string contenido, bool confirmacionLectura)
-        {
-            using var connection = AbrirConexion();
-            return AgregarMensaje(connection, null, idChat, idRemitentePerfil, contenido, confirmacionLectura);
         }
 
         /// <inheritdoc />

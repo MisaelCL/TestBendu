@@ -1,5 +1,4 @@
 using System;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
@@ -24,11 +23,9 @@ namespace C_C_Final.ViewModel
         private readonly MatchService _matchService;
         private readonly int _idPerfilActual;
 
-        private readonly ObservableCollection<PerfilSugerenciaViewModel> _sugerencias = new ObservableCollection<PerfilSugerenciaViewModel>();
         private readonly RelayCommand _comandoAceptar;
         private readonly RelayCommand _comandoRechazar;
         private readonly RelayCommand _comandoSiguiente;
-        private readonly RelayCommand _comandoAnterior;
         private readonly RelayCommand _comandoAlternarConfiguracion;
         private readonly RelayCommand _comandoIrAMiPerfil;
         private readonly RelayCommand _comandoBloquearPerfil;
@@ -36,6 +33,7 @@ namespace C_C_Final.ViewModel
         private PerfilSugerenciaViewModel? _perfilActual;
         private bool _isSettingsMenuOpen;
         private string _estadoMensaje = string.Empty;
+        private int _perfilesDisponibles;
 
         // --- Constructor ---
         public HomeViewModel(int idPerfilLogueado)
@@ -49,7 +47,6 @@ namespace C_C_Final.ViewModel
             _comandoAceptar = new RelayCommand(_ => RegistrarInteraccion(true), _ => PerfilActual != null);
             _comandoRechazar = new RelayCommand(_ => RegistrarInteraccion(false), _ => PerfilActual != null);
             _comandoSiguiente = new RelayCommand(_ => CargarSiguientePerfil(), _ => PerfilActual != null);
-            _comandoAnterior = new RelayCommand(_ => { }, _ => false);
             _comandoAlternarConfiguracion = new RelayCommand(_ => IsSettingsMenuOpen = !IsSettingsMenuOpen);
             _comandoIrAMiPerfil = new RelayCommand(_ => NavegarAConfiguracion());
             _comandoBloquearPerfil = new RelayCommand(_ => BloquearPerfilActual(), _ => PerfilActual != null);
@@ -58,8 +55,6 @@ namespace C_C_Final.ViewModel
             // Carga el primer perfil al iniciar para que la UI muestre contenido inmediatamente.
             CargarSiguientePerfil();
         }
-
-        public ObservableCollection<PerfilSugerenciaViewModel> Sugerencias => _sugerencias;
 
         // --- Propiedad para el Perfil en Pantalla ---
         public PerfilSugerenciaViewModel? PerfilActual
@@ -73,7 +68,6 @@ namespace C_C_Final.ViewModel
                     _comandoRechazar.NotificarCambioPuedeEjecutar();
                     _comandoBloquearPerfil.NotificarCambioPuedeEjecutar();
                     _comandoSiguiente.NotificarCambioPuedeEjecutar();
-                    _comandoAnterior.NotificarCambioPuedeEjecutar();
                 }
             }
         }
@@ -82,6 +76,12 @@ namespace C_C_Final.ViewModel
         {
             get => _estadoMensaje;
             private set => EstablecerPropiedad(ref _estadoMensaje, value);
+        }
+
+        public int PerfilesDisponibles
+        {
+            get => _perfilesDisponibles;
+            private set => EstablecerPropiedad(ref _perfilesDisponibles, value);
         }
 
         public bool IsSettingsMenuOpen
@@ -93,7 +93,6 @@ namespace C_C_Final.ViewModel
         public ICommand ComandoAceptar => _comandoAceptar;
         public ICommand ComandoRechazar => _comandoRechazar;
         public ICommand ComandoSiguiente => _comandoSiguiente;
-        public ICommand ComandoAnterior => _comandoAnterior;
         public ICommand ComandoAlternarConfiguracion => _comandoAlternarConfiguracion;
         public ICommand ComandoIrAMiPerfil => _comandoIrAMiPerfil;
         public ICommand ComandoBloquearPerfil => _comandoBloquearPerfil;
@@ -219,19 +218,18 @@ namespace C_C_Final.ViewModel
                 // Llama al nuevo método del repositorio
                 var perfil = _perfilRepository.ObtenerSiguientePerfilPara(_idPerfilActual);
 
-                _sugerencias.Clear();
-
                 if (perfil == null)
                 {
                     // Opcional: Mostrar un mensaje o un estado de "No hay más perfiles"
                     PerfilActual = null;
                     EstadoMensaje = "¡Has visto todos los perfiles por ahora!";
+                    PerfilesDisponibles = 0;
                     return;
                 }
 
                 var vista = CrearSugerencia(perfil);
-                _sugerencias.Add(vista);
                 PerfilActual = vista;
+                PerfilesDisponibles = 1;
 
                 var match = _matchRepository.ObtenerPorPerfiles(_idPerfilActual, perfil.IdPerfil);
                 if (match != null && MatchEstadoHelper.EsPendiente(match.Estado) && match.PerfilEmisor == perfil.IdPerfil)
@@ -247,8 +245,8 @@ namespace C_C_Final.ViewModel
             {
                 MessageBox.Show($"Error al cargar el siguiente perfil: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 PerfilActual = null;
-                _sugerencias.Clear();
                 EstadoMensaje = "Ocurrió un error al cargar perfiles.";
+                PerfilesDisponibles = 0;
             }
         }
 

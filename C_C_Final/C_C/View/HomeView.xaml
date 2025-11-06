@@ -182,18 +182,7 @@
                                                         <ColumnDefinition />
                                                     </Grid.ColumnDefinitions>
 
-                                                    <Button Grid.Column="0"
-                                                            Width="42"
-                                                            Height="42"
-                                                            Content="&#x276E;"
-                                                            FontSize="24"
-                                                            Foreground="#FFFFFF"
-                                                            Background="#80000000"
-                                                            BorderThickness="0"
-                                                            Cursor="Hand"
-                                                            Command="{Binding DataContext.ComandoAnterior, RelativeSource={RelativeSource AncestorType=Window}}" />
-
-                                                    <Button Grid.Column="2"
+                                                    <Button Grid.Column="1"
                                                             Width="42"
                                                             Height="42"
                                                             Content="&#x276F;"
@@ -299,7 +288,7 @@
                     <TextBlock Text="Perfiles disponibles: "
                                Foreground="#FFFFFF"
                                FontWeight="SemiBold" />
-                    <TextBlock Text="{Binding Sugerencias.Count}"
+                    <TextBlock Text="{Binding PerfilesDisponibles}"
                                Foreground="#05AFC6"
                                FontWeight="Bold" />
                 </StackPanel>

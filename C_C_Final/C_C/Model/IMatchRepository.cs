@@ -13,14 +13,11 @@ namespace C_C_Final.Model
         bool Existe(int idPerfilA, int idPerfilB);
         IReadOnlyList<Match> ListarPorPerfil(int idPerfil, int page, int pageSize);
 
-        int CrearMatch(int idPerfilEmisor, int idPerfilReceptor, string estado);
         bool ActualizarEstado(int idMatch, string nuevoEstado);
         bool EliminarMatch(int idMatch);
 
-        int AsegurarChatParaMatch(int idMatch);
         Chat ObtenerChatPorMatchId(int idMatch);
 
-        long AgregarMensaje(int idChat, int idRemitentePerfil, string contenido, bool confirmacionLectura);
         IReadOnlyList<Mensaje> ListarMensajes(int idChat, int page, int pageSize);
 
         int CrearMatch(SqlConnection cn, SqlTransaction tx, int idPerfilEmisor, int idPerfilReceptor, string estado);

@@ -10,6 +10,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using C_C_Final.Model;
+using C_C_Final.Services;
 using C_C_Final.View;
 
 namespace C_C_Final.ViewModel
@@ -21,6 +22,7 @@ namespace C_C_Final.ViewModel
     {
         private readonly IPerfilRepository _perfilRepository;
         private readonly IMatchRepository _matchRepository;
+        private readonly MatchService _matchService;
         private readonly ObservableCollection<ChatResumenItemViewModel> _listaChats = new ObservableCollection<ChatResumenItemViewModel>();
         private readonly ObservableCollection<MatchPendienteItemViewModel> _matchesPendientes = new ObservableCollection<MatchPendienteItemViewModel>();
         private readonly ICollectionView _chatsView;
@@ -43,6 +45,7 @@ namespace C_C_Final.ViewModel
         {
             _perfilRepository = perfilRepository;
             _matchRepository = matchRepository;
+            _matchService = new MatchService(matchRepository);
             _chatsView = CollectionViewSource.GetDefaultView(_listaChats);
             _chatsView.Filter = FiltrarChat;
             ComandoRegresar = new RelayCommand(_ => Regresar());
@@ -363,7 +366,7 @@ namespace C_C_Final.ViewModel
                 var chat = _matchRepository.ObtenerChatPorMatchId(match.IdMatch);
                 if (chat == null)
                 {
-                    var chatId = _matchRepository.AsegurarChatParaMatch(match.IdMatch);
+                    var chatId = _matchService.AsegurarChatParaMatch(match.IdMatch);
                     chat = _matchRepository.ObtenerChatPorMatchId(match.IdMatch) ?? new Chat { IdChat = chatId, IdMatch = match.IdMatch };
                 }
 
@@ -424,7 +427,7 @@ namespace C_C_Final.ViewModel
                     return;
                 }
 
-                _matchRepository.AsegurarChatParaMatch(matchPendiente.MatchId);
+                _matchService.AsegurarChatParaMatch(matchPendiente.MatchId);
                 MessageBox.Show($"Ahora puedes chatear con {matchPendiente.NombreContacto}.", "Match aceptado", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
