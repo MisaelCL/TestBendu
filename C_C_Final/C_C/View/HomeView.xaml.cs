@@ -1,72 +1,48 @@
-using System;
-using System.Threading.Channels;
+using C_C_Final.ViewModel; // Importar el namespace del ViewModel
 using System.Windows;
-using System.Windows.Input;
-using C_C_Final.ViewModel;
 
 namespace C_C_Final.View
 {
+    /// <summary>
+    /// Lógica de interacción para HomeView.xaml (Bandeja de Entrada)
+    /// </summary>
     public partial class HomeView : Window
     {
-        private readonly int _perfilId;
-
-        public HomeView(int perfilId)
+        // El constructor ahora recibe el ID del perfil del usuario logueado
+        public HomeView(int idPerfilLogueado)
         {
-            _perfilId = perfilId;
             InitializeComponent();
-            var app = App.Current;
-            if (app != null)
-            {
-                var viewModel = new InboxViewModel(app.MatchRepository, app.PerfilRepository, app.MatchService);
-                DataContext = viewModel;
-                viewModel.MiPerfilRequested += OnMiPerfilRequested;
-                Loaded += (_, _) => CargarVista(viewModel, _perfilId);
-                Closed += (_, _) => viewModel.MiPerfilRequested -= OnMiPerfilRequested;
-            }
+
+            // --- CORRECCIÓN ---
+            // 1. Usamos InboxViewModel (la bandeja de chats)
+            var viewModel = new InboxViewModel(idPerfilLogueado);
+            
+            // 2. Asigna el ViewModel al DataContext
+            DataContext = viewModel;
+        }
+
+        // --- MÉTODOS RESTAURADOS PARA CORREGIR ERRORES DE COMPILACIÓN ---
+
+        private void btnClose_Click(object sender, RoutedEventArgs e)
+        {
+            // Cierra la aplicación
+            Application.Current.Shutdown();
         }
 
         private void btnMinimize_Click(object sender, RoutedEventArgs e)
         {
-            WindowState = WindowState.Minimized;
-        }
-
-        private void btnClose_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
-
-        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
-        {
-            base.OnMouseLeftButtonDown(e);
-
-            if (e.ButtonState == MouseButtonState.Pressed)
-            {
-                DragMove();
-            }
-        }
-
-        private static void CargarVista(InboxViewModel viewModel, int perfilId)
-        {
-            try
-            {
-                viewModel.Cargar(perfilId);
-            }
-            catch (Exception)
-            {
-                // Ignora errores de carga inicial para permitir que la vista se muestre.
-            }
-        }
-
-        private void OnMiPerfilRequested(int cuentaId)
-        {
-            var perfilView = new PerfilView(cuentaId);
-            perfilView.Show();
-            Close();
+            // Minimiza la ventana
+            this.WindowState = WindowState.Minimized;
         }
 
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
-
+            // 3. Conectamos al método que YA EXISTE en InboxViewModel
+            if (DataContext is InboxViewModel viewModel)
+            {
+                // Este método 'AbrirConfiguracion' ya existe en InboxViewModel
+                viewModel.AbrirConfiguracion(); 
+            }
         }
     }
 }
