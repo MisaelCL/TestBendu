@@ -1,10 +1,10 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\jmanu\\Desktop\\AppMain\\C_C_Final\\",
+  "WorkspaceRootPath": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\C_C_Final\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|c:\\users\\jmanu\\desktop\\appmain\\c_c_final\\c_c\\services\\matchservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|solutionrelative:c_c\\services\\matchservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|c:\\users\\jmanu\\desktop\\final\\testbendu\\c_c_final\\c_c\\viewmodel\\homeviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{70B3F673-E53E-4ED8-8113-885A8F874E4C}|C_C\\C_C.csproj|solutionrelative:c_c\\viewmodel\\homeviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -19,14 +19,14 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "MatchService.cs",
-              "DocumentMoniker": "C:\\Users\\jmanu\\Desktop\\AppMain\\C_C_Final\\C_C\\Services\\MatchService.cs",
-              "RelativeDocumentMoniker": "C_C\\Services\\MatchService.cs",
-              "ToolTip": "C:\\Users\\jmanu\\Desktop\\AppMain\\C_C_Final\\C_C\\Services\\MatchService.cs",
-              "RelativeToolTip": "C_C\\Services\\MatchService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAGMAAAABAAAAAAAAAA==",
+              "Title": "HomeViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\C_C_Final\\C_C\\ViewModel\\HomeViewModel.cs",
+              "RelativeDocumentMoniker": "C_C\\ViewModel\\HomeViewModel.cs",
+              "ToolTip": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\C_C_Final\\C_C\\ViewModel\\HomeViewModel.cs",
+              "RelativeToolTip": "C_C\\ViewModel\\HomeViewModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-06T02:13:04.697Z",
+              "WhenOpened": "2025-11-06T07:47:35.908Z",
               "EditorCaption": ""
             }
           ]

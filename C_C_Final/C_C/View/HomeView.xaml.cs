@@ -15,7 +15,7 @@ namespace C_C_Final.View
 
             // --- CORRECCIÓN ---
             // 1. Usamos InboxViewModel (la bandeja de chats)
-            var viewModel = new InboxViewModel(idPerfilLogueado);
+            var viewModel = new HomeViewModel(idPerfilLogueado);
             
             // 2. Asigna el ViewModel al DataContext
             DataContext = viewModel;
@@ -38,7 +38,7 @@ namespace C_C_Final.View
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
             // 3. Conectamos al método que YA EXISTE en InboxViewModel
-            if (DataContext is InboxViewModel viewModel)
+            if (DataContext is HomeViewModel viewModel)
             {
                 // Este método 'AbrirConfiguracion' ya existe en InboxViewModel
                 viewModel.AbrirConfiguracion(); 

@@ -290,8 +290,8 @@ namespace C_C_Final.ViewModel
                 return false;
             }
 
-            return chat.NombreContacto?.IndexOf(FiltroBusqueda, StringComparison.OrdinalIgnoreCase) >= 0
-                || chat.UltimoMensaje?.IndexOf(FiltroBusqueda, StringComparison.OrdinalIgnoreCase) >= 0;
+            return chat.NombreContacto.IndexOf(FiltroBusqueda, StringComparison.OrdinalIgnoreCase) >= 0
+                || chat.UltimoMensaje.IndexOf(FiltroBusqueda, StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
         private void CargarChats()
@@ -360,7 +360,7 @@ namespace C_C_Final.ViewModel
         {
             if (chatResumen == null)
             {
-                return;
+                return; 
             }
 
             if (chatResumen.MatchId == 0)
@@ -380,7 +380,7 @@ namespace C_C_Final.ViewModel
         /// <summary>
         /// Convierte un arreglo de bytes en una imagen para su visualización.
         /// </summary>
-        private static ImageSource ConvertirAImagen(byte[] bytes)
+        public static ImageSource ConvertirAImagen(byte[] bytes)
         {
             if (bytes == null || bytes.Length == 0)
             {
@@ -395,59 +395,6 @@ namespace C_C_Final.ViewModel
             image.EndInit();
             image.Freeze();
             return image;
-        }
-    }
-
-    public sealed class ChatResumenViewModel : BaseViewModel
-    {
-        private int _matchId;
-        private int _chatId;
-        private string _nombreContacto = string.Empty;
-        private ImageSource _fotoPerfil;
-        private string _ultimoMensaje = string.Empty;
-        private bool _isOnline;
-        private int _mensajesNoLeidos;
-
-        public int MatchId
-        {
-            get => _matchId;
-            set => EstablecerPropiedad(ref _matchId, value);
-        }
-
-        public int ChatId
-        {
-            get => _chatId;
-            set => EstablecerPropiedad(ref _chatId, value);
-        }
-
-        public string NombreContacto
-        {
-            get => _nombreContacto;
-            set => EstablecerPropiedad(ref _nombreContacto, value);
-        }
-
-        public ImageSource FotoPerfil
-        {
-            get => _fotoPerfil;
-            set => EstablecerPropiedad(ref _fotoPerfil, value);
-        }
-
-        public string UltimoMensaje
-        {
-            get => _ultimoMensaje;
-            set => EstablecerPropiedad(ref _ultimoMensaje, value);
-        }
-
-        public bool IsOnline
-        {
-            get => _isOnline;
-            set => EstablecerPropiedad(ref _isOnline, value);
-        }
-
-        public int MensajesNoLeidos
-        {
-            get => _mensajesNoLeidos;
-            set => EstablecerPropiedad(ref _mensajesNoLeidos, value);
         }
     }
 }

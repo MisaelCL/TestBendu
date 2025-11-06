@@ -644,11 +644,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\jmanu\\Desktop\\AppMain\\C_C_Final\\C_C\\C_C.csproj",
+      "projectUniqueName": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\C_C_Final\\C_C\\C_C.csproj",
       "projectName": "C_C",
-      "projectPath": "C:\\Users\\jmanu\\Desktop\\AppMain\\C_C_Final\\C_C\\C_C.csproj",
+      "projectPath": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\C_C_Final\\C_C\\C_C.csproj",
       "packagesPath": "C:\\Users\\jmanu\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\jmanu\\Desktop\\AppMain\\C_C_Final\\C_C\\obj\\",
+      "outputPath": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\C_C_Final\\C_C\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
