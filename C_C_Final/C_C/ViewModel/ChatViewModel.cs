@@ -20,7 +20,7 @@ namespace C_C_Final.ViewModel
         private readonly IPerfilRepository _perfilRepository;
         private readonly MatchService _matchService;
         private readonly ObservableCollection<MensajeItemViewModel> _mensajes = new ObservableCollection<MensajeItemViewModel>();
-        private ImageSource _contactoAvatarUrl;
+        private ImageSource? _contactoAvatarUrl;
         private string _contactoNombre = string.Empty;
         private string _nuevoMensaje = string.Empty;
         private bool _isChatMenuOpen;
@@ -48,7 +48,7 @@ namespace C_C_Final.ViewModel
 
         public ObservableCollection<MensajeItemViewModel> Mensajes => _mensajes;
 
-        public ImageSource ContactoAvatarUrl
+        public ImageSource? ContactoAvatarUrl
         {
             get => _contactoAvatarUrl;
             private set => EstablecerPropiedad(ref _contactoAvatarUrl, value);
@@ -202,7 +202,7 @@ namespace C_C_Final.ViewModel
         /// <summary>
         /// Convierte datos binarios en una imagen utilizable por la interfaz.
         /// </summary>
-        private static ImageSource ConvertirAImagen(byte[] bytes)
+        private static ImageSource? ConvertirAImagen(byte[] bytes)
         {
             if (bytes == null || bytes.Length == 0)
             {
@@ -228,6 +228,6 @@ namespace C_C_Final.ViewModel
         public int BubbleColumn { get; set; }
         public HorizontalAlignment BubbleAlign { get; set; } = HorizontalAlignment.Left;
         public Brush BubbleColor { get; set; } = Brushes.White;
-        public ImageSource AvatarUrl { get; set; }
+        public ImageSource? AvatarUrl { get; set; }
     }
 }

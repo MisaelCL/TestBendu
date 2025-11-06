@@ -33,7 +33,7 @@ namespace C_C_Final.ViewModel
         private readonly RelayCommand _comandoIrAMiPerfil;
         private readonly RelayCommand _comandoBloquearPerfil;
 
-        private PerfilSugerenciaViewModel _perfilActual;
+        private PerfilSugerenciaViewModel? _perfilActual;
         private bool _isSettingsMenuOpen;
         private string _estadoMensaje = string.Empty;
 
@@ -61,7 +61,7 @@ namespace C_C_Final.ViewModel
         public ObservableCollection<PerfilSugerenciaViewModel> Sugerencias => _sugerencias;
 
         // --- Propiedad para el Perfil en Pantalla ---
-        public PerfilSugerenciaViewModel PerfilActual
+        public PerfilSugerenciaViewModel? PerfilActual
         {
             get => _perfilActual;
             set
@@ -139,7 +139,10 @@ namespace C_C_Final.ViewModel
         // --- LÓGICA DE "LIKE" Y "RECHAZO" ---
         private void RegistrarInteraccion(bool esLike)
         {
-            if (PerfilActual?.Perfil == null) return;
+            if (PerfilActual?.Perfil == null)
+            {
+                return;
+            }
 
             int idPerfilDestino = PerfilActual.Perfil.IdPerfil;
 
@@ -325,6 +328,78 @@ namespace C_C_Final.ViewModel
 
             public Perfil Perfil { get; }
             public ImageSource FotoUrl { get; }
+            public string NombreEdad { get; }
+            public string CarreraTexto { get; }
+        }
+
+        private void BloquearPerfilActual()
+        {
+            if (PerfilActual?.Perfil == null)
+            {
+                return;
+            }
+
+            IsSettingsMenuOpen = false;
+            var resultado = MessageBox.Show(
+                $"¿Deseas bloquear a {PerfilActual.NombreEdad}?", "Bloquear perfil",
+                MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if (resultado == MessageBoxResult.Yes)
+            {
+                RegistrarInteraccion(false);
+                EstadoMensaje = "Perfil bloqueado.";
+            }
+        }
+
+        private static PerfilSugerenciaViewModel CrearSugerencia(Perfil perfil)
+        {
+            var nombre = string.IsNullOrWhiteSpace(perfil.Nikname)
+                ? "Usuario desconocido"
+                : perfil.Nikname;
+
+            var descripcion = string.IsNullOrWhiteSpace(perfil.Biografia)
+                ? "Sin biografía disponible"
+                : perfil.Biografia;
+
+            return new PerfilSugerenciaViewModel(perfil, ConvertirAImagen(perfil.FotoPerfil), nombre, descripcion);
+        }
+
+        private static ImageSource? ConvertirAImagen(byte[] bytes)
+        {
+            if (bytes == null || bytes.Length == 0)
+            {
+                return null;
+            }
+
+            try
+            {
+                using var ms = new MemoryStream(bytes);
+                var image = new BitmapImage();
+                image.BeginInit();
+                image.StreamSource = ms;
+                image.CacheOption = BitmapCacheOption.OnLoad;
+                image.EndInit();
+                image.Freeze();
+                return image;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public sealed class PerfilSugerenciaViewModel
+        {
+            public PerfilSugerenciaViewModel(Perfil perfil, ImageSource? fotoUrl, string nombreEdad, string carreraTexto)
+            {
+                Perfil = perfil;
+                FotoUrl = fotoUrl;
+                NombreEdad = nombreEdad;
+                CarreraTexto = carreraTexto;
+            }
+
+            public Perfil Perfil { get; }
+            public ImageSource? FotoUrl { get; }
             public string NombreEdad { get; }
             public string CarreraTexto { get; }
         }

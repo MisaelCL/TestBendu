@@ -29,13 +29,13 @@ namespace C_C_Final.ViewModel
         private int _idPreferencias;
         private string _nikName = string.Empty;
         private string _descripcion = string.Empty;
-        private byte[] _fotoPerfilBytes;
-        private ImageSource _fotoPerfilUrl;
+        private byte[] _fotoPerfilBytes = Array.Empty<byte>();
+        private ImageSource? _fotoPerfilUrl;
         private DateTime _fechaCreacion;
         private int _edadMin = EdadMinimaPermitida;
         private int _edadMax = EdadMaximaPredeterminada;
-        private string _otroPreferencia;
-        private string _generoSeleccionado;
+        private string _otroPreferencia = string.Empty;
+        private string _generoSeleccionado = string.Empty;
         private bool _isBusy;
 
         public PreferenciasViewModel(
@@ -54,7 +54,9 @@ namespace C_C_Final.ViewModel
                 "Todos"
             });
             EditarFotoCommand = new RelayCommand(_ => EditarFoto());
+            EditarNombreCommand = new RelayCommand(_ => IniciarEdicionNombre());
             GuardarPerfilCommand = new RelayCommand(_ => GuardarCambios(), _ => !IsBusy);
+            EditarDescripcionCommand = new RelayCommand(_ => IniciarEdicionDescripcion());
             CerrarSesionCommand = new RelayCommand(_ => CerrarSesion());
             EliminarCuentaCommand = new RelayCommand(_ => EliminarCuenta(), _ => !IsBusy);
         }
@@ -73,7 +75,7 @@ namespace C_C_Final.ViewModel
             set => EstablecerPropiedad(ref _descripcion, value);
         }
 
-        public ImageSource FotoPerfilUrl
+        public ImageSource? FotoPerfilUrl
         {
             get => _fotoPerfilUrl;
             private set => EstablecerPropiedad(ref _fotoPerfilUrl, value);
@@ -342,6 +344,17 @@ namespace C_C_Final.ViewModel
             return NormalizarEdad(edad, Math.Max(limiteInferior, EdadMinimaPermitida), EdadMaximaPermitida);
         }
 
+        private void IniciarEdicionNombre()
+        {
+            // La edición del nombre se realiza directamente en el TextBox.
+            // Este método existe para mantener la asociación del comando desde XAML.
+        }
+
+        private void IniciarEdicionDescripcion()
+        {
+            // La descripción también se edita en línea, por lo que no se requiere lógica adicional.
+        }
+
         private void EditarFoto()
         {
             var dialog = new Microsoft.Win32.OpenFileDialog
@@ -392,7 +405,7 @@ namespace C_C_Final.ViewModel
         /// <summary>
         /// Convierte un arreglo de bytes a una imagen compatible con WPF.
         /// </summary>
-        private static ImageSource ConvertirAImagen(byte[] bytes)
+        private static ImageSource? ConvertirAImagen(byte[] bytes)
         {
             if (bytes == null || bytes.Length == 0)
             {

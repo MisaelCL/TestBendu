@@ -8,14 +8,14 @@ namespace C_C_Final
 {
     public partial class App : System.Windows.Application
     {
-        public string ConnectionString { get; private set; }
-        public CuentaRepository CuentaRepository { get; private set; }
-        public PerfilRepository PerfilRepository { get; private set; }
-        public PreferenciasRepository PreferenciasRepository { get; private set; }
-        public MatchRepository MatchRepository { get; private set; }
-        public RegisterAlumnoService RegisterAlumnoService { get; private set; }
-        public MatchService MatchService { get; private set; }
-        public CuentaDeletionService CuentaDeletionService { get; private set; }
+        public string ConnectionString { get; private set; } = string.Empty;
+        public CuentaRepository CuentaRepository { get; private set; } = null!;
+        public PerfilRepository PerfilRepository { get; private set; } = null!;
+        public PreferenciasRepository PreferenciasRepository { get; private set; } = null!;
+        public MatchRepository MatchRepository { get; private set; } = null!;
+        public RegisterAlumnoService RegisterAlumnoService { get; private set; } = null!;
+        public MatchService MatchService { get; private set; } = null!;
+        public CuentaDeletionService CuentaDeletionService { get; private set; } = null!;
         public static new App Current => (App)System.Windows.Application.Current;
 
         protected override void OnStartup(StartupEventArgs e)
