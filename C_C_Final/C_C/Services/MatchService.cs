@@ -2,6 +2,7 @@ using System;
 using System.Data.SqlClient;
 using C_C_Final.Model;
 using C_C_Final.Repositories;
+using C_C_Final.ViewModel;
 
 namespace C_C_Final.Services
 {
@@ -25,13 +26,20 @@ namespace C_C_Final.Services
         /// </summary>
         public int CrearMatch(int idPerfilEmisor, int idPerfilReceptor, string estado)
         {
+            var estadoNormalizado = MatchEstadoHelper.NormalizarParaPersistencia(estado);
+
+            if (string.IsNullOrEmpty(estadoNormalizado))
+            {
+                estadoNormalizado = MatchEstadoHelper.ConstruirPendiente();
+            }
+
             using var connection = new SqlConnection(_connectionString);
             connection.Open();
             using var transaction = connection.BeginTransaction();
             try
             {
                 // Solo creamos el match
-                var matchId = _matchRepository.CrearMatch(connection, transaction, idPerfilEmisor, idPerfilReceptor, estado);
+                var matchId = _matchRepository.CrearMatch(connection, transaction, idPerfilEmisor, idPerfilReceptor, estadoNormalizado);
 
                 // --- CORRECCIÓN ---
                 // Se elimina la llamada a AsegurarChatParaMatch.

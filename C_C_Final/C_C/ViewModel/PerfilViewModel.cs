@@ -22,7 +22,10 @@ namespace C_C_Final.ViewModel
         private readonly IPerfilRepository _perfilRepository;
         private readonly IMatchRepository _matchRepository;
         private readonly ObservableCollection<ChatResumenItemViewModel> _listaChats = new ObservableCollection<ChatResumenItemViewModel>();
+        private readonly ObservableCollection<MatchPendienteItemViewModel> _matchesPendientes = new ObservableCollection<MatchPendienteItemViewModel>();
         private readonly ICollectionView _chatsView;
+        private readonly RelayCommand _comandoAceptarMatch;
+        private readonly RelayCommand _comandoRechazarMatch;
         private int _idPerfil;
         private int _idCuenta;
         private string _nikName = string.Empty;
@@ -49,11 +52,17 @@ namespace C_C_Final.ViewModel
             ComandoSubirFoto = new RelayCommand(_ => SubirFoto());
             ComandoGuardarDescripcion = new RelayCommand(_ => GuardarCambios(), _ => !IsBusy);
             ComandoAbrirChat = new RelayCommand(param => AbrirChat(param as ChatResumenItemViewModel), param => param is ChatResumenItemViewModel chat && chat.MatchId != 0);
+            _comandoAceptarMatch = new RelayCommand(param => AceptarMatch(param as MatchPendienteItemViewModel), param => PuedeGestionarMatch(param as MatchPendienteItemViewModel));
+            _comandoRechazarMatch = new RelayCommand(param => RechazarMatch(param as MatchPendienteItemViewModel), param => PuedeGestionarMatch(param as MatchPendienteItemViewModel));
+            ComandoAceptarMatch = _comandoAceptarMatch;
+            ComandoRechazarMatch = _comandoRechazarMatch;
         }
 
         public ObservableCollection<ChatResumenItemViewModel> ListaChats => _listaChats;
 
         public ICollectionView ChatsView => _chatsView;
+
+        public ObservableCollection<MatchPendienteItemViewModel> MatchesPendientes => _matchesPendientes;
 
         public ICommand ComandoRegresar { get; }
         public ICommand ComandoAlternarConfiguracion { get; }
@@ -62,6 +71,8 @@ namespace C_C_Final.ViewModel
         public ICommand ComandoSubirFoto { get; }
         public ICommand ComandoGuardarDescripcion { get; }
         public ICommand ComandoAbrirChat { get; }
+        public ICommand ComandoAceptarMatch { get; }
+        public ICommand ComandoRechazarMatch { get; }
 
         public string NikName
         {
@@ -101,6 +112,8 @@ namespace C_C_Final.ViewModel
                 if (EstablecerPropiedad(ref _isBusy, value))
                 {
                     (ComandoGuardarDescripcion as RelayCommand)?.NotificarCambioPuedeEjecutar();
+                    _comandoAceptarMatch?.NotificarCambioPuedeEjecutar();
+                    _comandoRechazarMatch?.NotificarCambioPuedeEjecutar();
                 }
             }
         }
@@ -181,7 +194,7 @@ namespace C_C_Final.ViewModel
             HasUnread = false;
             UnreadCount = 0;
 
-            CargarChats();
+            RefrescarMatches();
         }
 
         /// <summary>
@@ -294,15 +307,48 @@ namespace C_C_Final.ViewModel
                 || chat.UltimoMensaje.IndexOf(FiltroBusqueda, StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
-        private void CargarChats()
+        private void RefrescarMatches()
         {
             _listaChats.Clear();
+            _matchesPendientes.Clear();
+
             if (_idPerfil == 0)
             {
+                HasUnread = false;
+                UnreadCount = 0;
+                _chatsView.Refresh();
                 return;
             }
 
             var matches = _matchRepository.ListarPorPerfil(_idPerfil, 0, 50) ?? Array.Empty<Match>();
+            var lista = matches.ToList();
+
+            CargarMatchesPendientes(lista);
+            CargarChats(lista);
+        }
+
+        private void CargarMatchesPendientes(IEnumerable<Match> matches)
+        {
+            foreach (var match in matches.Where(m => MatchEstadoHelper.EsPendiente(m.Estado) && m.PerfilReceptor == _idPerfil)
+                                          .OrderByDescending(m => m.FechaMatch))
+            {
+                var perfilSolicitante = _perfilRepository.ObtenerPorId(match.PerfilEmisor);
+                var item = new MatchPendienteItemViewModel
+                {
+                    MatchId = match.IdMatch,
+                    PerfilSolicitanteId = match.PerfilEmisor,
+                    NombreContacto = perfilSolicitante?.Nikname ?? "Contacto",
+                    Descripcion = perfilSolicitante?.Biografia ?? string.Empty,
+                    FotoPerfil = ConvertirAImagen(perfilSolicitante?.FotoPerfil),
+                    FechaMatch = match.FechaMatch
+                };
+
+                _matchesPendientes.Add(item);
+            }
+        }
+
+        private void CargarChats(IEnumerable<Match> matches)
+        {
             var acumuladorNoLeidos = 0;
             foreach (var match in matches)
             {
@@ -354,6 +400,92 @@ namespace C_C_Final.ViewModel
             UnreadCount = acumuladorNoLeidos;
             HasUnread = acumuladorNoLeidos > 0;
             _chatsView.Refresh();
+        }
+
+        private bool PuedeGestionarMatch(MatchPendienteItemViewModel match)
+        {
+            return !IsBusy && match != null && match.MatchId != 0;
+        }
+
+        private void AceptarMatch(MatchPendienteItemViewModel matchPendiente)
+        {
+            if (matchPendiente == null)
+            {
+                return;
+            }
+
+            try
+            {
+                IsBusy = true;
+                var actualizado = _matchRepository.ActualizarEstado(matchPendiente.MatchId, MatchEstadoHelper.ConstruirAceptado());
+                if (!actualizado)
+                {
+                    MessageBox.Show("No fue posible aceptar el match seleccionado.", "Matches", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                _matchRepository.AsegurarChatParaMatch(matchPendiente.MatchId);
+                MessageBox.Show($"Ahora puedes chatear con {matchPendiente.NombreContacto}.", "Match aceptado", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Matches", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                try
+                {
+                    RefrescarMatches();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Matches", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                finally
+                {
+                    IsBusy = false;
+                }
+            }
+        }
+
+        private void RechazarMatch(MatchPendienteItemViewModel matchPendiente)
+        {
+            if (matchPendiente == null)
+            {
+                return;
+            }
+
+            try
+            {
+                IsBusy = true;
+                var actualizado = _matchRepository.ActualizarEstado(matchPendiente.MatchId, MatchEstadoHelper.ConstruirRechazado());
+                if (!actualizado)
+                {
+                    MessageBox.Show("No fue posible rechazar el match seleccionado.", "Matches", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                MessageBox.Show($"Has rechazado el match de {matchPendiente.NombreContacto}.", "Match rechazado", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Matches", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                try
+                {
+                    RefrescarMatches();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Matches", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                finally
+                {
+                    IsBusy = false;
+                }
+            }
         }
 
         private void AbrirChat(ChatResumenItemViewModel chatResumen)

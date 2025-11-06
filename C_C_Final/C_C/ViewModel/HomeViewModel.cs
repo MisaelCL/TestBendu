@@ -166,7 +166,7 @@ namespace C_C_Final.ViewModel
                             && matchExistente.PerfilEmisor == idPerfilDestino)
                         {
                             // ¡Es un match mutuo!
-                            _matchRepository.ActualizarEstado(matchExistente.IdMatch, "aceptado");
+                            _matchRepository.ActualizarEstado(matchExistente.IdMatch, MatchEstadoHelper.ConstruirAceptado());
 
                             // ¡AHORA SÍ, creamos el chat!
                             _matchService.AsegurarChatParaMatch(matchExistente.IdMatch);
