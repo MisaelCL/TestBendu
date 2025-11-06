@@ -94,8 +94,8 @@ namespace C_C_Final.ViewModel
                     return;
                 }
 
-                var passwordHash = HashFunction.ComputeHash(password);
-                if (cuenta.HashContrasena != passwordHash)
+                var hasher = new PasswordHasher();
+                if (!hasher.VerifyPassword(password, cuenta.HashContrasena, cuenta.SaltContrasena))
                 {
                     ErrorMessage = "Contraseña incorrecta.";
                     return;

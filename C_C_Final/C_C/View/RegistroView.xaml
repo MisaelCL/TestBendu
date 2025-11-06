@@ -109,10 +109,10 @@
                                          CaretBrush="#0494A8"
                                          ToolTip="Ej. 20231234" />
 
-                                <TextBlock Text="Nombre completo:"
+                                <TextBlock Text="Nombre(s):"
                                            Foreground="#0B2340"
                                            FontWeight="SemiBold" />
-                                <TextBox Text="{Binding NombreCompleto, UpdateSourceTrigger=PropertyChanged}"
+                                <TextBox Text="{Binding Nombre, UpdateSourceTrigger=PropertyChanged}"
                                          Margin="0,6,0,12"
                                          Padding="10"
                                          FontSize="14"
@@ -121,7 +121,35 @@
                                          BorderBrush="#0494A8"
                                          BorderThickness="1"
                                          CaretBrush="#0494A8"
-                                         ToolTip="Nombre y apellidos" />
+                                         ToolTip="Ingresa tu nombre" />
+
+                                <TextBlock Text="Apellido paterno:"
+                                           Foreground="#0B2340"
+                                           FontWeight="SemiBold" />
+                                <TextBox Text="{Binding ApellidoPaterno, UpdateSourceTrigger=PropertyChanged}"
+                                         Margin="0,6,0,12"
+                                         Padding="10"
+                                         FontSize="14"
+                                         Foreground="#0B2340"
+                                         Background="White"
+                                         BorderBrush="#0494A8"
+                                         BorderThickness="1"
+                                         CaretBrush="#0494A8"
+                                         ToolTip="Ingresa tu apellido paterno" />
+
+                                <TextBlock Text="Apellido materno:"
+                                           Foreground="#0B2340"
+                                           FontWeight="SemiBold" />
+                                <TextBox Text="{Binding ApellidoMaterno, UpdateSourceTrigger=PropertyChanged}"
+                                         Margin="0,6,0,12"
+                                         Padding="10"
+                                         FontSize="14"
+                                         Foreground="#0B2340"
+                                         Background="White"
+                                         BorderBrush="#0494A8"
+                                         BorderThickness="1"
+                                         CaretBrush="#0494A8"
+                                         ToolTip="Ingresa tu apellido materno (opcional)" />
 
                                 <TextBlock Text="Género:"
                                            Foreground="#0B2340"

@@ -1,17 +1,17 @@
-INSERT INTO dbo.Alumno (Matricula, Nombre, Apellido_Paterno, Apellido_Materno, Fecha_Nacimiento, Genero, Carrera)
+INSERT INTO dbo.Cuenta (Email, Hash_Contrasena, Salt_Contrasena, Estado_Cuenta, Fecha_Registro)
 VALUES
-('A0001', 'María', 'García', 'López', '1999-05-10', 'Femenino', 'Ingeniería en Sistemas'),
-('A0002', 'Carlos', 'Ramírez', 'Torres', '1998-02-18', 'Masculino', 'Diseño Digital');
+('maria@example.com', 'Ffd1+1e6k+KC5v6MEZHos3xVXQfKXVvJ0l5tXmtk4ic=', 'w7z+zafTzGJ4i8k1QxL9YQ==', 1, SYSUTCDATETIME()),
+('carlos@example.com', 'Ffd1+1e6k+KC5v6MEZHos3xVXQfKXVvJ0l5tXmtk4ic=', 'w7z+zafTzGJ4i8k1QxL9YQ==', 1, SYSUTCDATETIME());
 
-INSERT INTO dbo.Cuenta (ID_Alumno, Email, PasswordHash, Fecha_Registro, Ultimo_Acceso, IsActive)
+INSERT INTO dbo.Alumno (Matricula, ID_Cuenta, Nombre, Apaterno, Amaterno, F_Nac, Genero, Correo, Carrera)
 VALUES
-(1, 'maria@example.com', '$2a$12$yjmSijNwa9uAd7kGouVpMe2hjc6uZXhwK40Oc0BkoWblcFN9uCGqu', SYSUTCDATETIME(), SYSUTCDATETIME(), 1),
-(2, 'carlos@example.com', '$2a$12$yjmSijNwa9uAd7kGouVpMe2hjc6uZXhwK40Oc0BkoWblcFN9uCGqu', SYSUTCDATETIME(), SYSUTCDATETIME(), 1);
+('A0001', 1001, 'María', 'García', 'López', '1999-05-10', 'F', 'maria@example.com', 'Ingeniería en Sistemas'),
+('A0002', 1002, 'Carlos', 'Ramírez', 'Torres', '1998-02-18', 'M', 'carlos@example.com', 'Diseño Digital');
 
-INSERT INTO dbo.Perfil (ID_Cuenta, Nickname, Nombre, Apellido_Paterno, Apellido_Materno, Genero, Fecha_Nacimiento, Carrera, Biografia)
+INSERT INTO dbo.Perfil (ID_Cuenta, Nikname, Biografia, FotoPerfil, FechaCreacion)
 VALUES
-(1, 'mariag', 'María', 'García', 'López', 'Femenino', '1999-05-10', 'Ingeniería en Sistemas', 'Amante de la tecnología y el café.'),
-(2, 'carlitos', 'Carlos', 'Ramírez', 'Torres', 'Masculino', '1998-02-18', 'Diseño Digital', 'Buscando nuevas aventuras.');
+(1001, 'mariag', 'Amante de la tecnología y el café.', NULL, SYSUTCDATETIME()),
+(1002, 'carlitos', 'Buscando nuevas aventuras.', NULL, SYSUTCDATETIME());
 
 INSERT INTO dbo.Match (Perfil_Emisor, Perfil_Receptor, Estado)
 VALUES (1, 2, 'Aceptado');

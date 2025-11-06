@@ -73,6 +73,7 @@ namespace C_C_Final.Services
             using var transaction = connection.BeginTransaction();
             try
             {
+                var hasher = new PasswordHasher();
                 var normalizedEmail = request.Email.Trim();
 
                 if (_cuentaRepository.ExistePorCorreo(normalizedEmail))
@@ -80,8 +81,8 @@ namespace C_C_Final.Services
                     throw new InvalidOperationException("El correo electrónico ya está registrado.");
                 }
 
-                var passwordHash = HashFunction.ComputeHash(request.Password);
-                var cuentaId = _cuentaRepository.CrearCuenta(connection, transaction, normalizedEmail, passwordHash, request.EstadoCuenta);
+                var (passwordHash, passwordSalt) = hasher.HashPassword(request.Password);
+                var cuentaId = _cuentaRepository.CrearCuenta(connection, transaction, normalizedEmail, passwordHash, passwordSalt, request.EstadoCuenta);
 
                 if (cuentaId <= 0)
                 {
@@ -104,9 +105,9 @@ namespace C_C_Final.Services
                     Correo = correoAlumno,
                     Carrera = request.Carrera?.Trim() ?? string.Empty
                 };
-                var alumnoId = _cuentaRepository.CrearAlumno(connection, transaction, alumno);
+                var rowsAffected = _cuentaRepository.CrearAlumno(connection, transaction, alumno);
 
-                if (alumnoId < 0)
+                if (rowsAffected <= 0)
                 {
                     throw new InvalidOperationException("No se pudo registrar la información del alumno.");
                 }

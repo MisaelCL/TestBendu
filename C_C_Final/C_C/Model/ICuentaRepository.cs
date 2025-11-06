@@ -11,12 +11,12 @@ namespace C_C_Final.Model
         Cuenta ObtenerPorCorreo(string email);
         bool ExistePorCorreo(string email);
 
-        void CrearCuenta(string email, string passwordHash, byte estadoCuenta);
+        void CrearCuenta(string email, string passwordHash, string passwordSalt, byte estadoCuenta);
         void CrearAlumno(Alumno alumno);
-        bool ActualizarContrasena(int idCuenta, string newPasswordHash);
+        bool ActualizarContrasena(int idCuenta, string newPasswordHash, string newPasswordSalt);
         bool EliminarCuenta(int idCuenta);
 
-        int CrearCuenta(SqlConnection cn, SqlTransaction tx, string email, string passwordHash, byte estadoCuenta);
+        int CrearCuenta(SqlConnection cn, SqlTransaction tx, string email, string passwordHash, string passwordSalt, byte estadoCuenta);
         int CrearAlumno(SqlConnection cn, SqlTransaction tx, Alumno alumno);
     }
 }
