@@ -1,72 +1,26 @@
-using System;
-using System.Threading.Channels;
+using C_C_Final.ViewModel; // Importar el namespace del ViewModel
 using System.Windows;
-using System.Windows.Input;
-using C_C_Final.ViewModel;
 
 namespace C_C_Final.View
 {
+    /// <summary>
+    /// Lógica de interacción para HomeView.xaml
+    /// </summary>
     public partial class HomeView : Window
     {
-        private readonly int _perfilId;
-
-        public HomeView(int perfilId)
+        // El constructor ahora recibe el ID del perfil del usuario logueado
+        public HomeView(int idPerfilLogueado)
         {
-            _perfilId = perfilId;
             InitializeComponent();
-            var app = App.Current;
-            if (app != null)
-            {
-                var viewModel = new InboxViewModel(app.MatchRepository, app.PerfilRepository, app.MatchService);
-                DataContext = viewModel;
-                viewModel.MiPerfilRequested += OnMiPerfilRequested;
-                Loaded += (_, _) => CargarVista(viewModel, _perfilId);
-                Closed += (_, _) => viewModel.MiPerfilRequested -= OnMiPerfilRequested;
-            }
-        }
 
-        private void btnMinimize_Click(object sender, RoutedEventArgs e)
-        {
-            WindowState = WindowState.Minimized;
-        }
-
-        private void btnClose_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
-
-        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
-        {
-            base.OnMouseLeftButtonDown(e);
-
-            if (e.ButtonState == MouseButtonState.Pressed)
-            {
-                DragMove();
-            }
-        }
-
-        private static void CargarVista(InboxViewModel viewModel, int perfilId)
-        {
-            try
-            {
-                viewModel.Cargar(perfilId);
-            }
-            catch (Exception)
-            {
-                // Ignora errores de carga inicial para permitir que la vista se muestre.
-            }
-        }
-
-        private void OnMiPerfilRequested(int cuentaId)
-        {
-            var perfilView = new PerfilView(cuentaId);
-            perfilView.Show();
-            Close();
-        }
-
-        private void SettingsButton_Click(object sender, RoutedEventArgs e)
-        {
-
+            // --- LÍNEAS NUEVAS/MODIFICADAS ---
+            // 1. Crea una instancia del nuevo ViewModel, pasándole el ID
+            var viewModel = new HomeViewModel(idPerfilLogueado);
+            
+            // 2. Asigna el ViewModel al DataContext de la Ventana
+            // (Esto conecta tus botones de Like/Rechazo en XAML a los Comandos del ViewModel)
+            DataContext = viewModel;
+            // --- FIN DE LÍNEAS NUEVAS ---
         }
     }
 }
