@@ -121,7 +121,7 @@
                                          BorderBrush="#0494A8"
                                          BorderThickness="1"
                                          CaretBrush="#0494A8"
-                                         ToolTip="Ingresa tu nombre" />
+                                         ToolTip="Ej. Juan Carlos" />
 
                                 <TextBlock Text="Apellido paterno:"
                                            Foreground="#0B2340"
@@ -135,7 +135,7 @@
                                          BorderBrush="#0494A8"
                                          BorderThickness="1"
                                          CaretBrush="#0494A8"
-                                         ToolTip="Ingresa tu apellido paterno" />
+                                         ToolTip="Ej. Hernández" />
 
                                 <TextBlock Text="Apellido materno:"
                                            Foreground="#0B2340"
@@ -149,7 +149,7 @@
                                          BorderBrush="#0494A8"
                                          BorderThickness="1"
                                          CaretBrush="#0494A8"
-                                         ToolTip="Ingresa tu apellido materno (opcional)" />
+                                         ToolTip="Ej. García" />
 
                                 <TextBlock Text="Género:"
                                            Foreground="#0B2340"
