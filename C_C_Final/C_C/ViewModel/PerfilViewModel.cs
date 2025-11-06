@@ -21,7 +21,7 @@ namespace C_C_Final.ViewModel
     {
         private readonly IPerfilRepository _perfilRepository;
         private readonly IMatchRepository _matchRepository;
-        private readonly ObservableCollection<ChatResumenViewModel> _listaChats = new ObservableCollection<ChatResumenViewModel>();
+        private readonly ObservableCollection<ChatResumenItemViewModel> _listaChats = new ObservableCollection<ChatResumenItemViewModel>();
         private readonly ICollectionView _chatsView;
         private int _idPerfil;
         private int _idCuenta;
@@ -48,10 +48,10 @@ namespace C_C_Final.ViewModel
             ComandoEditarPerfil = new RelayCommand(_ => EditarPerfil());
             ComandoSubirFoto = new RelayCommand(_ => SubirFoto());
             ComandoGuardarDescripcion = new RelayCommand(_ => GuardarCambios(), _ => !IsBusy);
-            ComandoAbrirChat = new RelayCommand(param => AbrirChat(param as ChatResumenViewModel), param => param is ChatResumenViewModel chat && chat.MatchId != 0);
+            ComandoAbrirChat = new RelayCommand(param => AbrirChat(param as ChatResumenItemViewModel), param => param is ChatResumenItemViewModel chat && chat.MatchId != 0);
         }
 
-        public ObservableCollection<ChatResumenViewModel> ListaChats => _listaChats;
+        public ObservableCollection<ChatResumenItemViewModel> ListaChats => _listaChats;
 
         public ICollectionView ChatsView => _chatsView;
 
@@ -285,7 +285,7 @@ namespace C_C_Final.ViewModel
                 return true;
             }
 
-            if (obj is not ChatResumenViewModel chat)
+            if (obj is not ChatResumenItemViewModel chat)
             {
                 return false;
             }
@@ -336,7 +336,7 @@ namespace C_C_Final.ViewModel
                     mensajesNoLeidos = mensajes.Count(m => !m.ConfirmacionLectura && m.IdRemitentePerfil != _idPerfil);
                 }
 
-                var resumen = new ChatResumenViewModel
+                var resumen = new ChatResumenItemViewModel
                 {
                     MatchId = match.IdMatch,
                     ChatId = chat.IdChat,
@@ -356,7 +356,7 @@ namespace C_C_Final.ViewModel
             _chatsView.Refresh();
         }
 
-        private void AbrirChat(ChatResumenViewModel chatResumen)
+        private void AbrirChat(ChatResumenItemViewModel chatResumen)
         {
             if (chatResumen == null)
             {
