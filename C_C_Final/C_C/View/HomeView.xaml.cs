@@ -1,29 +1,31 @@
-using C_C_Final.ViewModel;
+using C_C_Final.ViewModel; // Importar el namespace del ViewModel
 using System.Windows;
 
 namespace C_C_Final.View
 {
     /// <summary>
-    /// Lógica de interacción para HomeView.xaml
+    /// Lógica de interacción para HomeView.xaml (Bandeja de Entrada)
     /// </summary>
     public partial class HomeView : Window
     {
+        // El constructor ahora recibe el ID del perfil del usuario logueado
         public HomeView(int idPerfilLogueado)
         {
             InitializeComponent();
 
-            // 1. Crea una instancia del nuevo ViewModel
-            var viewModel = new HomeViewModel(idPerfilLogueado);
+            // --- CORRECCIÓN ---
+            // 1. Usamos InboxViewModel (la bandeja de chats)
+            var viewModel = new InboxViewModel(idPerfilLogueado);
             
             // 2. Asigna el ViewModel al DataContext
             DataContext = viewModel;
         }
 
-        // --- MÉTODOS RESTAURADOS PARA CORREGIR ERRORES ---
+        // --- MÉTODOS RESTAURADOS PARA CORREGIR ERRORES DE COMPILACIÓN ---
 
         private void btnClose_Click(object sender, RoutedEventArgs e)
         {
-            // Cierra la aplicación (o usa this.Close() si prefieres)
+            // Cierra la aplicación
             Application.Current.Shutdown();
         }
 
@@ -35,11 +37,11 @@ namespace C_C_Final.View
 
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
-            // 3. Conecta el evento Click del botón a un método en el ViewModel
-            // Esto actúa como un "puente" entre el code-behind y el MVVM.
-            if (DataContext is HomeViewModel viewModel)
+            // 3. Conectamos al método que YA EXISTE en InboxViewModel
+            if (DataContext is InboxViewModel viewModel)
             {
-                viewModel.NavegarAConfiguracion();
+                // Este método 'AbrirConfiguracion' ya existe en InboxViewModel
+                viewModel.AbrirConfiguracion(); 
             }
         }
     }

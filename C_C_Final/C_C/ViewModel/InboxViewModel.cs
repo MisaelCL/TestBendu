@@ -190,7 +190,8 @@ namespace C_C_Final.ViewModel
             ventanaActual?.Close();
         }
 
-        private void AbrirConfiguracion()
+        // Este es el método que será llamado por el SettingsButton_Click
+        public void AbrirConfiguracion()
         {
             if (PerfilActual == null) return;
             
