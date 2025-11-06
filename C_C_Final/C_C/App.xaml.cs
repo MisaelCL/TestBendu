@@ -26,7 +26,7 @@ namespace C_C_Final
             MatchRepository = new MatchRepository(ConnectionString);
             RegisterAlumnoService = new RegisterAlumnoService(CuentaRepository, PerfilRepository, ConnectionString);
             MatchService = new MatchService(MatchRepository, ConnectionString);
-            CuentaDeletionService = new CuentaDeletionService(ConnectionString);
+            CuentaDeletionService = new CuentaDeletionService(CuentaRepository, PerfilRepository, MatchRepository, ConnectionString);
 
             var login = new LoginView
             {

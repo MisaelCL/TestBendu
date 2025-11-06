@@ -1,248 +1,88 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
+using C_C_Final.Model;
 using C_C_Final.Repositories;
+using System;
+using System.Data;
+using System.Data.SqlClient;
 
 namespace C_C_Final.Services
 {
     /// <summary>
-    /// Elimina de forma integral una cuenta y todas sus relaciones en la base de datos.
+    /// Orquesta la eliminación segura de una cuenta y todos sus datos dependientes.
     /// </summary>
-    public sealed class CuentaDeletionService
+    public sealed class CuentaDeletionService : RepositoryBase
     {
-        private readonly string _connectionString;
+        private readonly ICuentaRepository _cuentaRepository;
+        private readonly IPerfilRepository _perfilRepository;
+        private readonly IMatchRepository _matchRepository;
+        // NOTA: Falta un IMensajeRepository.
 
-        public CuentaDeletionService(string connectionString = null)
+        public CuentaDeletionService(
+            ICuentaRepository cuentaRepository,
+            IPerfilRepository perfilRepository,
+            IMatchRepository matchRepository,
+            string connectionString = null)
+            : base(connectionString)
         {
-            _connectionString = RepositoryBase.ResolverCadenaConexion(connectionString);
+            _cuentaRepository = cuentaRepository;
+            _perfilRepository = perfilRepository;
+            _matchRepository = matchRepository;
         }
 
         /// <summary>
-        /// Elimina la cuenta, el alumno, perfiles, preferencias, chats, mensajes y matches asociados.
+        /// Elimina una cuenta y todas sus dependencias (Perfil, Alumno, Matches, Mensajes)
+        /// dentro de una transacción.
         /// </summary>
-        /// <param name="cuentaId">Identificador de la cuenta a eliminar.</param>
-        public void EliminarCuentaCompleta(int cuentaId)
+        /// <param name="idCuenta">El ID de la cuenta a eliminar.</param>
+        /// <returns>True si la eliminación fue exitosa, false en caso contrario.</returns>
+        public bool EliminarCuenta(int idCuenta)
         {
-            if (cuentaId <= 0)
+            var perfil = _perfilRepository.ObtenerPorCuentaId(idCuenta);
+            if (perfil == null)
             {
-                throw new ArgumentOutOfRangeException(nameof(cuentaId), "El identificador de la cuenta debe ser mayor que cero.");
-            }
-
-            using var connection = new SqlConnection(_connectionString);
-            connection.Open();
-            using var transaction = connection.BeginTransaction();
-
-            try
-            {
-                if (!CuentaExiste(connection, transaction, cuentaId))
+                try
                 {
-                    throw new InvalidOperationException("La cuenta indicada no existe.");
+                    return _cuentaRepository.EliminarCuenta(idCuenta);
                 }
-
-                var perfiles = ObtenerIds(connection, transaction, "SELECT ID_Perfil FROM dbo.Perfil WHERE ID_Cuenta = @Id", cuentaId);
-                var matchIds = ObtenerMatches(connection, transaction, perfiles);
-                var chatIds = ObtenerChats(connection, transaction, matchIds);
-
-                EliminarMensajes(connection, transaction, chatIds);
-                EliminarChats(connection, transaction, chatIds);
-                EliminarMatches(connection, transaction, matchIds);
-                EliminarPreferencias(connection, transaction, perfiles);
-                EliminarPerfiles(connection, transaction, perfiles);
-                EliminarAlumno(connection, transaction, cuentaId);
-                EliminarCuenta(connection, transaction, cuentaId);
-
-                transaction.Commit();
-            }
-            catch
-            {
-                transaction.Rollback();
-                throw;
-            }
-        }
-
-        private static bool CuentaExiste(SqlConnection connection, SqlTransaction transaction, int cuentaId)
-        {
-            using var command = new SqlCommand("SELECT COUNT(1) FROM dbo.Cuenta WHERE ID_Cuenta = @Id", connection, transaction);
-            command.Parameters.AddWithValue("@Id", cuentaId);
-            var result = command.ExecuteScalar();
-            return Convert.ToInt32(result) > 0;
-        }
-
-        private static List<int> ObtenerIds(SqlConnection connection, SqlTransaction transaction, string query, int cuentaId)
-        {
-            var ids = new List<int>();
-            using var command = new SqlCommand(query, connection, transaction);
-            command.Parameters.AddWithValue("@Id", cuentaId);
-            using (var reader = command.ExecuteReader())
-            {
-                while (reader.Read())
+                catch (Exception)
                 {
-                    ids.Add(reader.IsDBNull(0) ? 0 : reader.GetInt32(0));
+                    return false;
                 }
             }
-            return ids;
-        }
 
-        private static HashSet<int> ObtenerMatches(SqlConnection connection, SqlTransaction transaction, IEnumerable<int> perfiles)
-        {
-            var matchIds = new HashSet<int>();
-            using var command = new SqlCommand("SELECT ID_Match FROM dbo.Match WHERE Perfil_Emisor = @Perfil OR Perfil_Receptor = @Perfil", connection, transaction);
-            var parametroPerfil = command.Parameters.Add("@Perfil", System.Data.SqlDbType.Int);
-
-            foreach (var perfil in perfiles)
+            using (var connection = AbrirConexion())
+            using (var transaction = connection.BeginTransaction())
             {
-                if (perfil <= 0)
+                try
                 {
-                    continue;
-                }
+                    _matchRepository.EliminarMatchesPorPerfil(perfil.IdPerfil, connection, transaction);
 
-                parametroPerfil.Value = perfil;
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
+                    const string sqlDeleteMsgs = @"DELETE FROM dbo.Mensaje 
+                                                   WHERE Remitente = @IdPerfil";
+                    using (var cmdMsgs = CrearComando(connection, sqlDeleteMsgs, CommandType.Text, transaction))
                     {
-                        var matchId = reader.IsDBNull(0) ? 0 : reader.GetInt32(0);
-                        if (matchId > 0)
+                        AgregarParametro(cmdMsgs, "@IdPerfil", perfil.IdPerfil, SqlDbType.Int);
+                        cmdMsgs.ExecuteNonQuery();
+                    }
+
+                    const string sqlDeleteCuenta = "DELETE FROM dbo.Cuenta WHERE ID_Cuenta = @Id";
+                    using (var cmd = CrearComando(connection, sqlDeleteCuenta, CommandType.Text, transaction))
+                    {
+                        AgregarParametro(cmd, "@Id", idCuenta, SqlDbType.Int);
+                        var rows = cmd.ExecuteNonQuery();
+                        if (rows == 0)
                         {
-                            matchIds.Add(matchId);
+                            throw new InvalidOperationException("La cuenta no se encontró o no se pudo eliminar.");
                         }
                     }
+
+                    transaction.Commit();
+                    return true;
                 }
-            }
-
-            return matchIds;
-        }
-
-        private static HashSet<int> ObtenerChats(SqlConnection connection, SqlTransaction transaction, IEnumerable<int> matches)
-        {
-            var chatIds = new HashSet<int>();
-            using var command = new SqlCommand("SELECT ID_Chat FROM dbo.Chat WHERE ID_Match = @Match", connection, transaction);
-            var parametroMatch = command.Parameters.Add("@Match", System.Data.SqlDbType.Int);
-
-            foreach (var matchId in matches)
-            {
-                if (matchId <= 0)
+                catch (Exception)
                 {
-                    continue;
+                    transaction.Rollback();
+                    return false;
                 }
-
-                parametroMatch.Value = matchId;
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        var chatId = reader.IsDBNull(0) ? 0 : reader.GetInt32(0);
-                        if (chatId > 0)
-                        {
-                            chatIds.Add(chatId);
-                        }
-                    }
-                }
-            }
-
-            return chatIds;
-        }
-
-        private static void EliminarMensajes(SqlConnection connection, SqlTransaction transaction, IEnumerable<int> chatIds)
-        {
-            using var command = new SqlCommand("DELETE FROM dbo.Mensaje WHERE ID_Chat = @Chat", connection, transaction);
-            var parametroChat = command.Parameters.Add("@Chat", System.Data.SqlDbType.Int);
-
-            foreach (var chatId in chatIds)
-            {
-                if (chatId <= 0)
-                {
-                    continue;
-                }
-
-                parametroChat.Value = chatId;
-                command.ExecuteNonQuery();
-            }
-        }
-
-        private static void EliminarChats(SqlConnection connection, SqlTransaction transaction, IEnumerable<int> chatIds)
-        {
-            using var command = new SqlCommand("DELETE FROM dbo.Chat WHERE ID_Chat = @Chat", connection, transaction);
-            var parametroChat = command.Parameters.Add("@Chat", System.Data.SqlDbType.Int);
-
-            foreach (var chatId in chatIds)
-            {
-                if (chatId <= 0)
-                {
-                    continue;
-                }
-
-                parametroChat.Value = chatId;
-                command.ExecuteNonQuery();
-            }
-        }
-
-        private static void EliminarMatches(SqlConnection connection, SqlTransaction transaction, IEnumerable<int> matchIds)
-        {
-            using var command = new SqlCommand("DELETE FROM dbo.Match WHERE ID_Match = @Match", connection, transaction);
-            var parametroMatch = command.Parameters.Add("@Match", System.Data.SqlDbType.Int);
-
-            foreach (var matchId in matchIds)
-            {
-                if (matchId <= 0)
-                {
-                    continue;
-                }
-
-                parametroMatch.Value = matchId;
-                command.ExecuteNonQuery();
-            }
-        }
-
-        private static void EliminarPreferencias(SqlConnection connection, SqlTransaction transaction, IEnumerable<int> perfiles)
-        {
-            using var command = new SqlCommand("DELETE FROM dbo.Preferencias WHERE ID_Perfil = @Perfil", connection, transaction);
-            var parametroPerfil = command.Parameters.Add("@Perfil", System.Data.SqlDbType.Int);
-
-            foreach (var perfil in perfiles)
-            {
-                if (perfil <= 0)
-                {
-                    continue;
-                }
-
-                parametroPerfil.Value = perfil;
-                command.ExecuteNonQuery();
-            }
-        }
-
-        private static void EliminarPerfiles(SqlConnection connection, SqlTransaction transaction, IEnumerable<int> perfiles)
-        {
-            using var command = new SqlCommand("DELETE FROM dbo.Perfil WHERE ID_Perfil = @Perfil", connection, transaction);
-            var parametroPerfil = command.Parameters.Add("@Perfil", System.Data.SqlDbType.Int);
-
-            foreach (var perfil in perfiles)
-            {
-                if (perfil <= 0)
-                {
-                    continue;
-                }
-
-                parametroPerfil.Value = perfil;
-                command.ExecuteNonQuery();
-            }
-        }
-
-        private static void EliminarAlumno(SqlConnection connection, SqlTransaction transaction, int cuentaId)
-        {
-            using var command = new SqlCommand("DELETE FROM dbo.Alumno WHERE ID_Cuenta = @Cuenta", connection, transaction);
-            command.Parameters.AddWithValue("@Cuenta", cuentaId);
-            command.ExecuteNonQuery();
-        }
-
-        private static void EliminarCuenta(SqlConnection connection, SqlTransaction transaction, int cuentaId)
-        {
-            using var command = new SqlCommand("DELETE FROM dbo.Cuenta WHERE ID_Cuenta = @Cuenta", connection, transaction);
-            command.Parameters.AddWithValue("@Cuenta", cuentaId);
-            var affected = command.ExecuteNonQuery();
-            if (affected == 0)
-            {
-                throw new InvalidOperationException("No se pudo eliminar la cuenta especificada.");
             }
         }
     }

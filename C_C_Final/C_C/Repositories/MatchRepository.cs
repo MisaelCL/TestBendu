@@ -261,6 +261,16 @@ VALUES (@Chat, @Remitente, @Contenido, @Fecha, @Confirmado, 0, NULL, 0);";
             return mensajeId;
         }
 
+        public void EliminarMatchesPorPerfil(int idPerfil, SqlConnection connection, SqlTransaction transaction)
+        {
+            const string sql = @"DELETE FROM dbo.Match 
+                         WHERE Perfil_Emisor = @IdPerfil OR Perfil_Receptor = @IdPerfil";
+
+            using var command = CrearComando(connection, sql, CommandType.Text, transaction);
+            AgregarParametro(command, "@IdPerfil", idPerfil, SqlDbType.Int);
+            command.ExecuteNonQuery();
+        }
+
         /// <summary>
         /// Convierte un registro en una entidad de emparejamiento.
         /// </summary>
