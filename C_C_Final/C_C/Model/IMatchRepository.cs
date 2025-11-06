@@ -26,5 +26,7 @@ namespace C_C_Final.Model
         int CrearMatch(SqlConnection cn, SqlTransaction tx, int idPerfilEmisor, int idPerfilReceptor, string estado);
         int AsegurarChatParaMatch(SqlConnection cn, SqlTransaction tx, int idMatch);
         long AgregarMensaje(SqlConnection cn, SqlTransaction tx, int idChat, int idRemitentePerfil, string contenido, bool confirmacionLectura);
+
+        void EliminarMatchesPorPerfil(int idPerfil, SqlConnection connection, SqlTransaction transaction);
     }
 }
