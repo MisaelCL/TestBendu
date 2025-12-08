@@ -4,6 +4,16 @@
         <name>ProyectoIMC</name>
     </assembly>
     <members>
+        <member name="T:ProyectoIMC.Converters.DoubleGreaterThanZeroConverter">
+            <summary>
+            Convierte un valor numérico double en true cuando es mayor que cero.
+            </summary>
+        </member>
+        <member name="T:ProyectoIMC.Converters.StringNotNullOrEmptyConverter">
+            <summary>
+            Devuelve true si la cadena no es nula ni está vacía.
+            </summary>
+        </member>
         <member name="T:ProyectoIMC.ViewModels.PacienteFormViewModel">
             <inheritdoc/>
             <inheritdoc/>
@@ -58,6 +68,16 @@
             <summary>Executes the logic for when <see cref="P:ProyectoIMC.ViewModels.PacienteFormViewModel.IdPaciente"/> just changed.</summary>
             <param name="value">The new property value that was set.</param>
             <remarks>This method is invoked right after the value of <see cref="P:ProyectoIMC.ViewModels.PacienteFormViewModel.IdPaciente"/> is changed.</remarks>
+        </member>
+        <member name="M:ProyectoIMC.ViewModels.PacienteFormViewModel.OnSexoChanged(System.String)">
+            <summary>Executes the logic for when <see cref="P:ProyectoIMC.ViewModels.PacienteFormViewModel.Sexo"/> just changed.</summary>
+            <param name="value">The new property value that was set.</param>
+            <remarks>This method is invoked right after the value of <see cref="P:ProyectoIMC.ViewModels.PacienteFormViewModel.Sexo"/> is changed.</remarks>
+        </member>
+        <member name="M:ProyectoIMC.ViewModels.PacienteFormViewModel.OnNivelActividadChanged(System.Int32)">
+            <summary>Executes the logic for when <see cref="P:ProyectoIMC.ViewModels.PacienteFormViewModel.NivelActividad"/> just changed.</summary>
+            <param name="value">The new property value that was set.</param>
+            <remarks>This method is invoked right after the value of <see cref="P:ProyectoIMC.ViewModels.PacienteFormViewModel.NivelActividad"/> is changed.</remarks>
         </member>
         <member name="F:ProyectoIMC.ViewModels.PacienteFormViewModel.calcularIndicadoresCommand">
             <summary>The backing field for <see cref="P:ProyectoIMC.ViewModels.PacienteFormViewModel.CalcularIndicadoresCommand"/>.</summary>

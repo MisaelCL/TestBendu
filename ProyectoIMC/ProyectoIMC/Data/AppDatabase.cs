@@ -32,8 +32,9 @@ namespace ProyectoIMC.Data
         public Task<Paciente?> ObtenerPacientePorIdAsync(int id)
         {
             return _connection.Table<Paciente>()
-                              .Where(p => p.IdPaciente == id)
-                              .FirstOrDefaultAsync();
+                      .Where(p => p.IdPaciente == id)
+                      .FirstOrDefaultAsync()
+                      .ContinueWith(task => (Paciente?)task.Result);
         }
 
         public async Task<int> GuardarPacienteAsync(Paciente paciente)

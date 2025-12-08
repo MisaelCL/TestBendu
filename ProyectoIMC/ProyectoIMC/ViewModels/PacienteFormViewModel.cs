@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 namespace ProyectoIMC.ViewModels
 {
     [QueryProperty(nameof(IdPaciente), "IdPaciente")]
-    public partial class PacienteFormViewModel : ObservableObject
+    public partial class PacienteFormViewModel(IPacienteRepository pacienteRepository) : ObservableObject
     {
-        private readonly IPacienteRepository _pacienteRepository;
+        private readonly IPacienteRepository _pacienteRepository = pacienteRepository ?? throw new ArgumentNullException(nameof(pacienteRepository));
 
         [ObservableProperty] private int idPaciente;
         [ObservableProperty] private string nombre = string.Empty;
@@ -43,11 +43,6 @@ namespace ProyectoIMC.ViewModels
 
         [ObservableProperty] private bool isBusy;
         [ObservableProperty] private string? errorMessage;
-
-        public PacienteFormViewModel(IPacienteRepository pacienteRepository)
-        {
-            _pacienteRepository = pacienteRepository ?? throw new ArgumentNullException(nameof(pacienteRepository));
-        }
 
         partial void OnIdPacienteChanged(int value)
         {
@@ -122,10 +117,13 @@ namespace ProyectoIMC.ViewModels
 
                 CalcularIndicadores();
 
-                await Application.Current.MainPage.DisplayAlert(
-                    "Guardado",
-                    "El paciente se guardó correctamente.",
-                    "OK");
+                if (Application.Current?.MainPage != null)
+                {
+                    await Application.Current.MainPage.DisplayAlert(
+                        "Guardado",
+                        "El paciente se guardó correctamente.",
+                        "OK");
+                }
 
                 await Shell.Current.GoToAsync("..");
             }

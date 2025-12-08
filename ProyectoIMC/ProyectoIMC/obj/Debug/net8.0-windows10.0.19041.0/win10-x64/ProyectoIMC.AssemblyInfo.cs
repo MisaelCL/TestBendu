@@ -18,7 +18,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ProyectoIMC")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0+570bda02e4427ae197716ac2d7dfa9ffee84ee5e")]
 [assembly: System.Reflection.AssemblyProductAttribute("ProyectoIMC")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ProyectoIMC")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

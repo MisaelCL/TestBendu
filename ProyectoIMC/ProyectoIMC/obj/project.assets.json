@@ -30400,11 +30400,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\jmanu\\Desktop\\ProyectoIMC\\ProyectoIMC\\ProyectoIMC.csproj",
+      "projectUniqueName": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\ProyectoIMC\\ProyectoIMC\\ProyectoIMC.csproj",
       "projectName": "ProyectoIMC",
-      "projectPath": "C:\\Users\\jmanu\\Desktop\\ProyectoIMC\\ProyectoIMC\\ProyectoIMC.csproj",
+      "projectPath": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\ProyectoIMC\\ProyectoIMC\\ProyectoIMC.csproj",
       "packagesPath": "C:\\Users\\jmanu\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\jmanu\\Desktop\\ProyectoIMC\\ProyectoIMC\\obj\\",
+      "outputPath": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\ProyectoIMC\\ProyectoIMC\\obj\\",
       "projectStyle": "PackageReference",
       "crossTargeting": true,
       "fallbackFolders": [

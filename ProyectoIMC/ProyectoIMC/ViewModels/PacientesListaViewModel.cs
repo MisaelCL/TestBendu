@@ -74,6 +74,9 @@ namespace ProyectoIMC.ViewModels
             var seleccionado = paciente ?? PacienteSeleccionado;
             if (seleccionado == null) return;
 
+            if (Application.Current?.MainPage == null)
+                return;
+
             var confirmado = await Application.Current.MainPage.DisplayAlert(
                 "Confirmar",
                 $"Eliminar al paciente {seleccionado.Nombre} {seleccionado.Apellido}?",
