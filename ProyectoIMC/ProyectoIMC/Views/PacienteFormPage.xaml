@@ -72,11 +72,11 @@
                     FontAttributes="Bold"
                     CornerRadius="20"/>
 
-            <Border StrokeShape="RoundRectangle 10" 
-                    BackgroundColor="#263238" 
-                    Padding="16" 
+            <Border StrokeShape="RoundRectangle 10"
+                    BackgroundColor="#263238"
+                    Padding="16"
                     StrokeThickness="0"
-                    IsVisible="{Binding Imc, Converter={x:Static x:BooleanConverter.ContentProperty}, ConverterParameter=True}">
+                    IsVisible="{Binding Imc, Converter={StaticResource DoubleGreaterThanZeroConverter}}">
                 <Grid RowDefinitions="Auto, Auto, Auto" ColumnDefinitions="*, *" RowSpacing="10" ColumnSpacing="10">
                     <Label Text="RESULTADOS" TextColor="White" FontAttributes="Bold" Grid.ColumnSpan="2"/>
 
@@ -106,10 +106,10 @@
                 </Grid>
             </Border>
 
-            <Label Text="{Binding ErrorMessage}" 
-                   TextColor="#E53935" 
+            <Label Text="{Binding ErrorMessage}"
+                   TextColor="#E53935"
                    HorizontalTextAlignment="Center"
-                   IsVisible="{Binding ErrorMessage, Converter={x:Static x:String.IsNotNullOrEmpty}}"/>
+                   IsVisible="{Binding ErrorMessage, Converter={StaticResource StringNotNullOrEmptyConverter}}"/>
 
             <Button Text="Guardar Paciente" 
                     Command="{Binding GuardarCommand}" 
