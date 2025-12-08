@@ -27,7 +27,7 @@ namespace ProyectoIMC.ViewModels
             _pacienteRepository = pacienteRepository ?? throw new ArgumentNullException(nameof(pacienteRepository));
         }
 
-        // CARGAR PACIENTES
+        // Descarga la lista completa y la refresca en pantalla sin duplicados.
         public async Task CargarPacientesAsync()
         {
             if (IsBusy) return;
@@ -49,14 +49,14 @@ namespace ProyectoIMC.ViewModels
             }
         }
 
-        // NUEVO PACIENTE
+        // Navega al formulario vacío para crear un paciente nuevo.
         [RelayCommand]
         private async Task NuevoPacienteAsync()
         {
             await Shell.Current.GoToAsync(nameof(PacienteFormPage));
         }
 
-        // EDITAR PACIENTE
+        // Abre el formulario con el Id del paciente seleccionado para editarlo.
         [RelayCommand]
         private async Task EditarPacienteAsync(Paciente? paciente)
         {
@@ -67,7 +67,7 @@ namespace ProyectoIMC.ViewModels
                 .GoToAsync($"{nameof(PacienteFormPage)}?IdPaciente={seleccionado.IdPaciente}");
         }
 
-        // ELIMINAR PACIENTE
+        // Pide confirmación y, si se acepta, borra al paciente y lo quita de la lista visible.
         [RelayCommand]
         private async Task EliminarPacienteAsync(Paciente? paciente)
         {

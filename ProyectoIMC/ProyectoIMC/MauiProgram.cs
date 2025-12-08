@@ -37,6 +37,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<PacientesPage>();
         builder.Services.AddTransient<PacienteFormPage>();
 
+        // Devuelve la app lista para correr; no tiene más misterio.
         return builder.Build();
     }
 }
