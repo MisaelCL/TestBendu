@@ -1,0 +1,213 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ProyectoIMC</name>
+    </assembly>
+    <members>
+        <member name="T:ProyectoIMC.ViewModels.PacienteFormViewModel">
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+        </member>
+        <member name="P:ProyectoIMC.ViewModels.PacienteFormViewModel.IdPaciente">
+            <inheritdoc cref="F:ProyectoIMC.ViewModels.PacienteFormViewModel.idPaciente"/>
+        </member>
+        <member name="P:ProyectoIMC.ViewModels.PacienteFormViewModel.Nombre">
+            <inheritdoc cref="F:ProyectoIMC.ViewModels.PacienteFormViewModel.nombre"/>
+        </member>
+        <member name="P:ProyectoIMC.ViewModels.PacienteFormViewModel.Apellido">
+            <inheritdoc cref="F:ProyectoIMC.ViewModels.PacienteFormViewModel.apellido"/>
+        </member>
+        <member name="P:ProyectoIMC.ViewModels.PacienteFormViewModel.Edad">
+            <inheritdoc cref="F:ProyectoIMC.ViewModels.PacienteFormViewModel.edad"/>
+        </member>
+        <member name="P:ProyectoIMC.ViewModels.PacienteFormViewModel.PesoKg">
+            <inheritdoc cref="F:ProyectoIMC.ViewModels.PacienteFormViewModel.pesoKg"/>
+        </member>
+        <member name="P:ProyectoIMC.ViewModels.PacienteFormViewModel.EstaturaCm">
+            <inheritdoc cref="F:ProyectoIMC.ViewModels.PacienteFormViewModel.estaturaCm"/>
+        </member>
+        <member name="P:ProyectoIMC.ViewModels.PacienteFormViewModel.Sexo">
+            <inheritdoc cref="F:ProyectoIMC.ViewModels.PacienteFormViewModel.sexo"/>
+        </member>
+        <member name="P:ProyectoIMC.ViewModels.PacienteFormViewModel.NivelActividad">
+            <inheritdoc cref="F:ProyectoIMC.ViewModels.PacienteFormViewModel.nivelActividad"/>
+        </member>
+        <member name="P:ProyectoIMC.ViewModels.PacienteFormViewModel.Imc">
+            <inheritdoc cref="F:ProyectoIMC.ViewModels.PacienteFormViewModel.imc"/>
+        </member>
+        <member name="P:ProyectoIMC.ViewModels.PacienteFormViewModel.ClasificacionImc">
+            <inheritdoc cref="F:ProyectoIMC.ViewModels.PacienteFormViewModel.clasificacionImc"/>
+        </member>
+        <member name="P:ProyectoIMC.ViewModels.PacienteFormViewModel.PorcentajeGrasa">
+            <inheritdoc cref="F:ProyectoIMC.ViewModels.PacienteFormViewModel.porcentajeGrasa"/>
+        </member>
+        <member name="P:ProyectoIMC.ViewModels.PacienteFormViewModel.PesoIdeal">
+            <inheritdoc cref="F:ProyectoIMC.ViewModels.PacienteFormViewModel.pesoIdeal"/>
+        </member>
+        <member name="P:ProyectoIMC.ViewModels.PacienteFormViewModel.Tdee">
+            <inheritdoc cref="F:ProyectoIMC.ViewModels.PacienteFormViewModel.tdee"/>
+        </member>
+        <member name="P:ProyectoIMC.ViewModels.PacienteFormViewModel.IsBusy">
+            <inheritdoc cref="F:ProyectoIMC.ViewModels.PacienteFormViewModel.isBusy"/>
+        </member>
+        <member name="P:ProyectoIMC.ViewModels.PacienteFormViewModel.ErrorMessage">
+            <inheritdoc cref="F:ProyectoIMC.ViewModels.PacienteFormViewModel.errorMessage"/>
+        </member>
+        <member name="M:ProyectoIMC.ViewModels.PacienteFormViewModel.OnIdPacienteChanged(System.Int32)">
+            <summary>Executes the logic for when <see cref="P:ProyectoIMC.ViewModels.PacienteFormViewModel.IdPaciente"/> just changed.</summary>
+            <param name="value">The new property value that was set.</param>
+            <remarks>This method is invoked right after the value of <see cref="P:ProyectoIMC.ViewModels.PacienteFormViewModel.IdPaciente"/> is changed.</remarks>
+        </member>
+        <member name="F:ProyectoIMC.ViewModels.PacienteFormViewModel.calcularIndicadoresCommand">
+            <summary>The backing field for <see cref="P:ProyectoIMC.ViewModels.PacienteFormViewModel.CalcularIndicadoresCommand"/>.</summary>
+        </member>
+        <member name="P:ProyectoIMC.ViewModels.PacienteFormViewModel.CalcularIndicadoresCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IRelayCommand"/> instance wrapping <see cref="M:ProyectoIMC.ViewModels.PacienteFormViewModel.CalcularIndicadores"/>.</summary>
+        </member>
+        <member name="F:ProyectoIMC.ViewModels.PacienteFormViewModel.guardarCommand">
+            <summary>The backing field for <see cref="P:ProyectoIMC.ViewModels.PacienteFormViewModel.GuardarCommand"/>.</summary>
+        </member>
+        <member name="P:ProyectoIMC.ViewModels.PacienteFormViewModel.GuardarCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:ProyectoIMC.ViewModels.PacienteFormViewModel.GuardarAsync"/>.</summary>
+        </member>
+        <member name="T:ProyectoIMC.ViewModels.PacientesListaViewModel">
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+        </member>
+        <member name="P:ProyectoIMC.ViewModels.PacientesListaViewModel.PacienteSeleccionado">
+            <inheritdoc cref="F:ProyectoIMC.ViewModels.PacientesListaViewModel.pacienteSeleccionado"/>
+        </member>
+        <member name="P:ProyectoIMC.ViewModels.PacientesListaViewModel.IsBusy">
+            <inheritdoc cref="F:ProyectoIMC.ViewModels.PacientesListaViewModel.isBusy"/>
+        </member>
+        <member name="F:ProyectoIMC.ViewModels.PacientesListaViewModel.nuevoPacienteCommand">
+            <summary>The backing field for <see cref="P:ProyectoIMC.ViewModels.PacientesListaViewModel.NuevoPacienteCommand"/>.</summary>
+        </member>
+        <member name="P:ProyectoIMC.ViewModels.PacientesListaViewModel.NuevoPacienteCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:ProyectoIMC.ViewModels.PacientesListaViewModel.NuevoPacienteAsync"/>.</summary>
+        </member>
+        <member name="F:ProyectoIMC.ViewModels.PacientesListaViewModel.editarPacienteCommand">
+            <summary>The backing field for <see cref="P:ProyectoIMC.ViewModels.PacientesListaViewModel.EditarPacienteCommand"/>.</summary>
+        </member>
+        <member name="P:ProyectoIMC.ViewModels.PacientesListaViewModel.EditarPacienteCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand`1"/> instance wrapping <see cref="M:ProyectoIMC.ViewModels.PacientesListaViewModel.EditarPacienteAsync(ProyectoIMC.Model.Paciente)"/>.</summary>
+        </member>
+        <member name="F:ProyectoIMC.ViewModels.PacientesListaViewModel.eliminarPacienteCommand">
+            <summary>The backing field for <see cref="P:ProyectoIMC.ViewModels.PacientesListaViewModel.EliminarPacienteCommand"/>.</summary>
+        </member>
+        <member name="P:ProyectoIMC.ViewModels.PacientesListaViewModel.EliminarPacienteCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand`1"/> instance wrapping <see cref="M:ProyectoIMC.ViewModels.PacientesListaViewModel.EliminarPacienteAsync(ProyectoIMC.Model.Paciente)"/>.</summary>
+        </member>
+        <member name="T:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs">
+            <summary>
+            A helper type providing cached, reusable <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instances
+            for all properties generated with <see cref="T:CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute"/>.
+            </summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.IdPaciente">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "IdPaciente" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.Nombre">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "Nombre" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.Apellido">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "Apellido" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.Edad">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "Edad" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.PesoKg">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "PesoKg" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.EstaturaCm">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "EstaturaCm" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.Sexo">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "Sexo" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.NivelActividad">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "NivelActividad" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.Imc">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "Imc" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.ClasificacionImc">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "ClasificacionImc" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.PorcentajeGrasa">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "PorcentajeGrasa" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.PesoIdeal">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "PesoIdeal" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.Tdee">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "Tdee" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.IsBusy">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "IsBusy" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.ErrorMessage">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "ErrorMessage" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.PacienteSeleccionado">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "PacienteSeleccionado" generated properties.</summary>
+        </member>
+        <member name="T:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs">
+            <summary>
+            A helper type providing cached, reusable <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instances
+            for all properties generated with <see cref="T:CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute"/>.
+            </summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.IdPaciente">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "IdPaciente" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.Nombre">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "Nombre" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.Apellido">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "Apellido" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.Edad">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "Edad" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.PesoKg">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "PesoKg" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.EstaturaCm">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "EstaturaCm" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.Sexo">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "Sexo" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.NivelActividad">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "NivelActividad" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.Imc">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "Imc" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.ClasificacionImc">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "ClasificacionImc" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.PorcentajeGrasa">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "PorcentajeGrasa" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.PesoIdeal">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "PesoIdeal" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.Tdee">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "Tdee" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.IsBusy">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "IsBusy" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.ErrorMessage">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "ErrorMessage" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.PacienteSeleccionado">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "PacienteSeleccionado" generated properties.</summary>
+        </member>
+    </members>
+</doc>

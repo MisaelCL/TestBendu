@@ -1,0 +1,1 @@
+C:\Users\mcamp\source\repos\ProyectoIMC\ProyectoIMC\ProyectoIMC.csproj;x64
