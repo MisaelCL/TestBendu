@@ -5,6 +5,7 @@ namespace ProyectoIMC.Services
 {
     public static class SaludCalculoService
     {
+        // Calcula el IMC clásico. Si falta peso o estatura devuelve 0 para evitar crashes raros.
         public static double CalcularImc(Paciente p)
         {
             if (p == null) throw new ArgumentNullException(nameof(p));
@@ -14,6 +15,7 @@ namespace ProyectoIMC.Services
             return p.PesoKg / (estaturaM * estaturaM);
         }
 
+        // Devuelve una etiqueta amigable según el IMC calculado.
         public static string ClasificarImc(double imc)
         {
             if (imc <= 0) return "Sin datos";
@@ -31,6 +33,7 @@ namespace ProyectoIMC.Services
         }
 
 
+        // Calcula un estimado rápido de porcentaje de grasa usando IMC, edad y sexo.
         public static double CalcularPorcentajeGrasa(Paciente p, double imc)
         {
             if (p == null) throw new ArgumentNullException(nameof(p));
@@ -40,6 +43,7 @@ namespace ProyectoIMC.Services
             return 1.2 * imc + 0.23 * p.Edad - 10.8 * sexoNum - 5.4;
         }
 
+        // Usa la fórmula de Broca modificada para dar un peso ideal aproximado.
         public static double CalcularPesoIdeal(Paciente p)
         {
             if (p == null) throw new ArgumentNullException(nameof(p));
@@ -54,6 +58,7 @@ namespace ProyectoIMC.Services
             return h - 100.0 - ((h - 150.0) / 2.5);
         }
 
+        // Calcula el metabolismo basal con Mifflin-St Jeor, devolviendo 0 si faltan datos.
         public static double CalcularBmr(Paciente p)
         {
             if (p == null) throw new ArgumentNullException(nameof(p));
@@ -73,6 +78,7 @@ namespace ProyectoIMC.Services
 
 
 
+        // Selecciona el multiplicador de actividad según el nivel elegido en pantalla.
         public static double ObtenerFactorActividad(Paciente p)
         {
             return p.NivelActividad switch
@@ -86,6 +92,7 @@ namespace ProyectoIMC.Services
             };
         }
 
+        // Multiplica el BMR por el factor de actividad para obtener calorías diarias.
         public static double CalcularTdee(Paciente p)
         {
             var bmr = CalcularBmr(p);
