@@ -21,14 +21,14 @@
                         <Entry Placeholder="Apellido" Text="{Binding Apellido}" Grid.Column="1"/>
                     </Grid>
 
-                    <Picker x:Name="SexoPicker" Title="Sexo" SelectedIndexChanged="PickerSexo_SelectedIndexChanged">
+                    <Picker Title="Sexo" SelectedIndex="{Binding SexoIndex, Mode=TwoWay}">
                         <Picker.Items>
                             <x:String>Masculino</x:String>
                             <x:String>Femenino</x:String>
                         </Picker.Items>
                     </Picker>
 
-                    <Picker x:Name="ActividadPicker" Title="Nivel de actividad" SelectedIndexChanged="PickerActividad_SelectedIndexChanged">
+                    <Picker Title="Nivel de actividad" SelectedIndex="{Binding NivelActividadIndex, Mode=TwoWay}">
                         <Picker.Items>
                             <x:String>Sedentario</x:String>
                             <x:String>Ligero</x:String>

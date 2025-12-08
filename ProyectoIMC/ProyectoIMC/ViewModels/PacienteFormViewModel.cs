@@ -23,6 +23,18 @@ namespace ProyectoIMC.ViewModels
         [ObservableProperty] private string sexo = "M";
         [ObservableProperty] private int nivelActividad = 1;
 
+        public int SexoIndex
+        {
+            get => string.Equals(Sexo, "F", StringComparison.OrdinalIgnoreCase) ? 1 : 0;
+            set => Sexo = value == 1 ? "F" : "M";
+        }
+
+        public int NivelActividadIndex
+        {
+            get => Math.Clamp(NivelActividad - 1, 0, 4);
+            set => NivelActividad = Math.Clamp(value + 1, 1, 5);
+        }
+
         [ObservableProperty] private double imc;
         [ObservableProperty] private string clasificacionImc = string.Empty;
         [ObservableProperty] private double porcentajeGrasa;
@@ -99,7 +111,7 @@ namespace ProyectoIMC.ViewModels
                 }
 
                 if (!Edad.HasValue || !PesoKg.HasValue || !EstaturaCm.HasValue || Edad <= 0 || PesoKg <= 0 || EstaturaCm <= 0)
-        {
+                {
                     ErrorMessage = "Edad, peso y estatura deben ser mayores que cero.";
                     return;
                 }
@@ -112,7 +124,7 @@ namespace ProyectoIMC.ViewModels
 
                 await Application.Current.MainPage.DisplayAlert(
                     "Guardado",
-                    "El paciente se guardó correctamente.",
+                    "El paciente se guardÃ³ correctamente.",
                     "OK");
 
                 await Shell.Current.GoToAsync("..");
@@ -141,5 +153,9 @@ namespace ProyectoIMC.ViewModels
                 NivelActividad = NivelActividad
             };
         }
+
+        partial void OnSexoChanged(string value) => OnPropertyChanged(nameof(SexoIndex));
+
+        partial void OnNivelActividadChanged(int value) => OnPropertyChanged(nameof(NivelActividadIndex));
     }
 }
