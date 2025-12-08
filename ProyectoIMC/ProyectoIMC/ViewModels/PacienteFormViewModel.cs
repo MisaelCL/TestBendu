@@ -49,6 +49,21 @@ namespace ProyectoIMC.ViewModels
         [ObservableProperty] private bool isBusy;
         [ObservableProperty] private string? errorMessage;
 
+        // Encabezado que muestra "Nuevo Paciente" cuando no hay datos o el nombre completo cuando ya está cargado.
+        public string TituloPagina
+        {
+            get
+            {
+                var hayNombre = !string.IsNullOrWhiteSpace(Nombre) || !string.IsNullOrWhiteSpace(Apellido);
+                return hayNombre ? $"Paciente: {Nombre} {Apellido}".Trim() : "Nuevo Paciente";
+            }
+        }
+
+        public PacienteFormViewModel(IPacienteRepository pacienteRepository)
+        {
+            _pacienteRepository = pacienteRepository ?? throw new ArgumentNullException(nameof(pacienteRepository));
+        }
+
         // Cada vez que cambia el Id del paciente, intento cargar la info si ya existe para no repetir captura.
         partial void OnIdPacienteChanged(int value)
         {
@@ -81,6 +96,13 @@ namespace ProyectoIMC.ViewModels
         private void CalcularIndicadores()
         {
             ErrorMessage = null;
+
+            if (!Edad.HasValue || !PesoKg.HasValue || !EstaturaCm.HasValue || Edad <= 0 || PesoKg <= 0 || EstaturaCm <= 0)
+            {
+                ErrorMessage = "Completa edad, peso y estatura para calcular.";
+                ReiniciarIndicadores();
+                return;
+            }
 
             var paciente = ConstruirPaciente();
             var imc = SaludCalculoService.CalcularImc(paciente);
@@ -167,5 +189,19 @@ namespace ProyectoIMC.ViewModels
 
         // Mantiene sincronizado el picker de actividad con el valor numérico.
         partial void OnNivelActividadChanged(int value) => OnPropertyChanged(nameof(NivelActividadIndex));
+
+        // Refresca el título cuando cambian el nombre o apellido para que la cabecera siempre tenga texto.
+        partial void OnNombreChanged(string value) => OnPropertyChanged(nameof(TituloPagina));
+        partial void OnApellidoChanged(string value) => OnPropertyChanged(nameof(TituloPagina));
+
+        // Pone los indicadores en cero cuando no hay datos suficientes y así no dejamos números viejos en pantalla.
+        private void ReiniciarIndicadores()
+        {
+            Imc = 0;
+            ClasificacionImc = string.Empty;
+            PorcentajeGrasa = 0;
+            PesoIdeal = 0;
+            Tdee = 0;
+        }
     }
 }

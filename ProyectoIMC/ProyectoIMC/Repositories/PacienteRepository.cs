@@ -17,6 +17,9 @@ namespace ProyectoIMC.Repositories
             return lista;
         }
 
+        // Devuelve todos los pacientes tal cual están en la base para poblar las listas.
+        public Task<IReadOnlyList<Paciente>> ListarTodosAsync() => _db.ObtenerPacientesAsync();
+
         // Busca un paciente específico por Id.
         public Task<Paciente?> ObtenerPorIdAsync(int idPaciente)
         {
