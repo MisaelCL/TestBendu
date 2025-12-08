@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "XPlep+RQ3Rk=",
+  "dgSpecHash": "LBxS4KRT2J0=",
   "success": true,
-  "projectFilePath": "C:\\Users\\jmanu\\Desktop\\ProyectoIMC\\ProyectoIMC\\ProyectoIMC.csproj",
+  "projectFilePath": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\ProyectoIMC\\ProyectoIMC\\ProyectoIMC.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\jmanu\\.nuget\\packages\\communitytoolkit.mvvm\\8.4.0\\communitytoolkit.mvvm.8.4.0.nupkg.sha512",
     "C:\\Users\\jmanu\\.nuget\\packages\\googlegson\\2.10.1.4\\googlegson.2.10.1.4.nupkg.sha512",

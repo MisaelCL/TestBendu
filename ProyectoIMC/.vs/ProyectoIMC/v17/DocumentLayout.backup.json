@@ -1,12 +1,53 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\jmanu\\Desktop\\ProyectoIMC\\",
-  "Documents": [],
+  "WorkspaceRootPath": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\ProyectoIMC\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{D889E377-BD64-42FB-9DAA-717C453863B3}|ProyectoIMC\\ProyectoIMC.csproj|c:\\users\\jmanu\\desktop\\final\\testbendu\\proyectoimc\\proyectoimc\\proyectoimc.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{D889E377-BD64-42FB-9DAA-717C453863B3}|ProyectoIMC\\ProyectoIMC.csproj|solutionrelative:proyectoimc\\proyectoimc.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jmanu\\.nuget\\packages\\microsoft.maui.resizetizer\\8.0.100\\buildTransitive\\Microsoft.Maui.Resizetizer.After.targets||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": []
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Microsoft.Maui.Resizetizer.After.targets",
+              "DocumentMoniker": "C:\\Users\\jmanu\\.nuget\\packages\\microsoft.maui.resizetizer\\8.0.100\\buildTransitive\\Microsoft.Maui.Resizetizer.After.targets",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\.nuget\\packages\\microsoft.maui.resizetizer\\8.0.100\\buildTransitive\\Microsoft.Maui.Resizetizer.After.targets",
+              "ToolTip": "C:\\Users\\jmanu\\.nuget\\packages\\microsoft.maui.resizetizer\\8.0.100\\buildTransitive\\Microsoft.Maui.Resizetizer.After.targets",
+              "RelativeToolTip": "..\\..\\..\\..\\.nuget\\packages\\microsoft.maui.resizetizer\\8.0.100\\buildTransitive\\Microsoft.Maui.Resizetizer.After.targets",
+              "ViewState": "AgIAAGoCAAAAAAAAAAAmwG4CAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003801|",
+              "WhenOpened": "2025-12-08T04:09:34.265Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ProyectoIMC",
+              "DocumentMoniker": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\ProyectoIMC\\ProyectoIMC\\ProyectoIMC.csproj",
+              "RelativeDocumentMoniker": "ProyectoIMC\\ProyectoIMC.csproj",
+              "ToolTip": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\ProyectoIMC\\ProyectoIMC\\ProyectoIMC.csproj",
+              "RelativeToolTip": "ProyectoIMC\\ProyectoIMC.csproj",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAFAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-12-08T04:08:31.329Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
     }
   ]
 }
