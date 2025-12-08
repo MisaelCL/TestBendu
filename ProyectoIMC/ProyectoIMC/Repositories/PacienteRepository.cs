@@ -15,18 +15,22 @@ namespace ProyectoIMC.Repositories
             _db = db ?? throw new ArgumentNullException(nameof(db));
         }
 
+        // Devuelve todos los pacientes tal cual están en la base para poblar las listas.
         public Task<IReadOnlyList<Paciente>> ListarTodosAsync() => _db.ObtenerPacientesAsync();
 
+        // Busca un paciente específico por Id.
         public Task<Paciente?> ObtenerPorIdAsync(int idPaciente)
         {
             return _db.ObtenerPacientePorIdAsync(idPaciente);
         }
 
+        // Inserta o actualiza según corresponda y devuelve el Id final.
         public Task<int> GuardarAsync(Paciente paciente)
         {
             return _db.GuardarPacienteAsync(paciente);
         }
 
+        // Intenta eliminar un paciente, devolviendo true sólo cuando el borrado se completa.
         public async Task<bool> EliminarAsync(int idPaciente)
         {
             var paciente = await _db.ObtenerPacientePorIdAsync(idPaciente);

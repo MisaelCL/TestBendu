@@ -16,6 +16,7 @@ public partial class PacientesPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+        // Cada vez que la vista vuelve a aparecer, refresco la lista para no mostrar datos viejos.
         await _viewModel.CargarPacientesAsync();
     }
 }
