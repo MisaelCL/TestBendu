@@ -21,6 +21,7 @@ namespace ProyectoIMC.Data
             _connection.CreateTableAsync<Paciente>().GetAwaiter().GetResult();
         }
 
+        // Devuelve toda la tabla de pacientes ordenada por apellido y nombre para que se vea prolijo.
         public Task<List<Paciente>> ObtenerPacientesAsync()
         {
             return _connection.Table<Paciente>()
@@ -29,6 +30,7 @@ namespace ProyectoIMC.Data
                               .ToListAsync();
         }
 
+        // Busca el primer paciente que tenga el Id indicado.
         public Task<Paciente?> ObtenerPacientePorIdAsync(int id)
         {
             return _connection.Table<Paciente>()
@@ -37,6 +39,7 @@ namespace ProyectoIMC.Data
                       .ContinueWith(task => (Paciente?)task.Result);
         }
 
+        // Inserta si el Id es 0, actualiza si ya existe; devuelve el Id para encadenar operaciones.
         public async Task<int> GuardarPacienteAsync(Paciente paciente)
         {
             if (paciente == null) throw new ArgumentNullException(nameof(paciente));
@@ -53,6 +56,7 @@ namespace ProyectoIMC.Data
             return paciente.IdPaciente;
         }
 
+        // Borra al paciente recibido y devuelve cuántas filas se eliminaron.
         public Task<int> EliminarPacienteAsync(Paciente paciente)
         {
             return _connection.DeleteAsync(paciente);

@@ -8,6 +8,7 @@ public partial class AppShell : Shell
     {
         InitializeComponent();
 
+        // Registro la ruta del formulario para poder navegar con Shell.
         Routing.RegisterRoute(nameof(PacienteFormPage), typeof(PacienteFormPage));
     }
 }

@@ -44,6 +44,12 @@ namespace ProyectoIMC.ViewModels
         [ObservableProperty] private bool isBusy;
         [ObservableProperty] private string? errorMessage;
 
+        public PacienteFormViewModel(IPacienteRepository pacienteRepository)
+        {
+            _pacienteRepository = pacienteRepository ?? throw new ArgumentNullException(nameof(pacienteRepository));
+        }
+
+        // Cada vez que cambia el Id del paciente, intento cargar la info si ya existe para no repetir captura.
         partial void OnIdPacienteChanged(int value)
         {
             if (value > 0)
@@ -52,6 +58,7 @@ namespace ProyectoIMC.ViewModels
             }
         }
 
+        // Pido los datos del paciente al repositorio y relleno las propiedades para mostrarlas en pantalla.
         private async Task CargarAsync(int id)
         {
             var paciente = await _pacienteRepository.ObtenerPorIdAsync(id);
@@ -70,6 +77,7 @@ namespace ProyectoIMC.ViewModels
         }
 
         [RelayCommand]
+        // Calcula IMC, grasa, peso ideal y TDEE en base a lo que haya escrito la persona.
         private void CalcularIndicadores()
         {
             ErrorMessage = null;
@@ -89,6 +97,7 @@ namespace ProyectoIMC.ViewModels
         }
 
         [RelayCommand]
+        // Valida los campos, guarda el paciente y avisa con un alerta simple cuando todo sale bien.
         private async Task GuardarAsync()
         {
             if (IsBusy) return;
@@ -137,6 +146,7 @@ namespace ProyectoIMC.ViewModels
             }
         }
 
+        // Construyo un objeto Paciente a partir de lo que hay en el formulario.
         private Paciente ConstruirPaciente()
         {
             return new Paciente
@@ -152,8 +162,10 @@ namespace ProyectoIMC.ViewModels
             };
         }
 
+        // Actualiza el índice del Picker cuando alguien cambia el sexo manualmente.
         partial void OnSexoChanged(string value) => OnPropertyChanged(nameof(SexoIndex));
 
+        // Mantiene sincronizado el picker de actividad con el valor numérico.
         partial void OnNivelActividadChanged(int value) => OnPropertyChanged(nameof(NivelActividadIndex));
     }
 }
