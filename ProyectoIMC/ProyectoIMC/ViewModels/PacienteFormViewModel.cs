@@ -14,6 +14,11 @@ namespace ProyectoIMC.ViewModels
     {
         private readonly IPacienteRepository _pacienteRepository;
 
+        public PacienteFormViewModel(IPacienteRepository pacienteRepository)
+        {
+            _pacienteRepository = pacienteRepository ?? throw new ArgumentNullException(nameof(pacienteRepository));
+        }
+
         [ObservableProperty] private int idPaciente;
         [ObservableProperty] private string nombre = string.Empty;
         [ObservableProperty] private string apellido = string.Empty;
@@ -143,10 +148,13 @@ namespace ProyectoIMC.ViewModels
 
                 CalcularIndicadores();
 
-                await Application.Current.MainPage.DisplayAlert(
-                    "Guardado",
-                    "El paciente se guardó correctamente.",
-                    "OK");
+                if (Application.Current?.MainPage != null)
+                {
+                    await Application.Current.MainPage.DisplayAlert(
+                        "Guardado",
+                        "El paciente se guardó correctamente.",
+                        "OK");
+                }
 
                 await Shell.Current.GoToAsync("..");
             }
