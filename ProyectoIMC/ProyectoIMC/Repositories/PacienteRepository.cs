@@ -15,11 +15,7 @@ namespace ProyectoIMC.Repositories
             _db = db ?? throw new ArgumentNullException(nameof(db));
         }
 
-        public async Task<IReadOnlyList<Paciente>> ListarTodosAsync()
-        {
-            var lista = await _db.ObtenerPacientesAsync();
-            return lista;
-        }
+        public Task<IReadOnlyList<Paciente>> ListarTodosAsync() => _db.ObtenerPacientesAsync();
 
         public Task<Paciente?> ObtenerPorIdAsync(int idPaciente)
         {
