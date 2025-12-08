@@ -10,9 +10,14 @@ using System.Threading.Tasks;
 namespace ProyectoIMC.ViewModels
 {
     [QueryProperty(nameof(IdPaciente), "IdPaciente")]
-    public partial class PacienteFormViewModel(IPacienteRepository pacienteRepository) : ObservableObject
+    public partial class PacienteFormViewModel : ObservableObject
     {
-        private readonly IPacienteRepository _pacienteRepository = pacienteRepository ?? throw new ArgumentNullException(nameof(pacienteRepository));
+        private readonly IPacienteRepository _pacienteRepository;
+
+        public PacienteFormViewModel(IPacienteRepository pacienteRepository)
+        {
+            _pacienteRepository = pacienteRepository ?? throw new ArgumentNullException(nameof(pacienteRepository));
+        }
 
         [ObservableProperty] private int idPaciente;
         [ObservableProperty] private string nombre = string.Empty;
@@ -43,11 +48,6 @@ namespace ProyectoIMC.ViewModels
 
         [ObservableProperty] private bool isBusy;
         [ObservableProperty] private string? errorMessage;
-
-        public PacienteFormViewModel(IPacienteRepository pacienteRepository)
-        {
-            _pacienteRepository = pacienteRepository ?? throw new ArgumentNullException(nameof(pacienteRepository));
-        }
 
         // Cada vez que cambia el Id del paciente, intento cargar la info si ya existe para no repetir captura.
         partial void OnIdPacienteChanged(int value)

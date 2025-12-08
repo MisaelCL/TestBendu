@@ -10,14 +10,12 @@ namespace ProyectoIMC.Repositories
     {
         private readonly AppDatabase _db = db ?? throw new ArgumentNullException(nameof(db));
 
+        // Devuelve todos los pacientes tal cual están en la base para poblar las listas.
         public async Task<IReadOnlyList<Paciente>> ListarTodosAsync()
         {
             var lista = await _db.ObtenerPacientesAsync();
             return lista;
         }
-
-        // Devuelve todos los pacientes tal cual están en la base para poblar las listas.
-        public Task<IReadOnlyList<Paciente>> ListarTodosAsync() => _db.ObtenerPacientesAsync();
 
         // Busca un paciente específico por Id.
         public Task<Paciente?> ObtenerPorIdAsync(int idPaciente)

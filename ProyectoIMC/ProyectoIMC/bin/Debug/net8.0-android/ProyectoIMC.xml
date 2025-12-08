@@ -9,6 +9,11 @@
             Convierte un valor numérico double en true cuando es mayor que cero.
             </summary>
         </member>
+        <member name="T:ProyectoIMC.Converters.DoubleGreaterThanZeroConverterBase">
+            <summary>
+            Clase base para convertidores que verifican si un valor double es mayor que cero.
+            </summary>
+        </member>
         <member name="T:ProyectoIMC.Converters.StringNotNullOrEmptyConverter">
             <summary>
             Devuelve true si la cadena no es nula ni está vacía.

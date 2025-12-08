@@ -10,7 +10,7 @@ namespace ProyectoIMC.Converters
     public sealed class DoubleGreaterThanZeroConverter : IValueConverter
     {
         // Convierte cualquier double a bool preguntando si es mayor que cero.
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
             if (value is double number)
             {
@@ -21,7 +21,7 @@ namespace ProyectoIMC.Converters
         }
 
         // No soportamos la conversión inversa porque no se necesita.
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
             throw new NotSupportedException();
         }
