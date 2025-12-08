@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:ProyectoIMC.ViewModels"
              x:Class="ProyectoIMC.Views.PacienteFormPage"
-             Title="{Binding Nombre, StringFormat='Paciente: {0}', TargetNullValue='Nuevo Paciente'}"
+             Title="{Binding TituloPagina}"
              BackgroundColor="#F5F5F5">
 
     <ScrollView>
@@ -17,18 +17,18 @@
                     <Label Text="Datos Personales" FontAttributes="Bold" TextColor="#2196F3"/>
 
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
-                        <Entry Placeholder="Nombre" Text="{Binding Nombre}" Grid.Column="0"/>
-                        <Entry Placeholder="Apellido" Text="{Binding Apellido}" Grid.Column="1"/>
+                        <Entry Placeholder="Nombre" Text="{Binding Nombre}" Grid.Column="0" TextColor="#1C1C1C" PlaceholderColor="#90A4AE"/>
+                        <Entry Placeholder="Apellido" Text="{Binding Apellido}" Grid.Column="1" TextColor="#1C1C1C" PlaceholderColor="#90A4AE"/>
                     </Grid>
 
-                    <Picker Title="Sexo" SelectedIndex="{Binding SexoIndex, Mode=TwoWay}">
+                    <Picker Title="Sexo" SelectedIndex="{Binding SexoIndex, Mode=TwoWay}" TextColor="#1C1C1C">
                         <Picker.Items>
                             <x:String>Masculino</x:String>
                             <x:String>Femenino</x:String>
                         </Picker.Items>
                     </Picker>
 
-                    <Picker Title="Nivel de actividad" SelectedIndex="{Binding NivelActividadIndex, Mode=TwoWay}">
+                    <Picker Title="Nivel de actividad" SelectedIndex="{Binding NivelActividadIndex, Mode=TwoWay}" TextColor="#1C1C1C">
                         <Picker.Items>
                             <x:String>Sedentario</x:String>
                             <x:String>Ligero</x:String>
@@ -49,18 +49,18 @@
 
                     <Grid ColumnDefinitions="*, *, *" ColumnSpacing="10">
                         <VerticalStackLayout Grid.Column="0">
-                            <Label Text="Edad" FontSize="12" TextColor="Gray"/>
-                            <Entry Text="{Binding Edad, TargetNullValue=''}" Keyboard="Numeric" Placeholder="Años"/>
+                            <Label Text="Edad" FontSize="12" TextColor="#455A64"/>
+                            <Entry Text="{Binding Edad, TargetNullValue=''}" Keyboard="Numeric" Placeholder="Años" TextColor="#1C1C1C" PlaceholderColor="#90A4AE"/>
                         </VerticalStackLayout>
 
                         <VerticalStackLayout Grid.Column="1">
-                            <Label Text="Peso" FontSize="12" TextColor="Gray"/>
-                            <Entry Text="{Binding PesoKg, TargetNullValue=''}" Keyboard="Numeric" Placeholder="kg"/>
+                            <Label Text="Peso" FontSize="12" TextColor="#455A64"/>
+                            <Entry Text="{Binding PesoKg, TargetNullValue=''}" Keyboard="Numeric" Placeholder="kg" TextColor="#1C1C1C" PlaceholderColor="#90A4AE"/>
                         </VerticalStackLayout>
 
                         <VerticalStackLayout Grid.Column="2">
-                            <Label Text="Estatura" FontSize="12" TextColor="Gray"/>
-                            <Entry Text="{Binding EstaturaCm, TargetNullValue=''}" Keyboard="Numeric" Placeholder="cm"/>
+                            <Label Text="Estatura" FontSize="12" TextColor="#455A64"/>
+                            <Entry Text="{Binding EstaturaCm, TargetNullValue=''}" Keyboard="Numeric" Placeholder="cm" TextColor="#1C1C1C" PlaceholderColor="#90A4AE"/>
                         </VerticalStackLayout>
                     </Grid>
                 </VerticalStackLayout>
@@ -72,11 +72,11 @@
                     FontAttributes="Bold"
                     CornerRadius="20"/>
 
-            <Border StrokeShape="RoundRectangle 10" 
-                    BackgroundColor="#263238" 
-                    Padding="16" 
+            <Border StrokeShape="RoundRectangle 10"
+                    BackgroundColor="#1F2A2F"
+                    Padding="16"
                     StrokeThickness="0"
-                    IsVisible="{Binding Imc, Converter={x:Static x:BooleanConverter.ContentProperty}, ConverterParameter=True}">
+                    IsVisible="{Binding Imc, Converter={StaticResource DoubleGreaterThanZeroConverter}}">
                 <Grid RowDefinitions="Auto, Auto, Auto" ColumnDefinitions="*, *" RowSpacing="10" ColumnSpacing="10">
                     <Label Text="RESULTADOS" TextColor="White" FontAttributes="Bold" Grid.ColumnSpan="2"/>
 
@@ -106,10 +106,10 @@
                 </Grid>
             </Border>
 
-            <Label Text="{Binding ErrorMessage}" 
-                   TextColor="#E53935" 
+            <Label Text="{Binding ErrorMessage}"
+                   TextColor="#E53935"
                    HorizontalTextAlignment="Center"
-                   IsVisible="{Binding ErrorMessage, Converter={x:Static x:String.IsNotNullOrEmpty}}"/>
+                   IsVisible="{Binding ErrorMessage, Converter={StaticResource StringNotNullOrEmptyConverter}}"/>
 
             <Button Text="Guardar Paciente" 
                     Command="{Binding GuardarCommand}" 
