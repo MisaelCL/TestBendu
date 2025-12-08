@@ -1,12 +1,190 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\jmanu\\Desktop\\ProyectoIMC\\",
-  "Documents": [],
+  "WorkspaceRootPath": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\ProyectoIMC\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{D889E377-BD64-42FB-9DAA-717C453863B3}|ProyectoIMC\\ProyectoIMC.csproj|c:\\users\\jmanu\\desktop\\final\\testbendu\\proyectoimc\\proyectoimc\\viewmodels\\pacienteslistaviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D889E377-BD64-42FB-9DAA-717C453863B3}|ProyectoIMC\\ProyectoIMC.csproj|solutionrelative:proyectoimc\\viewmodels\\pacienteslistaviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D889E377-BD64-42FB-9DAA-717C453863B3}|ProyectoIMC\\ProyectoIMC.csproj|c:\\users\\jmanu\\desktop\\final\\testbendu\\proyectoimc\\proyectoimc\\viewmodels\\pacienteformviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D889E377-BD64-42FB-9DAA-717C453863B3}|ProyectoIMC\\ProyectoIMC.csproj|solutionrelative:proyectoimc\\viewmodels\\pacienteformviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D889E377-BD64-42FB-9DAA-717C453863B3}|ProyectoIMC\\ProyectoIMC.csproj|c:\\users\\jmanu\\desktop\\final\\testbendu\\proyectoimc\\proyectoimc\\services\\saludcalculoservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D889E377-BD64-42FB-9DAA-717C453863B3}|ProyectoIMC\\ProyectoIMC.csproj|solutionrelative:proyectoimc\\services\\saludcalculoservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D889E377-BD64-42FB-9DAA-717C453863B3}|ProyectoIMC\\ProyectoIMC.csproj|c:\\users\\jmanu\\desktop\\final\\testbendu\\proyectoimc\\proyectoimc\\repositories\\pacienterepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D889E377-BD64-42FB-9DAA-717C453863B3}|ProyectoIMC\\ProyectoIMC.csproj|solutionrelative:proyectoimc\\repositories\\pacienterepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D889E377-BD64-42FB-9DAA-717C453863B3}|ProyectoIMC\\ProyectoIMC.csproj|c:\\users\\jmanu\\desktop\\final\\testbendu\\proyectoimc\\proyectoimc\\repositories\\ipacienterepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D889E377-BD64-42FB-9DAA-717C453863B3}|ProyectoIMC\\ProyectoIMC.csproj|solutionrelative:proyectoimc\\repositories\\ipacienterepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D889E377-BD64-42FB-9DAA-717C453863B3}|ProyectoIMC\\ProyectoIMC.csproj|c:\\users\\jmanu\\desktop\\final\\testbendu\\proyectoimc\\proyectoimc\\model\\paciente.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D889E377-BD64-42FB-9DAA-717C453863B3}|ProyectoIMC\\ProyectoIMC.csproj|solutionrelative:proyectoimc\\model\\paciente.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D889E377-BD64-42FB-9DAA-717C453863B3}|ProyectoIMC\\ProyectoIMC.csproj|c:\\users\\jmanu\\desktop\\final\\testbendu\\proyectoimc\\proyectoimc\\data\\appdatabase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D889E377-BD64-42FB-9DAA-717C453863B3}|ProyectoIMC\\ProyectoIMC.csproj|solutionrelative:proyectoimc\\data\\appdatabase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D889E377-BD64-42FB-9DAA-717C453863B3}|ProyectoIMC\\ProyectoIMC.csproj|c:\\users\\jmanu\\desktop\\final\\testbendu\\proyectoimc\\proyectoimc\\converters\\stringnotnulloremptyconverter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D889E377-BD64-42FB-9DAA-717C453863B3}|ProyectoIMC\\ProyectoIMC.csproj|solutionrelative:proyectoimc\\converters\\stringnotnulloremptyconverter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D889E377-BD64-42FB-9DAA-717C453863B3}|ProyectoIMC\\ProyectoIMC.csproj|c:\\users\\jmanu\\desktop\\final\\testbendu\\proyectoimc\\proyectoimc\\converters\\doublegreaterthanzeroconverterbase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D889E377-BD64-42FB-9DAA-717C453863B3}|ProyectoIMC\\ProyectoIMC.csproj|solutionrelative:proyectoimc\\converters\\doublegreaterthanzeroconverterbase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D889E377-BD64-42FB-9DAA-717C453863B3}|ProyectoIMC\\ProyectoIMC.csproj|c:\\users\\jmanu\\desktop\\final\\testbendu\\proyectoimc\\proyectoimc\\converters\\doublegreaterthanzeroconverter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D889E377-BD64-42FB-9DAA-717C453863B3}|ProyectoIMC\\ProyectoIMC.csproj|solutionrelative:proyectoimc\\converters\\doublegreaterthanzeroconverter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": []
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "PacientesListaViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\ProyectoIMC\\ProyectoIMC\\ViewModels\\PacientesListaViewModel.cs",
+              "RelativeDocumentMoniker": "ProyectoIMC\\ViewModels\\PacientesListaViewModel.cs",
+              "ToolTip": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\ProyectoIMC\\ProyectoIMC\\ViewModels\\PacientesListaViewModel.cs",
+              "RelativeToolTip": "ProyectoIMC\\ViewModels\\PacientesListaViewModel.cs",
+              "ViewState": "AgIAAFYAAAAAAAAAAAAAABYAAAAcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-08T03:06:27.355Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "PacienteFormViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\ProyectoIMC\\ProyectoIMC\\ViewModels\\PacienteFormViewModel.cs",
+              "RelativeDocumentMoniker": "ProyectoIMC\\ViewModels\\PacienteFormViewModel.cs",
+              "ToolTip": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\ProyectoIMC\\ProyectoIMC\\ViewModels\\PacienteFormViewModel.cs",
+              "RelativeToolTip": "ProyectoIMC\\ViewModels\\PacienteFormViewModel.cs",
+              "ViewState": "AgIAAI4AAAAAAAAAAAAQwAAAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-08T03:05:48.044Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "SaludCalculoService.cs",
+              "DocumentMoniker": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\ProyectoIMC\\ProyectoIMC\\Services\\SaludCalculoService.cs",
+              "RelativeDocumentMoniker": "ProyectoIMC\\Services\\SaludCalculoService.cs",
+              "ToolTip": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\ProyectoIMC\\ProyectoIMC\\Services\\SaludCalculoService.cs",
+              "RelativeToolTip": "ProyectoIMC\\Services\\SaludCalculoService.cs",
+              "ViewState": "AgIAADcAAAAAAAAAAAAcwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-08T03:05:38.561Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "PacienteRepository.cs",
+              "DocumentMoniker": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\ProyectoIMC\\ProyectoIMC\\Repositories\\PacienteRepository.cs",
+              "RelativeDocumentMoniker": "ProyectoIMC\\Repositories\\PacienteRepository.cs",
+              "ToolTip": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\ProyectoIMC\\ProyectoIMC\\Repositories\\PacienteRepository.cs",
+              "RelativeToolTip": "ProyectoIMC\\Repositories\\PacienteRepository.cs",
+              "ViewState": "AgIAAA0AAAAAAAAAAAAgwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-08T03:05:15.838Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "IPacienteRepository.cs",
+              "DocumentMoniker": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\ProyectoIMC\\ProyectoIMC\\Repositories\\IPacienteRepository.cs",
+              "RelativeDocumentMoniker": "ProyectoIMC\\Repositories\\IPacienteRepository.cs",
+              "ToolTip": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\ProyectoIMC\\ProyectoIMC\\Repositories\\IPacienteRepository.cs",
+              "RelativeToolTip": "ProyectoIMC\\Repositories\\IPacienteRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-08T03:05:11.022Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Paciente.cs",
+              "DocumentMoniker": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\ProyectoIMC\\ProyectoIMC\\Model\\Paciente.cs",
+              "RelativeDocumentMoniker": "ProyectoIMC\\Model\\Paciente.cs",
+              "ToolTip": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\ProyectoIMC\\ProyectoIMC\\Model\\Paciente.cs",
+              "RelativeToolTip": "ProyectoIMC\\Model\\Paciente.cs",
+              "ViewState": "AgIAAAsAAAAAAAAAAAA9wAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-08T03:05:01.92Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "AppDatabase.cs",
+              "DocumentMoniker": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\ProyectoIMC\\ProyectoIMC\\Data\\AppDatabase.cs",
+              "RelativeDocumentMoniker": "ProyectoIMC\\Data\\AppDatabase.cs",
+              "ToolTip": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\ProyectoIMC\\ProyectoIMC\\Data\\AppDatabase.cs",
+              "RelativeToolTip": "ProyectoIMC\\Data\\AppDatabase.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAACYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-08T03:04:20.059Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "StringNotNullOrEmptyConverter.cs",
+              "DocumentMoniker": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\ProyectoIMC\\ProyectoIMC\\Converters\\StringNotNullOrEmptyConverter.cs",
+              "RelativeDocumentMoniker": "ProyectoIMC\\Converters\\StringNotNullOrEmptyConverter.cs",
+              "ToolTip": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\ProyectoIMC\\ProyectoIMC\\Converters\\StringNotNullOrEmptyConverter.cs",
+              "RelativeToolTip": "ProyectoIMC\\Converters\\StringNotNullOrEmptyConverter.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-08T03:03:43.058Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "DoubleGreaterThanZeroConverterBase.cs",
+              "DocumentMoniker": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\ProyectoIMC\\ProyectoIMC\\Converters\\DoubleGreaterThanZeroConverterBase.cs",
+              "RelativeDocumentMoniker": "ProyectoIMC\\Converters\\DoubleGreaterThanZeroConverterBase.cs",
+              "ToolTip": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\ProyectoIMC\\ProyectoIMC\\Converters\\DoubleGreaterThanZeroConverterBase.cs",
+              "RelativeToolTip": "ProyectoIMC\\Converters\\DoubleGreaterThanZeroConverterBase.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-08T03:03:07.32Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "DoubleGreaterThanZeroConverter.cs",
+              "DocumentMoniker": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\ProyectoIMC\\ProyectoIMC\\Converters\\DoubleGreaterThanZeroConverter.cs",
+              "RelativeDocumentMoniker": "ProyectoIMC\\Converters\\DoubleGreaterThanZeroConverter.cs",
+              "ToolTip": "C:\\Users\\jmanu\\Desktop\\Final\\TestBendu\\ProyectoIMC\\ProyectoIMC\\Converters\\DoubleGreaterThanZeroConverter.cs",
+              "RelativeToolTip": "ProyectoIMC\\Converters\\DoubleGreaterThanZeroConverter.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-08T02:58:40.727Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
     }
   ]
 }

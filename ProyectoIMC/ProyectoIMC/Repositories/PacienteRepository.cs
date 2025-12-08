@@ -6,13 +6,14 @@ using ProyectoIMC.Model;
 
 namespace ProyectoIMC.Repositories
 {
-    public sealed class PacienteRepository : IPacienteRepository
+    public sealed class PacienteRepository(AppDatabase db) : IPacienteRepository
     {
-        private readonly AppDatabase _db;
+        private readonly AppDatabase _db = db ?? throw new ArgumentNullException(nameof(db));
 
-        public PacienteRepository(AppDatabase db)
+        public async Task<IReadOnlyList<Paciente>> ListarTodosAsync()
         {
-            _db = db ?? throw new ArgumentNullException(nameof(db));
+            var lista = await _db.ObtenerPacientesAsync();
+            return lista;
         }
 
         // Devuelve todos los pacientes tal cual están en la base para poblar las listas.
