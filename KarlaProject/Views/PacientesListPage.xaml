@@ -4,12 +4,12 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:vm="clr-namespace:NetMAUI_Clase6_Crud_SQLLite.ViewModels"
-    x:DataType="vm:PacientesViewModels"
+    x:DataType="vm:PacientesListViewModels"
     Title="Pacientes">
     <Grid RowDefinitions="80,*,60" Padding="10">
         <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
             <Button
-                Command="{Binding ListarPacientesCommand}"
+                Command="{Binding CargarPacientesCommand}"
                 IsEnabled="{Binding IsReady}"
                 Text="Actualizar" />
             <Button
@@ -18,7 +18,7 @@
         </HorizontalStackLayout>
 
         <Frame Grid.Row="1" CornerRadius="10" Padding="0" BackgroundColor="{StaticResource Gray100}">
-            <RefreshView Command="{Binding ListarPacientesCommand}" IsRefreshing="{Binding IsRefreshing}">
+            <RefreshView Command="{Binding CargarPacientesCommand}" IsRefreshing="{Binding IsRefreshing}">
                 <CollectionView ItemsSource="{Binding Pacientes}">
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="models:Paciente" xmlns:models="clr-namespace:NetMAUI_Clase6_Crud_SQLLite.Models">
@@ -34,7 +34,7 @@
                                 </VerticalStackLayout>
                                 <Button
                                     Grid.Column="1"
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:PacientesViewModels}}, Path=VerDetalleCommand}"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:PacientesListViewModels}}, Path=VerDetalleCommand}"
                                     CommandParameter="{Binding .}"
                                     Text="Ver" />
                             </Grid>

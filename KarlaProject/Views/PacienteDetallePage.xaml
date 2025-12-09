@@ -1,68 +1,49 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
-    x:Class="NetMAUI_Clase6_Crud_SQLLite.Views.PacienteFormPage"
+    x:Class="NetMAUI_Clase6_Crud_SQLLite.Views.PacienteDetallePage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:vm="clr-namespace:NetMAUI_Clase6_Crud_SQLLite.ViewModels"
-    Title="Paciente"
-    x:DataType="vm:PacienteViewModels">
+    Title="Detalle del paciente"
+    x:DataType="vm:PacienteDetalleViewModels">
     <ScrollView>
         <VerticalStackLayout Padding="16" Spacing="12">
-            <Label FontSize="24" FontAttributes="Bold" Text="Datos del paciente" />
+            <Label FontSize="24" FontAttributes="Bold" Text="Información del paciente" />
 
-            <Entry Placeholder="Nombre" Text="{Binding Nombre}" />
-            <Entry Placeholder="Apellido" Text="{Binding Apellido}" />
-            <Entry Keyboard="Numeric" Placeholder="Edad" Text="{Binding Edad}" />
-            <Entry Keyboard="Numeric" Placeholder="Peso (kg)" Text="{Binding PesoKg}" />
-            <Entry Keyboard="Numeric" Placeholder="Estatura (cm)" Text="{Binding EstaturaCm}" />
+            <Label FontAttributes="Bold" Text="Nombre" />
+            <Label Text="{Binding Paciente.Nombre}" />
 
-            <Picker Title="Sexo" SelectedItem="{Binding Sexo}">
-                <Picker.ItemsSource>
-                    <x:Array Type="{x:Type x:String}">
-                        <x:String>Masculino</x:String>
-                        <x:String>Femenino</x:String>
-                    </x:Array>
-                </Picker.ItemsSource>
-            </Picker>
+            <Label FontAttributes="Bold" Text="Apellido" />
+            <Label Text="{Binding Paciente.Apellido}" />
 
-            <Picker Title="Nivel de actividad" SelectedItem="{Binding NivelActividad}">
-                <Picker.ItemsSource>
-                    <x:Array Type="{x:Type x:String}">
-                        <x:String>Sedentario</x:String>
-                        <x:String>Ligera</x:String>
-                        <x:String>Moderada</x:String>
-                        <x:String>MuyActiva</x:String>
-                        <x:String>ExtremadamenteActiva</x:String>
-                    </x:Array>
-                </Picker.ItemsSource>
-            </Picker>
+            <Label FontAttributes="Bold" Text="Edad" />
+            <Label Text="{Binding Paciente.Edad}" />
 
-            <CollectionView ItemsSource="{Binding Errores}" BackgroundColor="MistyRose">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Label Padding="6" Text="{Binding .}" TextColor="DarkRed" />
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-                <CollectionView.EmptyView>
-                    <Label />
-                </CollectionView.EmptyView>
-            </CollectionView>
+            <Label FontAttributes="Bold" Text="Peso (kg)" />
+            <Label Text="{Binding Paciente.PesoKg}" />
 
-            <Label FontAttributes="Bold" Text="Resultados calculados" />
-            <Label Text="{Binding Imc, StringFormat='IMC: {0:F2}'}" />
-            <Label Text="{Binding EstadoImc, StringFormat='Estado IMC: {0}'}" />
-            <Label Text="{Binding PorcentajeGrasa, StringFormat='% Grasa: {0:F2}%'}" />
-            <Label Text="{Binding ClasificacionGrasa, StringFormat='Clasificación grasa: {0}'}" />
-            <Label Text="{Binding PesoIdeal, StringFormat='Peso ideal: {0:F2} kg'}" />
-            <Label Text="{Binding Bmr, StringFormat='BMR: {0:F0}'}" />
-            <Label Text="{Binding Tdee, StringFormat='TDEE: {0:F0}'}" />
+            <Label FontAttributes="Bold" Text="Estatura (cm)" />
+            <Label Text="{Binding Paciente.EstaturaCm}" />
+
+            <Label FontAttributes="Bold" Text="Sexo" />
+            <Label Text="{Binding Paciente.Sexo}" />
+
+            <Label FontAttributes="Bold" Text="Nivel de actividad" />
+            <Label Text="{Binding Paciente.NivelActividad}" />
+
+            <Label FontAttributes="Bold" Text="Resultados" />
+            <Label Text="{Binding Paciente.Imc, StringFormat='IMC: {0:F2}'}" />
+            <Label Text="{Binding Paciente.EstadoImc, StringFormat='Estado IMC: {0}'}" />
+            <Label Text="{Binding Paciente.PorcentajeGrasa, StringFormat='% Grasa: {0:F2}%'}" />
+            <Label Text="{Binding Paciente.ClasificacionGrasa, StringFormat='Clasificación grasa: {0}'}" />
+            <Label Text="{Binding Paciente.PesoIdeal, StringFormat='Peso ideal: {0:F2} kg'}" />
+            <Label Text="{Binding Paciente.Bmr, StringFormat='BMR: {0:F0}'}" />
+            <Label Text="{Binding Paciente.Tdee, StringFormat='TDEE: {0:F0}'}" />
 
             <HorizontalStackLayout Spacing="10">
-                <Button
-                    Command="{Binding GuardarCommand}"
-                    IsEnabled="{Binding DatosCargados}"
-                    Text="Guardar" />
-                <Button Command="{Binding CancelarCommand}" Text="Cancelar" />
+                <Button Command="{Binding EditarCommand}" Text="Editar" />
+                <Button Command="{Binding EliminarCommand}" Text="Eliminar" TextColor="Red" />
+                <Button Command="{Binding RegresarCommand}" Text="Volver" />
             </HorizontalStackLayout>
         </VerticalStackLayout>
     </ScrollView>
