@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="NetMAUI_Clase6_Crud_SQLLite.Views.PacienteFormPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:NetMAUI_Clase6_Crud_SQLLite.ViewModels"
+    Title="Paciente"
+    x:DataType="vm:PacienteViewModels">
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="12">
+            <Label FontSize="24" FontAttributes="Bold" Text="Datos del paciente" />
+
+            <Entry Placeholder="Nombre" Text="{Binding Nombre}" />
+            <Entry Placeholder="Apellido" Text="{Binding Apellido}" />
+            <Entry Keyboard="Numeric" Placeholder="Edad" Text="{Binding Edad}" />
+            <Entry Keyboard="Numeric" Placeholder="Peso (kg)" Text="{Binding PesoKg}" />
+            <Entry Keyboard="Numeric" Placeholder="Estatura (cm)" Text="{Binding EstaturaCm}" />
+
+            <Picker Title="Sexo" SelectedItem="{Binding Sexo}">
+                <Picker.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>Masculino</x:String>
+                        <x:String>Femenino</x:String>
+                    </x:Array>
+                </Picker.ItemsSource>
+            </Picker>
+
+            <Picker Title="Nivel de actividad" SelectedItem="{Binding NivelActividad}">
+                <Picker.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>Sedentario</x:String>
+                        <x:String>Ligera</x:String>
+                        <x:String>Moderada</x:String>
+                        <x:String>MuyActiva</x:String>
+                        <x:String>ExtremadamenteActiva</x:String>
+                    </x:Array>
+                </Picker.ItemsSource>
+            </Picker>
+
+            <CollectionView ItemsSource="{Binding Errores}" BackgroundColor="MistyRose">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Label Padding="6" Text="{Binding .}" TextColor="DarkRed" />
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+                <CollectionView.EmptyView>
+                    <Label />
+                </CollectionView.EmptyView>
+            </CollectionView>
+
+            <Label FontAttributes="Bold" Text="Resultados calculados" />
+            <Label Text="{Binding Imc, StringFormat='IMC: {0:F2}'}" />
+            <Label Text="{Binding EstadoImc, StringFormat='Estado IMC: {0}'}" />
+            <Label Text="{Binding PorcentajeGrasa, StringFormat='% Grasa: {0:F2}%'}" />
+            <Label Text="{Binding ClasificacionGrasa, StringFormat='Clasificación grasa: {0}'}" />
+            <Label Text="{Binding PesoIdeal, StringFormat='Peso ideal: {0:F2} kg'}" />
+            <Label Text="{Binding Bmr, StringFormat='BMR: {0:F0}'}" />
+            <Label Text="{Binding Tdee, StringFormat='TDEE: {0:F0}'}" />
+
+            <HorizontalStackLayout Spacing="10">
+                <Button
+                    Command="{Binding GuardarCommand}"
+                    IsEnabled="{Binding DatosCargados}"
+                    Text="Guardar" />
+                <Button Command="{Binding CancelarCommand}" Text="Cancelar" />
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
